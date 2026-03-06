@@ -30,6 +30,13 @@ def index_view(request):
         'has_available_tables': has_available
     })
 
+def design_patterns_view(request):
+    """
+    Renders the documentation page explaining the software design 
+    patterns used in the project.
+    """
+    return render(request, 'restaurant/patterns.html')
+
 def menu_view(request, table_id):
     """
     Displays the seeded categorized menu specifically for an active table.

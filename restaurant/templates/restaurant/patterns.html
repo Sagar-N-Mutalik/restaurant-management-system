@@ -1,0 +1,104 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold"><i class="bi bi-diagram-3 text-primary"></i> Software Design Patterns</h1>
+            <p class="lead text-muted">A behind-the-scenes look at the architecture powering our Restaurant Management System.</p>
+        </div>
+
+        <div class="accordion shadow-sm" id="patternsAccordion">
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacade">
+                        <i class="bi bi-building me-2 text-primary"></i> 1. Facade Pattern
+                    </button>
+                </h2>
+                <div id="collapseFacade" class="accordion-collapse collapse show" data-bs-parent="#patternsAccordion">
+                    <div class="accordion-body">
+                        <strong>The Concept:</strong> Provides a simplified, unified interface to a complex subsystem. <br><br>
+                        <strong>How we use it:</strong> When a customer clicks "Submit Order", a lot happens: saving items to the database, calculating totals, verifying stock, and notifying the kitchen. Instead of the UI making 10 different function calls, it simply calls our <code>OrderFacade.place_order()</code>. The Facade hides the complex backend wiring from the frontend.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFactory">
+                        <i class="bi bi-box-seam me-2 text-success"></i> 2. Factory Method
+                    </button>
+                </h2>
+                <div id="collapseFactory" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
+                    <div class="accordion-body">
+                        <strong>The Concept:</strong> Provides an interface for creating objects, but lets subclasses decide which class to instantiate. <br><br>
+                        <strong>How we use it:</strong> We have different types of menu items (Pizzas, Burgers, Sides). The <code>ItemFactory</code> is responsible for creating these specific item objects safely. If we introduce a new category (like "Desserts"), we just add it to the factory without rewriting the core ordering logic.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDecorator">
+                        <i class="bi bi-layers me-2 text-warning"></i> 3. Decorator Pattern
+                    </button>
+                </h2>
+                <div id="collapseDecorator" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
+                    <div class="accordion-body">
+                        <strong>The Concept:</strong> Attaches additional responsibilities or behaviors to an object dynamically without altering its structure.<br><br>
+                        <strong>How we use it:</strong> Customizations! When a user clicks "+ Extra Cheese" or "+ Add Bacon", we don't have a separate database item for "Pizza with Cheese and Bacon". Instead, we use a Decorator to wrap the base Pizza object, dynamically adding ₹50 or ₹100 to the price and updating the description on the fly.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseObserver">
+                        <i class="bi bi-broadcast me-2 text-danger"></i> 4. Observer Pattern
+                    </button>
+                </h2>
+                <div id="collapseObserver" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
+                    <div class="accordion-body">
+                        <strong>The Concept:</strong> A subscription mechanism to notify multiple objects about any events that happen to the object they're observing.<br><br>
+                        <strong>How we use it:</strong> The Kitchen Dashboard is an Observer. When the Customer UI places an order (the Subject state changes), it automatically notifies the Kitchen Observer to update the Chef's screen, ensuring real-time synchronization without the frontend having to manually ping the kitchen.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStrategy">
+                        <i class="bi bi-diagram-2 me-2 text-info"></i> 5. Strategy Pattern
+                    </button>
+                </h2>
+                <div id="collapseStrategy" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
+                    <div class="accordion-body">
+                        <strong>The Concept:</strong> Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.<br><br>
+                        <strong>How we use it:</strong> Pricing and billing rules. If a customer is getting a "Happy Hour Discount" versus standard pricing, or if they are paying via different gateways, the Strategy pattern allows us to swap out the calculation logic instantly without writing massive `if/else` statements in the checkout code.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSingleton">
+                        <i class="bi bi-1-circle me-2 text-secondary"></i> 6. Singleton Pattern
+                    </button>
+                </h2>
+                <div id="collapseSingleton" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
+                    <div class="accordion-body">
+                        <strong>The Concept:</strong> Ensures a class has only one instance and provides a global point of access to it.<br><br>
+                        <strong>How we use it:</strong> Used for our central Kitchen State Manager or Restaurant Configuration. We only want *one* central brain keeping track of active table states; otherwise, duplicated managers would cause overlapping orders and corrupted table statuses.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'index' %}" class="btn btn-outline-dark"><i class="bi bi-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -21,30 +21,20 @@
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     }
 
-    .badge-veg {
-        background-color: #198754;
-    }
-
-    .badge-nonveg {
-        background-color: #dc3545;
-    }
-
-    .badge-vegan {
-        background-color: #20c997;
-    }
+    .badge-veg { background-color: #198754; }
+    .badge-nonveg { background-color: #dc3545; }
+    .badge-vegan { background-color: #20c997; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-    <div id="orderToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive"
-        aria-atomic="true">
+    <div id="orderToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body" id="toastMessage">
                 Order added to your table!
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -52,8 +42,7 @@
 <div class="menu-header d-flex justify-content-between align-items-center sticky-top">
     <div>
         <h2 class="fw-bold mb-0 text-dark"><i class="bi bi-journal-text me-2 text-warning"></i> Menu</h2>
-        <p class="text-muted mb-0 mt-1">Ordering for <span class="badge bg-dark fs-6">Table {{ table.table_number
-                }}</span></p>
+        <p class="text-muted mb-0 mt-1">Ordering for <span class="badge bg-dark fs-6">Table {{ table.table_number }}</span></p>
     </div>
     <div>
         <a href="{% url 'payment_page' table.table_number %}" class="btn btn-dark btn-lg shadow-sm">
@@ -66,24 +55,18 @@
     <div class="col-lg-2 d-none d-lg-block">
         <div class="sticky-top" style="top: 100px;">
             <div class="list-group shadow-sm">
-                <a href="#pizzas" class="list-group-item list-group-item-action fw-bold"><i
-                        class="bi bi-pie-chart-fill text-danger me-2"></i> Pizzas</a>
-                <a href="#burgers" class="list-group-item list-group-item-action fw-bold"><i
-                        class="bi bi-circle-fill text-warning me-2"></i> Burgers</a>
-                <a href="#sides" class="list-group-item list-group-item-action fw-bold"><i
-                        class="bi bi-box-fill text-success me-2"></i> Sides</a>
-                <a href="#beverages" class="list-group-item list-group-item-action fw-bold"><i
-                        class="bi bi-cup-straw text-info me-2"></i> Beverages</a>
+                <a href="#pizzas" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-pie-chart-fill text-danger me-2"></i> Pizzas</a>
+                <a href="#burgers" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-circle-fill text-warning me-2"></i> Burgers</a>
+                <a href="#sides" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-box-fill text-success me-2"></i> Sides</a>
+                <a href="#beverages" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-cup-straw text-info me-2"></i> Beverages</a>
             </div>
         </div>
     </div>
 
     <div class="col-lg-7 mb-4">
-
         {% if pizzas %}
         <div id="pizzas" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-pie-chart-fill text-danger me-2"></i> Wood-Fired
-                Pizzas</h3>
+            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-pie-chart-fill text-danger me-2"></i> Wood-Fired Pizzas</h3>
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                 {% for item in pizzas %}
                 <div class="col">
@@ -92,38 +75,34 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                                 <div>
-                                    {% if item.item_type == 'VEG' %}
-                                    <span class="badge badge-veg"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Veg</span>
-                                    {% elif item.item_type == 'NON_VEG' %}
-                                    <span class="badge badge-nonveg"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Non-Veg</span>
-                                    {% else %}
-                                    <span class="badge badge-vegan"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Vegan</span>
-                                    {% endif %}
+                                    {% if item.item_type == 'VEG' %}<span class="badge badge-veg">Veg</span>
+                                    {% elif item.item_type == 'NON_VEG' %}<span class="badge badge-nonveg">Non-Veg</span>
+                                    {% else %}<span class="badge badge-vegan">Vegan</span>{% endif %}
                                 </div>
                             </div>
                             <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
 
                             <div class="form-check form-switch mb-1">
                                 <input class="form-check-input cheese-switch" type="checkbox" id="cheese_{{ item.id }}">
-                                <label class="form-check-label small text-muted" for="cheese_{{ item.id }}">Extra Cheese
-                                    (+₹50)</label>
+                                <label class="form-check-label small text-muted" for="cheese_{{ item.id }}">Extra Cheese (+₹50)</label>
                             </div>
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input bacon-switch" type="checkbox" id="bacon_{{ item.id }}">
-                                <label class="form-check-label small text-muted" for="bacon_{{ item.id }}">Add Bacon
-                                    (+₹100)</label>
+                                <label class="form-check-label small text-muted" for="bacon_{{ item.id }}">Add Bacon (+₹100)</label>
                             </div>
 
                             <div class="mt-auto d-flex justify-content-between align-items-center">
                                 <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3 order-btn"
-                                    data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}"
-                                    data-type="{{ item.item_type }}">
-                                    <i class="bi bi-plus-lg"></i> Add
-                                </button>
+                                <div class="d-flex align-items-center">
+                                    <div class="input-group input-group-sm me-2" style="width: 80px;">
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="let inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="form-control text-center px-0 border-secondary bg-white" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm rounded px-3 order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        Add
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -135,8 +114,7 @@
 
         {% if burgers %}
         <div id="burgers" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-circle-fill text-warning me-2"></i> Craft
-                Burgers</h3>
+            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-circle-fill text-warning me-2"></i> Craft Burgers</h3>
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                 {% for item in burgers %}
                 <div class="col">
@@ -145,27 +123,25 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                                 <div>
-                                    {% if item.item_type == 'VEG' %}
-                                    <span class="badge badge-veg"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Veg</span>
-                                    {% elif item.item_type == 'NON_VEG' %}
-                                    <span class="badge badge-nonveg"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Non-Veg</span>
-                                    {% else %}
-                                    <span class="badge badge-vegan"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Vegan</span>
-                                    {% endif %}
+                                    {% if item.item_type == 'VEG' %}<span class="badge badge-veg">Veg</span>
+                                    {% elif item.item_type == 'NON_VEG' %}<span class="badge badge-nonveg">Non-Veg</span>
+                                    {% else %}<span class="badge badge-vegan">Vegan</span>{% endif %}
                                 </div>
                             </div>
                             <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
 
                             <div class="mt-auto d-flex justify-content-between align-items-center mt-3">
                                 <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3 order-btn"
-                                    data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}"
-                                    data-type="{{ item.item_type }}">
-                                    <i class="bi bi-plus-lg"></i> Add
-                                </button>
+                                <div class="d-flex align-items-center">
+                                    <div class="input-group input-group-sm me-2" style="width: 80px;">
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="let inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="form-control text-center px-0 border-secondary bg-white" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm rounded px-3 order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        Add
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -177,8 +153,7 @@
 
         {% if sides %}
         <div id="sides" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-box-fill text-success me-2"></i> Appetizers &
-                Sides</h3>
+            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-box-fill text-success me-2"></i> Appetizers & Sides</h3>
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                 {% for item in sides %}
                 <div class="col">
@@ -187,26 +162,25 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                                 <div>
-                                    {% if item.item_type == 'VEG' %}
-                                    <span class="badge badge-veg"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Veg</span>
-                                    {% elif item.item_type == 'NON_VEG' %}
-                                    <span class="badge badge-nonveg"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Non-Veg</span>
-                                    {% else %}
-                                    <span class="badge badge-vegan"><i class="bi bi-circle-fill"
-                                            style="font-size: 0.5rem;"></i> Vegan</span>
-                                    {% endif %}
+                                    {% if item.item_type == 'VEG' %}<span class="badge badge-veg">Veg</span>
+                                    {% elif item.item_type == 'NON_VEG' %}<span class="badge badge-nonveg">Non-Veg</span>
+                                    {% else %}<span class="badge badge-vegan">Vegan</span>{% endif %}
                                 </div>
                             </div>
                             <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
+                            
                             <div class="mt-auto d-flex justify-content-between align-items-center mt-3">
                                 <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3 order-btn"
-                                    data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}"
-                                    data-type="{{ item.item_type }}">
-                                    <i class="bi bi-plus-lg"></i> Add
-                                </button>
+                                <div class="d-flex align-items-center">
+                                    <div class="input-group input-group-sm me-2" style="width: 80px;">
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="let inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="form-control text-center px-0 border-secondary bg-white" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm rounded px-3 order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        Add
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -218,8 +192,7 @@
 
         {% if beverages %}
         <div id="beverages" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-cup-straw text-info me-2"></i> Refreshing
-                Beverages</h3>
+            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-cup-straw text-info me-2"></i> Refreshing Beverages</h3>
             <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
                 {% for item in beverages %}
                 <div class="col">
@@ -229,13 +202,19 @@
                                 <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                             </div>
                             <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
+                            
                             <div class="mt-auto d-flex justify-content-between align-items-center mt-3">
                                 <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3 order-btn"
-                                    data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}"
-                                    data-type="{{ item.item_type }}">
-                                    <i class="bi bi-plus-lg"></i> Add
-                                </button>
+                                <div class="d-flex align-items-center">
+                                    <div class="input-group input-group-sm me-2" style="width: 80px;">
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="let inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="form-control text-center px-0 border-secondary bg-white" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="btn btn-outline-secondary px-2 border-secondary" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm rounded px-3 order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        Add
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -254,8 +233,7 @@
                     <i class="bi bi-cart3"></i> Your Order
                 </div>
                 <div class="card-body p-0">
-                    <ul id="cartItemsList" class="list-group list-group-flush"
-                        style="max-height: 400px; overflow-y: auto;">
+                    <ul id="cartItemsList" class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
                         <li class="list-group-item text-center text-muted py-5" id="emptyCartMsg">
                             <i class="bi bi-cart-x fs-1 opacity-50 mb-2"></i><br>
                             Your cart is empty
@@ -289,7 +267,7 @@
         let cart = [];
         let runningTotal = 0;
 
-        // Render Cart UI dynamically via Strategy
+        // Render Cart UI dynamically
         function updateCartUI() {
             cartItemsList.innerHTML = '';
             runningTotal = 0;
@@ -304,38 +282,48 @@
             submitOrderBtn.disabled = false;
 
             cart.forEach((item, index) => {
-                let itemTotal = parseFloat(item.price);
+                let basePrice = parseFloat(item.price);
                 let decoratorsDesc = '';
 
                 if (item.add_cheese) {
-                    itemTotal += 50.0;
-                    decoratorsDesc += '<br><small class="text-warning">+ Extra Cheese (+₹50)</small>';
+                    basePrice += 50.0;
+                    decoratorsDesc += '<div class="text-warning small">+ Extra Cheese (+₹50)</div>';
                 }
                 if (item.add_bacon) {
-                    itemTotal += 100.0;
-                    decoratorsDesc += '<br><small class="text-danger">+ Add Bacon (+₹100)</small>';
+                    basePrice += 100.0;
+                    decoratorsDesc += '<div class="text-danger small">+ Add Bacon (+₹100)</div>';
                 }
 
-                runningTotal += itemTotal;
+                let lineTotal = basePrice * item.quantity;
+                runningTotal += lineTotal;
 
                 const li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center py-2 px-3 small';
+                li.className = 'list-group-item py-3 px-3';
                 li.innerHTML = `
-                    <div style="width: 70%;">
-                        <strong>${item.item_name}</strong>
-                        ${decoratorsDesc}
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div style="max-width: 65%;">
+                            <strong class="d-block text-dark">${item.item_name}</strong>
+                            ${decoratorsDesc}
+                        </div>
+                        <div class="text-end fw-bold text-dark">
+                            ₹${lineTotal.toFixed(2)}
+                        </div>
                     </div>
-                    <div class="text-end" style="width: 30%;">
-                        <span class="d-block fw-bold">₹${itemTotal.toFixed(2)}</span>
-                        <a href="javascript:void(0)" class="text-danger remove-item" data-index="${index}"><i class="bi bi-trash"></i></a>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div class="text-muted small">
+                            Qty: <strong class="text-dark">${item.quantity}</strong>
+                        </div>
+                        <a href="javascript:void(0)" class="text-danger small text-decoration-none remove-item" data-index="${index}">
+                            <i class="bi bi-trash"></i> Remove
+                        </a>
                     </div>
                 `;
                 cartItemsList.appendChild(li);
             });
 
-            // Re-bind remove triggers locally
+            // Re-bind trigger for Remove inside cart
             document.querySelectorAll('.remove-item').forEach(btn => {
-                btn.addEventListener('click', function (e) {
+                btn.addEventListener('click', function () {
                     const i = parseInt(this.getAttribute('data-index'));
                     cart.splice(i, 1);
                     updateCartUI();
@@ -345,7 +333,7 @@
             cartTotalDisplay.innerText = '₹' + runningTotal.toFixed(2);
         }
 
-        // Add to Cart
+        // Add to Cart Logic
         orderBtns.forEach(btn => {
             btn.addEventListener('click', function () {
                 const id = this.dataset.id;
@@ -353,73 +341,105 @@
                 const price = this.dataset.price;
                 const category = this.dataset.type;
 
-                // Read Decorator component switches visually reliably
                 const cheeseSwitch = document.getElementById(`cheese_${id}`);
                 const baconSwitch = document.getElementById(`bacon_${id}`);
                 const addCheese = cheeseSwitch ? cheeseSwitch.checked : false;
                 const addBacon = baconSwitch ? baconSwitch.checked : false;
 
-                // Push to ephemeral runtime JS memory
-                cart.push({
-                    category: category,
-                    item_name: name,
-                    price: price,
-                    add_cheese: addCheese,
-                    add_bacon: addBacon,
-                    strategy: 'normal'
-                });
+                const qtyInput = document.getElementById(`qty_${id}`);
+                const addedQty = qtyInput ? parseInt(qtyInput.value) : 1;
 
+                // Group identical items in the cart
+                const existingIndex = cart.findIndex(i => 
+                    i.item_id === id && 
+                    i.add_cheese === addCheese && 
+                    i.add_bacon === addBacon
+                );
+
+                if (existingIndex > -1) {
+                    cart[existingIndex].quantity += addedQty;
+                } else {
+                    cart.push({
+                        item_id: id,
+                        category: category,
+                        item_name: name,
+                        price: price,
+                        add_cheese: addCheese,
+                        add_bacon: addBacon,
+                        strategy: 'normal',
+                        quantity: addedQty
+                    });
+                }
+
+                // Reset UI Inputs naturally
                 if (cheeseSwitch) cheeseSwitch.checked = false;
                 if (baconSwitch) baconSwitch.checked = false;
+                if (qtyInput) qtyInput.value = 1;
 
                 // Temporary immediate UI feedback cleanly decoupled
                 const originalText = this.innerHTML;
                 this.innerHTML = '<i class="bi bi-check2"></i> Added';
-                this.classList.replace('btn-outline-primary', 'btn-success');
+                this.classList.replace('btn-primary', 'btn-success');
                 setTimeout(() => {
                     this.innerHTML = originalText;
-                    this.classList.replace('btn-success', 'btn-outline-primary');
+                    this.classList.replace('btn-success', 'btn-primary');
                 }, 1000);
 
                 updateCartUI();
             });
         });
 
-        // Batch Submit payload logically encapsulating 
+        // Batch Submit Payload securely formatted
         submitOrderBtn.addEventListener('click', async function () {
             if (cart.length === 0) return;
 
             this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending to kitchen...';
             this.disabled = true;
 
+            // Expand cart based on quantity because backend facade handles 1 item per dictionary 
+            let expandedCart = [];
+            cart.forEach(item => {
+                for(let i = 0; i < item.quantity; i++) {
+                    expandedCart.push({
+                        category: item.category,
+                        item_name: item.item_name,
+                        price: item.price,
+                        add_cheese: item.add_cheese,
+                        add_bacon: item.add_bacon,
+                        strategy: item.strategy
+                    });
+                }
+            });
+
+            // table_number is heavily protected to remain a clean raw integer
+            const tableNumStr = "{{ table.table_number }}";
+            const tableNum = tableNumStr ? parseInt(tableNumStr) : null;
+
             const payload = {
-                table_number: {{ table.table_number|default:"null" }},
-                customer_name: "Table {{ table.table_number|default:'Guest' }} Guest",
-                items: cart
+                table_number: tableNum,
+                customer_name: "Table " + (tableNum || "Guest") + " Guest",
+                items: expandedCart
             };
 
             try {
                 const response = await fetch('/api/order', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    // Exploit Django Bootstrap Toasts natively via API response
                     const toastEl = document.getElementById('orderToast');
                     const toastMsg = document.getElementById('toastMessage');
                     if (toastEl && toastMsg) {
-                        toastMsg.innerHTML = `<i class="bi bi-check-circle-fill"></i> <strong>Kitchen queued ${cart.length} items perfectly!</strong>`;
+                        toastMsg.innerHTML = `<i class="bi bi-check-circle-fill"></i> <strong>Kitchen queued ${expandedCart.length} item(s) perfectly!</strong>`;
                         toastEl.classList.replace('text-bg-danger', 'text-bg-success');
                         const toast = new bootstrap.Toast(toastEl);
                         toast.show();
                     } else {
-                        alert(`Successfully submitted ${cart.length} items to the kitchen!`);
+                        alert(`Successfully submitted ${expandedCart.length} item(s) to the kitchen!`);
                     }
 
                     // Empty and re-initialize gracefully

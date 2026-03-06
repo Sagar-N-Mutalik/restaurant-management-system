@@ -44,8 +44,7 @@
                                 {% if order.item_description %}
                                 {{ order.item_description|safe }}
                                 {% else %}
-                                {% for item in order.items.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{%
-                                endfor %}
+                                {% for item in order.items.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
                                 {% endif %}
                             </strong>
                         </li>
