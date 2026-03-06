@@ -1,104 +1,672 @@
 {% extends 'restaurant/base.html' %}
+{% block extra_css %}
+<style>
+    /* Hero */
+    .patterns-hero {
+        padding: 5rem 2rem;
+        background: #ffffff;
+        color: #0f172a;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    body.dark-mode .patterns-hero {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: #f8fafc;
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .hero-subtitle {
+        color: #475569;
+        transition: color 0.3s;
+    }
+
+    body.dark-mode .hero-subtitle {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 1.25rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    body.dark-mode .glass-card {
+        background: rgba(30, 41, 59, 0.75);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Animation Stage Container */
+    .anim-stage {
+        height: 200px;
+        background: #f1f5f9;
+        border-radius: 1rem 1rem 0 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-mode .anim-stage {
+        background: #0f172a;
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* 1. Singleton Animation */
+    .singleton-core {
+        width: 60px;
+        height: 60px;
+        background: #6366f1;
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+        position: relative;
+        z-index: 2;
+        animation: pulseCore 2s infinite ease-in-out;
+    }
+
+    .singleton-satellite {
+        width: 15px;
+        height: 15px;
+        background: #cbd5e1;
+        border-radius: 50%;
+        position: absolute;
+        animation: orbitSatt 3s infinite linear;
+    }
+
+    .satt-1 {
+        animation-delay: 0s;
+    }
+
+    .satt-2 {
+        animation-delay: -1s;
+    }
+
+    .satt-3 {
+        animation-delay: -2s;
+    }
+
+    @keyframes pulseCore {
+
+        0%,
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+        }
+
+        50% {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.9);
+        }
+    }
+
+    @keyframes orbitSatt {
+        0% {
+            transform: rotate(0deg) translateX(80px) rotate(0deg);
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: rotate(360deg) translateX(80px) rotate(-360deg);
+            opacity: 0;
+        }
+    }
+
+    /* 2. Factory Animation */
+    .factory-machine {
+        width: 80px;
+        height: 80px;
+        background: #475569;
+        border-radius: 8px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .factory-belt {
+        width: 100%;
+        height: 4px;
+        background: #94a3b8;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .factory-item {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        left: -40px;
+        animation: conveyFactory 4s infinite linear;
+    }
+
+    .item-1 {
+        animation-delay: 0s;
+        background: #f43f5e;
+        border-radius: 50%;
+    }
+
+    /* Veg */
+    .item-2 {
+        animation-delay: 1.3s;
+        background: #eab308;
+        border-radius: 4px;
+    }
+
+    /* Burger */
+    .item-3 {
+        animation-delay: 2.6s;
+        background: #10b981;
+        border-radius: 50% 50% 0 0;
+    }
+
+    /* Drink */
+    @keyframes conveyFactory {
+        0% {
+            transform: translateX(0) scale(0.5);
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        45% {
+            transform: translateX(110px) scale(1);
+            opacity: 0;
+        }
+
+        55% {
+            transform: translateX(130px) scale(1);
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateX(300px) scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    /* 3. Observer Animation */
+    .obs-subject {
+        width: 50px;
+        height: 50px;
+        background: #f59e0b;
+        border-radius: 50%;
+        z-index: 3;
+        animation: obsPulse 3s infinite;
+    }
+
+    .obs-wave {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #f59e0b;
+        border-radius: 50%;
+        position: absolute;
+        animation: emitWave 3s infinite ease-out;
+    }
+
+    .obs-listener {
+        width: 20px;
+        height: 20px;
+        background: #94a3b8;
+        border-radius: 50%;
+        position: absolute;
+        transition: all 0.2s;
+        animation: listenReact 3s infinite;
+    }
+
+    .list-1 {
+        top: 30px;
+        left: 30px;
+    }
+
+    .list-2 {
+        top: 150px;
+        right: 50px;
+    }
+
+    .list-3 {
+        top: 60px;
+        right: 40px;
+    }
+
+    @keyframes obsPulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        10% {
+            transform: scale(1.2);
+        }
+
+        20% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes emitWave {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(8);
+            opacity: 0;
+            border-width: 0;
+        }
+    }
+
+    @keyframes listenReact {
+
+        0%,
+        20% {
+            background: #94a3b8;
+            transform: scale(1);
+        }
+
+        30%,
+        40% {
+            background: #f59e0b;
+            transform: scale(1.3);
+        }
+
+        100% {
+            background: #94a3b8;
+            transform: scale(1);
+        }
+    }
+
+    /* 4. Decorator Animation */
+    .decor-base {
+        width: 80px;
+        height: 80px;
+        background: #fbbf24;
+        border-radius: 12px;
+        position: relative;
+        animation: decorBuild 4s infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .decor-layer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        border: 4px solid transparent;
+        transition: all 0.3s;
+    }
+
+    .decor-layer-1 {
+        animation: decorAdd1 4s infinite;
+    }
+
+    .decor-layer-2 {
+        animation: decorAdd2 4s infinite;
+    }
+
+    @keyframes decorBuild {
+
+        0%,
+        20% {
+            transform: scale(1);
+        }
+
+        30%,
+        50% {
+            transform: scale(1.1);
+        }
+
+        60%,
+        80% {
+            transform: scale(1.2);
+        }
+
+        90%,
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes decorAdd1 {
+
+        0%,
+        25% {
+            border-color: transparent;
+        }
+
+        30%,
+        100% {
+            border-color: #ef4444;
+        }
+    }
+
+    @keyframes decorAdd2 {
+
+        0%,
+        55% {
+            box-shadow: none;
+            border-color: transparent;
+        }
+
+        60%,
+        100% {
+            box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.8);
+            border-color: #10b981;
+            transform: scale(1.1);
+        }
+    }
+
+    /* 5. Facade Animation */
+    .facade-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+
+    .facade-gears {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        padding: 10px;
+    }
+
+    .gear {
+        background: #64748b;
+        border-radius: 4px;
+        animation: spin 4s infinite linear;
+    }
+
+    .g-1 {
+        animation-direction: reverse;
+    }
+
+    .facade-shield {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0ea5e9, #2563eb);
+        border-radius: 1rem;
+        z-index: 5;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+
+    .facade-container:hover .facade-shield {
+        transform: translateX(110%);
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* 6. Strategy Animation */
+    .strat-start {
+        width: 15px;
+        height: 15px;
+        background: #fff;
+        border-radius: 50%;
+        left: 30px;
+        position: absolute;
+    }
+
+    .strat-path {
+        position: absolute;
+        height: 2px;
+        width: 100px;
+        background: rgba(148, 163, 184, 0.3);
+    }
+
+    .strat-p1 {
+        top: 60px;
+        right: 40px;
+        transform: rotate(-25deg);
+    }
+
+    .strat-p2 {
+        top: 100px;
+        right: 40px;
+    }
+
+    .strat-p3 {
+        top: 140px;
+        right: 40px;
+        transform: rotate(25deg);
+    }
+
+    .strat-dot {
+        width: 15px;
+        height: 15px;
+        background: #8b5cf6;
+        border-radius: 50%;
+        position: absolute;
+        animation: stratChoose 6s infinite;
+    }
+
+    @keyframes stratChoose {
+        0% {
+            transform: translate(30px, 92px);
+            background: #8b5cf6;
+        }
+
+        15% {
+            transform: translate(180px, 60px);
+            background: #f43f5e;
+            box-shadow: 0 0 15px #f43f5e;
+        }
+
+        33% {
+            transform: translate(30px, 92px);
+            background: #8b5cf6;
+        }
+
+        48% {
+            transform: translate(180px, 100px);
+            background: #10b981;
+            box-shadow: 0 0 15px #10b981;
+        }
+
+        66% {
+            transform: translate(30px, 92px);
+            background: #8b5cf6;
+        }
+
+        81% {
+            transform: translate(180px, 140px);
+            background: #eab308;
+            box-shadow: 0 0 15px #eab308;
+        }
+
+        100% {
+            transform: translate(30px, 92px);
+            background: #8b5cf6;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mb-5">
-    <div class="col-lg-10">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold"><i class="bi bi-diagram-3 text-primary"></i> Software Design Patterns</h1>
-            <p class="lead text-muted">A behind-the-scenes look at the architecture powering our Restaurant Management System.</p>
-        </div>
+<div class="patterns-hero text-center mb-5">
+    <h1 class="display-4 fw-bolder mb-3">Architectural Canvas</h1>
+    <p class="lead hero-subtitle max-w-2xl mx-auto" style="max-width: 700px;">
+        The code behind The Pattern Pizzeria is structured using the famed <strong>Gang of Four (GoF)</strong> design
+        patterns. These visual metaphors explain the robust engineering powering your experience.
+    </p>
+</div>
 
-        <div class="accordion shadow-sm" id="patternsAccordion">
-            
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFacade">
-                        <i class="bi bi-building me-2 text-primary"></i> 1. Facade Pattern
-                    </button>
-                </h2>
-                <div id="collapseFacade" class="accordion-collapse collapse show" data-bs-parent="#patternsAccordion">
-                    <div class="accordion-body">
-                        <strong>The Concept:</strong> Provides a simplified, unified interface to a complex subsystem. <br><br>
-                        <strong>How we use it:</strong> When a customer clicks "Submit Order", a lot happens: saving items to the database, calculating totals, verifying stock, and notifying the kitchen. Instead of the UI making 10 different function calls, it simply calls our <code>OrderFacade.place_order()</code>. The Facade hides the complex backend wiring from the frontend.
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-5">
+
+    <!-- 1. Facade -->
+    <div class="col">
+        <div class="glass-card">
+            <div class="anim-stage" title="Hover me!">
+                <div class="facade-container">
+                    <div class="facade-gears">
+                        <div class="gear g-1"></div>
+                        <div class="gear g-2"></div>
+                        <div class="gear g-3"></div>
+                        <div class="gear g-4"></div>
                     </div>
+                    <div class="facade-shield shadow">Facade UI</div>
                 </div>
             </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFactory">
-                        <i class="bi bi-box-seam me-2 text-success"></i> 2. Factory Method
-                    </button>
-                </h2>
-                <div id="collapseFactory" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
-                    <div class="accordion-body">
-                        <strong>The Concept:</strong> Provides an interface for creating objects, but lets subclasses decide which class to instantiate. <br><br>
-                        <strong>How we use it:</strong> We have different types of menu items (Pizzas, Burgers, Sides). The <code>ItemFactory</code> is responsible for creating these specific item objects safely. If we introduce a new category (like "Desserts"), we just add it to the factory without rewriting the core ordering logic.
-                    </div>
-                </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold"><i class="bi bi-building me-2 text-primary"></i>Facade</h4>
+                <p class="text-secondary small fw-medium mb-2">Provides a simplified interface to a complex subsystem.
+                </p>
+                <p class="small mb-0 opacity-75">When you submit an order, the Facade handles calculating totals, saving
+                    to DB, and alerting the kitchen behind a single, clean function call.</p>
             </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDecorator">
-                        <i class="bi bi-layers me-2 text-warning"></i> 3. Decorator Pattern
-                    </button>
-                </h2>
-                <div id="collapseDecorator" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
-                    <div class="accordion-body">
-                        <strong>The Concept:</strong> Attaches additional responsibilities or behaviors to an object dynamically without altering its structure.<br><br>
-                        <strong>How we use it:</strong> Customizations! When a user clicks "+ Extra Cheese" or "+ Add Bacon", we don't have a separate database item for "Pizza with Cheese and Bacon". Instead, we use a Decorator to wrap the base Pizza object, dynamically adding ₹50 or ₹100 to the price and updating the description on the fly.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseObserver">
-                        <i class="bi bi-broadcast me-2 text-danger"></i> 4. Observer Pattern
-                    </button>
-                </h2>
-                <div id="collapseObserver" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
-                    <div class="accordion-body">
-                        <strong>The Concept:</strong> A subscription mechanism to notify multiple objects about any events that happen to the object they're observing.<br><br>
-                        <strong>How we use it:</strong> The Kitchen Dashboard is an Observer. When the Customer UI places an order (the Subject state changes), it automatically notifies the Kitchen Observer to update the Chef's screen, ensuring real-time synchronization without the frontend having to manually ping the kitchen.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStrategy">
-                        <i class="bi bi-diagram-2 me-2 text-info"></i> 5. Strategy Pattern
-                    </button>
-                </h2>
-                <div id="collapseStrategy" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
-                    <div class="accordion-body">
-                        <strong>The Concept:</strong> Defines a family of algorithms, encapsulates each one, and makes them interchangeable at runtime.<br><br>
-                        <strong>How we use it:</strong> Pricing and billing rules. If a customer is getting a "Happy Hour Discount" versus standard pricing, or if they are paying via different gateways, the Strategy pattern allows us to swap out the calculation logic instantly without writing massive `if/else` statements in the checkout code.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fs-5 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSingleton">
-                        <i class="bi bi-1-circle me-2 text-secondary"></i> 6. Singleton Pattern
-                    </button>
-                </h2>
-                <div id="collapseSingleton" class="accordion-collapse collapse" data-bs-parent="#patternsAccordion">
-                    <div class="accordion-body">
-                        <strong>The Concept:</strong> Ensures a class has only one instance and provides a global point of access to it.<br><br>
-                        <strong>How we use it:</strong> Used for our central Kitchen State Manager or Restaurant Configuration. We only want *one* central brain keeping track of active table states; otherwise, duplicated managers would cause overlapping orders and corrupted table statuses.
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        
-        <div class="text-center mt-4">
-            <a href="{% url 'index' %}" class="btn btn-outline-dark"><i class="bi bi-arrow-left"></i> Back to Home</a>
         </div>
     </div>
+
+    <!-- 2. Factory -->
+    <div class="col">
+        <div class="glass-card">
+            <div class="anim-stage">
+                <div class="factory-belt"></div>
+                <div class="factory-machine shadow-sm"><i class="bi bi-gear-wide-connected text-white fs-2"></i></div>
+                <div class="factory-item item-1 shadow-sm"></div>
+                <div class="factory-item item-2 shadow-sm"></div>
+                <div class="factory-item item-3 shadow-sm"></div>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold"><i class="bi bi-box-seam me-2 text-success"></i>Factory</h4>
+                <p class="text-secondary small fw-medium mb-2">Interfaces for creating objects while letting subclasses
+                    decide instantiation.</p>
+                <p class="small mb-0 opacity-75">Our Item Factory seamlessly dynamically generates Pizzas, Burgers, and
+                    Sides without cluttering the core transaction logic.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Decorator -->
+    <div class="col">
+        <div class="glass-card">
+            <div class="anim-stage">
+                <div class="decor-base shadow">
+                    <i class="bi bi-pizza fs-1 text-white"></i>
+                    <div class="decor-layer decor-layer-1"></div>
+                    <div class="decor-layer decor-layer-2"></div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold"><i class="bi bi-layers me-2 text-warning"></i>Decorator</h4>
+                <p class="text-secondary small fw-medium mb-2">Attaches responsibilities or behaviors to an object
+                    dynamically.</p>
+                <p class="small mb-0 opacity-75">When you add Extra Cheese or Bacon, we wrap the base item dynamically,
+                    layering on prices and descriptions without creating dedicated database entries for every combo.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Observer -->
+    <div class="col">
+        <div class="glass-card">
+            <div class="anim-stage">
+                <div class="obs-wave"></div>
+                <div class="obs-subject shadow-sm"></div>
+                <div class="obs-listener list-1 shadow-sm"></div>
+                <div class="obs-listener list-2 shadow-sm"></div>
+                <div class="obs-listener list-3 shadow-sm"></div>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold"><i class="bi bi-broadcast me-2 text-danger"></i>Observer</h4>
+                <p class="text-secondary small fw-medium mb-2">A subscription mechanism to notify objects about event
+                    changes.</p>
+                <p class="small mb-0 opacity-75">The Kitchen Dashboard simply listens. When an order is placed, the
+                    Subject broadcasts the event, allowing the kitchen to update instantly without manual pings.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Strategy -->
+    <div class="col">
+        <div class="glass-card">
+            <div class="anim-stage">
+                <div class="strat-start shadow-sm"></div>
+                <div class="strat-path strat-p1"></div>
+                <div class="strat-path strat-p2"></div>
+                <div class="strat-path strat-p3"></div>
+                <div class="strat-dot shadow"></div>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold"><i class="bi bi-diagram-2 me-2 text-info"></i>Strategy</h4>
+                <p class="text-secondary small fw-medium mb-2">Encapsulates a family of algorithms, making them
+                    interchangeable.</p>
+                <p class="small mb-0 opacity-75">Calculating totals is abstracted into varying algorithms (Normal Price,
+                    VIP Discount, Happy Hour), allowing us to swap logic instantly at checkout.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Singleton -->
+    <div class="col">
+        <div class="glass-card">
+            <div class="anim-stage">
+                <div class="singleton-core"></div>
+                <div class="singleton-satellite satt-1 shadow-sm"></div>
+                <div class="singleton-satellite satt-2 shadow-sm"></div>
+                <div class="singleton-satellite satt-3 shadow-sm"></div>
+            </div>
+            <div class="card-body p-4">
+                <h4 class="fw-bold"><i class="bi bi-1-circle me-2 text-secondary"></i>Singleton</h4>
+                <p class="text-secondary small fw-medium mb-2">Ensures a class has only one instance globally.</p>
+                <p class="small mb-0 opacity-75">Used for our Kitchen State Manager. We guarantee there is only one
+                    central brain tracking table statuses to prevent overlapping or corrupted data.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="text-center mb-5">
+    <a href="{% url 'index' %}" class="btn btn-outline-primary rounded-pill px-4 py-2 border-2 fw-medium">
+        <i class="bi bi-arrow-left me-2"></i> Return to Pizzeria
+    </a>
 </div>
 {% endblock %}

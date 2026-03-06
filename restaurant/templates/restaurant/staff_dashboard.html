@@ -1,50 +1,162 @@
 {% extends 'restaurant/base.html' %}
 
+{% block extra_css %}
+<style>
+    /* Dashboard Header */
+    .kds-header {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 1rem;
+        z-index: 1020;
+    }
+
+    body.dark-mode .kds-header {
+        background: rgba(15, 23, 42, 0.85);
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* KDS Ticket Card */
+    .ticket-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        background-color: #f8fafc;
+    }
+
+    .ticket-header {
+        background: linear-gradient(135deg, #334155, #0f172a);
+        color: #f8fafc;
+        border-bottom: 3px solid #6366f1;
+    }
+
+    body.dark-mode .ticket-card {
+        background-color: #1e293b;
+    }
+
+    /* Order Slips */
+    .ticket-slip {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s;
+    }
+
+    .ticket-slip:hover {
+        transform: translateY(-2px);
+    }
+
+    body.dark-mode .ticket-slip {
+        background-color: #0f172a;
+        border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Soft Badges */
+    .badge-soft-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .badge-soft-warning {
+        background-color: #fef9c3;
+        color: #854d0e;
+        border: 1px solid #fef08a;
+    }
+
+    body.dark-mode .badge-soft-danger {
+        background-color: rgba(220, 38, 38, 0.15);
+        color: #fca5a5;
+        border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    body.dark-mode .badge-soft-warning {
+        background-color: rgba(202, 138, 4, 0.15);
+        color: #fde047;
+        border-color: rgba(234, 179, 8, 0.2);
+    }
+
+    /* Premium Button */
+    .btn-mark-ready {
+        background-color: #f8fafc;
+        color: #059669;
+        border: 1px solid #10b981;
+        border-radius: 2rem;
+        transition: all 0.2s;
+    }
+
+    .btn-mark-ready:hover {
+        background-color: #10b981;
+        color: #ffffff;
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+    }
+
+    body.dark-mode .btn-mark-ready {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: #34d399;
+    }
+
+    body.dark-mode .btn-mark-ready:hover {
+        background-color: #10b981;
+        color: #ffffff;
+    }
+
+    .kds-empty-icon {
+        font-size: 4rem;
+        color: #6366f1;
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row mb-4 bg-white p-4 shadow-sm rounded">
+<div class="row mb-4 kds-header p-4 rounded">
     <div class="col">
-        <h2 class="display-6"><i class="bi bi-display"></i> Kitchen & Staff Dashboard</h2>
-        <p class="text-muted">Manage active orders grouped by Table. Mark items as Ready/Served to trigger Observer
-            notifications.</p>
+        <h2 class="display-6 fw-bold mb-1"><i class="bi bi-display text-primary"></i> Kitchen Display System</h2>
+        <p class="text-muted mb-0">Manage active orders grouped by Table. Mark items as Ready/Served to trigger Observer notifications.</p>
     </div>
 </div>
 
 <div class="row g-4">
     {% for data in dashboard_data %}
     <div class="col-12 col-xl-6">
-        <div class="card h-100 border-dark shadow-sm">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-                <h4 class="mb-0 fw-bold"><i class="bi bi-cup-hot"></i> Table {{ data.table_number }}</h4>
+        <div class="card h-100 ticket-card shadow-sm">
+            <div class="card-header ticket-header d-flex justify-content-between align-items-center py-3">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-cup-hot me-2"></i>Table {{ data.table_number }}</h4>
                 <div class="text-end">
-                    <span class="fs-6 text-light opacity-75 d-block">Subtotal So Far</span>
+                    <span class="fs-6 text-light opacity-75 d-block" style="font-size: 0.85rem;">Subtotal So Far</span>
                     <span class="fs-5 fw-bold text-success">₹{{ data.total_bill|floatformat:2 }}</span>
                 </div>
             </div>
-            <div class="card-body bg-light p-4">
+            <div class="card-body p-4">
 
                 {% for order in data.orders %}
-                <div class="bg-white p-3 rounded shadow-sm border mb-3">
+                <div class="ticket-slip p-3 mb-3">
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
                         <div>
-                            <span class="badge bg-secondary me-2">Order #{{ order.id }}</span>
-                            <strong>{{ order.customer_name }}</strong>
+                            <span class="badge bg-secondary rounded-pill me-2">#{{ order.id }}</span>
+                            <strong class="text-dark">{{ order.customer_name }}</strong>
                         </div>
                         <div>
-                            <span
-                                class="badge {% if order.status == 'PENDING' %}bg-danger{% elif order.status == 'PREPARING' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} px-3 py-2">
-                                {{ order.status }}
+                            <span class="badge {% if order.status == 'PENDING' %}badge-soft-danger{% elif order.status == 'PREPARING' %}badge-soft-warning{% else %}bg-info text-dark{% endif %} px-3 py-2 rounded-pill shadow-sm">
+                                <i class="bi bi-circle-fill small me-1"></i> {{ order.status }}
                             </span>
                         </div>
                     </div>
 
                     <ul class="list-unstyled mb-0">
                         <li class="py-1">
-                            <i class="bi bi-check2 text-success me-2"></i>
-                            <strong>
+                            <i class="bi bi-arrow-return-right text-muted me-2"></i>
+                            <strong class="text-dark fs-5">
                                 {% if order.item_description %}
-                                {{ order.item_description|safe }}
+                                    {{ order.item_description|safe }}
                                 {% else %}
-                                {% for item in order.items.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                                    {% for item in order.items.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
                                 {% endif %}
                             </strong>
                         </li>
@@ -52,9 +164,8 @@
 
                     {% if order.status != 'READY' %}
                     <div class="text-end mt-3">
-                        <button class="btn btn-sm btn-outline-success mark-ready-btn fw-bold px-4"
-                            data-id="{{ order.id }}">
-                            <i class="bi bi-check-circle"></i> Mark Ready
+                        <button class="btn btn-mark-ready mark-ready-btn fw-bold px-4 py-2" data-id="{{ order.id }}">
+                            <i class="bi bi-check2-circle fs-5 align-middle me-1"></i> Mark Ready
                         </button>
                     </div>
                     {% endif %}
@@ -62,20 +173,22 @@
                 {% endfor %}
 
             </div>
-            <div class="card-footer bg-white p-3 border-top-0 d-grid">
+            <div class="card-footer bg-transparent p-3 border-top-0 d-grid">
                 {% if data.table_number != 'Takeaway' %}
-                <a href="{% url 'payment_page' data.table_number %}" class="btn btn-warning btn-lg fw-bold shadow-sm" onclick="showGlobalSpinner('Calculating Final Bill...')">
-                    <i class="bi bi-receipt"></i> Process Final Bill & Checkout
+                <a href="{% url 'payment_page' data.table_number %}"
+                    class="btn btn-primary btn-lg fw-bold shadow-sm rounded-pill"
+                    onclick="showGlobalSpinner('Calculating Final Bill...')">
+                    <i class="bi bi-receipt me-2"></i> Process Final Bill & Checkout
                 </a>
                 {% endif %}
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="col-12 text-center py-5 text-muted bg-white rounded shadow-sm">
-        <h1 class="display-3"><i class="bi bi-stars text-warning"></i></h1>
-        <h3 class="fw-bold text-dark mt-3">No active orders!</h3>
-        <p class="fs-5">The kitchen is fully caught up.</p>
+    <div class="col-12 text-center py-5 text-muted ticket-card p-5 shadow-sm mx-auto" style="max-width: 600px; margin-top: 4rem;">
+        <i class="bi bi-clipboard-check kds-empty-icon mb-3 d-block"></i>
+        <h3 class="fw-bold text-dark mb-2">No Active Tickets</h3>
+        <p class="fs-5 mb-0 opacity-75">The kitchen queue is fully caught up. Great job!</p>
     </div>
     {% endfor %}
 </div>

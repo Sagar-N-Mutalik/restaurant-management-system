@@ -9,66 +9,164 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         body {
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            /* Sleek off-white */
+            color: #334155;
+            /* Slate gray */
         }
+
         html {
             scroll-behavior: smooth;
         }
 
+        /* Navbar Glassmorphism */
         .navbar {
-            margin-bottom: 2rem;
+            padding: 1rem 0;
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            letter-spacing: -0.025em;
+            color: #0f172a !important;
+        }
+
+        .nav-link {
+            color: #475569 !important;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #0f172a !important;
+            transform: translateY(-1px);
+        }
+
+        #clock-pill {
+            background-color: rgba(241, 245, 249, 0.8) !important;
+            border-color: rgba(0, 0, 0, 0.05) !important;
+            color: #334155 !important;
+        }
+
+        .toggler-icon {
+            color: #0f172a !important;
+        }
+
+        body.dark-mode .toggler-icon {
+            color: #f8fafc !important;
+        }
+
         /* Global Dark Mode Overrides */
         body.dark-mode {
-        background-color: #121212 !important;
-        color: #e0e0e0 !important;
-        transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #0f172a !important;
+            /* Midnight slate */
+            color: #e2e8f0 !important;
+            /* Light Slate */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Navbar Dark Mode */
+        body.dark-mode .navbar {
+            background: rgba(15, 23, 42, 0.9) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .navbar-brand {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode .nav-link {
+            color: #94a3b8 !important;
+        }
+
+        body.dark-mode .nav-link:hover {
+            color: #f8fafc !important;
+        }
+
+        body.dark-mode #clock-pill {
+            background-color: rgba(30, 41, 59, 0.8) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-mode #themeToggleBtn {
+            background-color: #1e293b !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #f8fafc !important;
+        }
+
+        #themeToggleBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         /* Cards, Modals, and Backgrounds */
-        body.dark-mode .card, 
+        body.dark-mode .card,
         body.dark-mode .list-group-item,
         body.dark-mode .bg-white,
         body.dark-mode .bg-light,
         body.dark-mode .accordion-item,
         body.dark-mode .accordion-button {
             background-color: #1e1e1e !important;
-            color: #e0e0e0 !important;
-            border-color: #333 !important;
+            /* Surface */
+            color: #e2e8f0 !important;
+            border-color: #2d2d2d !important;
         }
 
         /* Typography Overrides */
         body.dark-mode .text-dark {
-            color: #e0e0e0 !important;
-        }
-        body.dark-mode .text-muted {
-            color: #9e9e9e !important;
+            color: #f8fafc !important;
         }
 
-        /* Custom Component Overrides from your project */
+        body.dark-mode .text-muted {
+            color: #94a3b8 !important;
+            /* Slate */
+        }
+
+        /* Custom Component Overrides */
         body.dark-mode .menu-header {
-            background-color: #2c2515 !important; /* Muted dark yellowish */
-            border-left-color: #ffc107 !important;
+            background-color: #1e1e1e !important;
+            border-left-color: #818cf8 !important;
         }
 
         body.dark-mode .table-available {
-            background-color: #0f291e !important; /* Dark green */
-            border-color: #198754 !important;
+            background-color: rgba(16, 185, 129, 0.1) !important;
+            /* Emerald */
+            border-color: rgba(16, 185, 129, 0.2) !important;
+            color: #34d399 !important;
         }
 
         body.dark-mode .table-occupied {
-            background-color: #3f1a1d !important; /* Dark red */
-            border-color: #dc3545 !important;
+            background-color: rgba(239, 68, 68, 0.1) !important;
+            /* Red */
+            border-color: rgba(239, 68, 68, 0.2) !important;
+            color: #f87171 !important;
         }
 
         /* Inputs and Buttons */
         body.dark-mode input.bg-light,
-        body.dark-mode input.bg-white {
-            background-color: #2b2b2b !important;
-            color: white !important;
-            border-color: #444 !important;
+        body.dark-mode input.bg-white,
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background-color: #1e1e1e !important;
+            color: #f8fafc !important;
+            border-color: #2d2d2d !important;
         }
+
+        body.dark-mode input::placeholder,
+        body.dark-mode textarea::placeholder {
+            color: #64748b !important;
+        }
+
         /* Global Full Page Overlay Spinner */
         #global-spinner-overlay {
             position: fixed;
@@ -76,21 +174,41 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            color: white;
+            color: #0f172a;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        body.dark-mode #global-spinner-overlay {
+            background: rgba(18, 18, 18, 0.8);
+            color: #f8fafc;
         }
 
         #global-spinner-overlay.active {
             opacity: 1;
             visibility: visible;
+        }
+
+        /* Elegant Spinner Styling */
+        .spinner-custom {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-width: 0.15em;
+            color: #6366f1;
+            /* Indigo */
+        }
+
+        body.dark-mode .spinner-custom {
+            color: #818cf8;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -98,61 +216,188 @@
 
 <body>
     <div id="global-spinner-overlay">
-        <div class="spinner-border text-warning" style="width: 4rem; height: 4rem; border-width: 0.3em;" role="status">
+        <div class="spinner-border spinner-custom" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-        <h3 class="mt-4 fw-bold text-white" id="spinnerText">Loading...</h3>
+        <h3 class="mt-4 fw-light text-center" id="spinnerText">Loading...</h3>
     </div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
-                <i class="bi bi-shop"></i> <span class="fw-bold text-warning">The Pattern Pizzeria</span> <span
-                    class="fs-6 text-light opacity-75">| Modern Indian Fast Food</span>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'index' %}">
+                <i class="bi bi-shop fs-4 text-primary" style="color: #6366f1 !important;"></i>
+                <div>
+                    <span class="fw-bolder">Smart</span><span class="fw-light">Resto</span>
+                </div>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <i class="bi bi-list fs-2 text-dark toggler-icon"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item me-3">
-                        <span class="text-light fs-6 fw-mono bg-secondary px-2 py-1 rounded">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item">
+                        <span
+                            class="badge rounded-pill bg-secondary bg-opacity-10 text-dark border fw-medium px-3 py-2 d-flex align-items-center gap-2"
+                            id="clock-pill">
                             <i class="bi bi-clock"></i> <span id="globalClock"></span>
                         </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Customer Home</a>
-                        
+                        <a class="nav-link fw-medium" href="{% url 'index' %}">Customer Home</a>
                     </li>
-                    <button class="btn text-white border-0 ms-3" id="themeToggleBtn" title="Toggle Dark Mode">
-                        <i class="bi bi-moon-fill fs-5" id="themeIcon"></i>
+                    <button
+                        class="btn btn-sm btn-light rounded-circle shadow-sm border p-2 d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; transition: all 0.3s;" id="themeToggleBtn"
+                        title="Toggle Dark Mode">
+                        <i class="bi bi-moon-fill" id="themeIcon"></i>
                     </button>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container min-vh-100 py-4">
+    <div class="container min-vh-100 py-4 mt-3">
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-auto">
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <h5>The Pattern Pizzeria</h5>
-                    <p class="small text-muted mb-0">Implementing GoF Patterns Deliciously</p>
+    <!-- Premium Footer -->
+    <!-- Premium Footer -->
+    <footer class="mt-auto premium-footer">
+        <div class="container py-5">
+            <div class="row gy-4">
+                <!-- Column 1: Brand Info -->
+                <div class="col-lg-4 col-md-6 pe-lg-5">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-shop fs-4" style="color: #6366f1;"></i>
+                        <h4 class="fw-bolder mb-0 premium-text">Smart<span class="fw-light">Resto</span></h4>
+                    </div>
+                    <p class="premium-text-muted small lh-lg mb-4">
+                        Experience the finest dining integrated with seamless technology. We blend traditional recipes
+                        with a modern approach to ordering and serving.
+                    </p>
+                    <div class="d-flex flex-column gap-2 small premium-text-muted">
+                        <span><i class="bi bi-geo-alt me-2"></i>123 Culinary Avenue, Food District</span>
+                        <span><i class="bi bi-telephone me-2"></i>(555) 123-4567</span>
+                        <span><i class="bi bi-envelope me-2"></i>hello@smartresto.com</span>
+                    </div>
                 </div>
-                <div class="col-md-8 d-flex justify-content-center justify-content-md-end align-items-center gap-4">
-                    <a href="#" class="text-light text-decoration-none small">About Us</a>
-                    <a href="#" class="text-light text-decoration-none small">Quality of Food</a>
-                    <a href="#" class="text-light text-decoration-none small">Contact</a>
+
+                <!-- Column 2: Quick Links -->
+                <div class="col-lg-3 col-md-6 offset-lg-1">
+                    <h5 class="fw-bold mb-4 premium-text">Quick Links</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-3 mb-0 footer-links">
+                        <li><a href="#" class="premium-text-muted text-decoration-none">About Us</a></li>
+                        <li><a href="#" class="premium-text-muted text-decoration-none">Our Menu</a></li>
+                        <li><a href="#" class="premium-text-muted text-decoration-none">Quality of Food</a></li>
+                        <li><a href="#" class="premium-text-muted text-decoration-none">Design Patterns</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Follow Us -->
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="fw-bold mb-4 premium-text">Follow Us</h5>
+                    <p class="premium-text-muted small mb-3">Stay connected with our latest dishes and offers!</p>
+                    <div class="d-flex gap-3 social-icons">
+                        <a href="#"
+                            class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-0"
+                            style="width: 40px; height: 40px;"><i class="bi bi-instagram"></i></a>
+                        <a href="#"
+                            class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-0"
+                            style="width: 40px; height: 40px;"><i class="bi bi-twitter"></i></a>
+                        <a href="#"
+                            class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-0"
+                            style="width: 40px; height: 40px;"><i class="bi bi-facebook"></i></a>
+                    </div>
                 </div>
             </div>
-            <hr class="border-secondary my-3">
-            <p class="small text-muted mb-0">&copy; 2026 The Pattern Pizzeria. All Rights Reserved.</p>
+        </div>
+
+        <!-- Sub-Footer -->
+        <div class="border-top premium-subfooter">
+            <div class="container py-3">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                    <p class="small premium-text-muted mb-0">&copy; 2026 SmartResto. All Rights Reserved.</p>
+                    <div class="d-flex gap-4 small footer-links">
+                        <a href="#" class="premium-text-muted text-decoration-none">Privacy Policy</a>
+                        <a href="#" class="premium-text-muted text-decoration-none">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <style>
+        /* Light Mode Footer (Default) */
+        .premium-footer {
+            background-color: #ffffff;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .premium-subfooter {
+            background-color: #f8fafc;
+            border-top-color: rgba(0, 0, 0, 0.05) !important;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .premium-text {
+            color: #0f172a;
+            transition: color 0.3s ease;
+        }
+
+        .premium-text-muted {
+            color: #475569;
+            transition: color 0.3s ease;
+        }
+
+        /* Dark Mode Footer */
+        body.dark-mode .premium-footer {
+            background-color: #0f172a;
+            border-top-color: rgba(255, 255, 255, 0.05);
+        }
+
+        body.dark-mode .premium-subfooter {
+            background-color: #020617;
+            border-top-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body.dark-mode .premium-text {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .premium-text-muted {
+            color: #94a3b8;
+        }
+
+        .footer-links a {
+            transition: all 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #6366f1 !important;
+            padding-left: 4px;
+        }
+
+        .social-icons .btn {
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #64748b;
+            background-color: transparent;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .social-icons .btn {
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+
+        .social-icons .btn:hover {
+            background-color: #6366f1;
+            border-color: #6366f1;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+    </style>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -192,7 +437,7 @@
                         // Switch to Sun & Save to LocalStorage
                         themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
                         themeBtn.classList.replace('text-white', 'text-warning');
-                        localStorage.setItem('theme', 'dark'); 
+                        localStorage.setItem('theme', 'dark');
                     } else {
                         // Switch to Moon & Save to LocalStorage
                         themeIcon.classList.replace('bi-sun-fill', 'bi-moon-fill');
@@ -202,7 +447,7 @@
                 });
             }
         });
-            // Globally accessible functions to show/hide the loading screen
+        // Globally accessible functions to show/hide the loading screen
         function showGlobalSpinner(message = "Loading...") {
             const spinner = document.getElementById('global-spinner-overlay');
             const spinnerText = document.getElementById('spinnerText');
