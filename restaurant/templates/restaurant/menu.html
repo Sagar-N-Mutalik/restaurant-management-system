@@ -24,11 +24,26 @@
     .badge-veg { background-color: #198754; }
     .badge-nonveg { background-color: #dc3545; }
     .badge-vegan { background-color: #20c997; }
+
+    /* Cart pulse animation */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); color: #198754; }
+        100% { transform: scale(1); }
+    }
+    .pulse-animation {
+        animation: pulse 0.4s ease-in-out;
+    }
+
+    /* Hide scrollbar for smooth mobile category sliding */
+    .mobile-scroll-nav::-webkit-scrollbar { display: none; }
+    .mobile-scroll-nav { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+<div class="toast-container position-fixed bottom-0 end-0 p-3 mb-5 mb-lg-0" style="z-index: 1055;">
+    
     <div id="orderToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body" id="toastMessage">
@@ -37,6 +52,16 @@
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+
+    <div id="errorToast" class="toast align-items-center text-bg-danger border-0 mt-2" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="errorToastMessage">
+                Error placing order!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
 </div>
 
 <div class="menu-header d-flex justify-content-between align-items-center sticky-top">
@@ -45,20 +70,20 @@
         <p class="text-muted mb-0 mt-1">Ordering for <span class="badge bg-dark fs-6">Table {{ table.table_number }}</span></p>
     </div>
     <div>
-        <a href="{% url 'payment_page' table.table_number %}" class="btn btn-dark btn-lg shadow-sm">
+        <a href="{% url 'payment_page' table.table_number %}" class="btn btn-dark btn-lg shadow-sm" onclick="showGlobalSpinner('Generating Bill...')">
             <i class="bi bi-receipt"></i> View Bill & Checkout
         </a>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-lg-2 d-none d-lg-block">
-        <div class="sticky-top" style="top: 100px;">
-            <div class="list-group shadow-sm">
-                <a href="#pizzas" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-pie-chart-fill text-danger me-2"></i> Pizzas</a>
-                <a href="#burgers" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-circle-fill text-warning me-2"></i> Burgers</a>
-                <a href="#sides" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-box-fill text-success me-2"></i> Sides</a>
-                <a href="#beverages" class="list-group-item list-group-item-action fw-bold"><i class="bi bi-cup-straw text-info me-2"></i> Beverages</a>
+    <div class="col-lg-2 mb-4">
+        <div class="sticky-top bg-white rounded" style="top: 100px; z-index: 1030;">
+            <div class="list-group list-group-horizontal-lg flex-row overflow-auto shadow-sm mobile-scroll-nav pb-1">
+                <a href="#pizzas" class="list-group-item list-group-item-action fw-bold flex-fill text-center text-lg-start"><i class="bi bi-pie-chart-fill text-danger d-lg-inline d-block mb-1 me-lg-2"></i> Pizzas</a>
+                <a href="#burgers" class="list-group-item list-group-item-action fw-bold flex-fill text-center text-lg-start"><i class="bi bi-circle-fill text-warning d-lg-inline d-block mb-1 me-lg-2"></i> Burgers</a>
+                <a href="#sides" class="list-group-item list-group-item-action fw-bold flex-fill text-center text-lg-start"><i class="bi bi-box-fill text-success d-lg-inline d-block mb-1 me-lg-2"></i> Sides</a>
+                <a href="#beverages" class="list-group-item list-group-item-action fw-bold flex-fill text-center text-lg-start"><i class="bi bi-cup-straw text-info d-lg-inline d-block mb-1 me-lg-2"></i> Beverages</a>
             </div>
         </div>
     </div>
@@ -253,6 +278,13 @@
         </div>
     </div>
 </div>
+
+<div class="d-lg-none position-fixed bottom-0 start-0 w-100 p-3 bg-light shadow-lg border-top" style="z-index: 1040;">
+    <a href="#cartTotalDisplay" class="btn btn-warning w-100 fw-bold shadow py-2" style="border-radius: 12px;">
+        <i class="bi bi-cart3"></i> View Cart (<span id="mobileCartTotal">₹0.00</span>)
+    </a>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -276,6 +308,10 @@
                 cartItemsList.appendChild(emptyCartMsg);
                 submitOrderBtn.disabled = true;
                 cartTotalDisplay.innerText = '₹0.00';
+                
+                // Update mobile button when empty
+                const mobileCartTotal = document.getElementById('mobileCartTotal');
+                if (mobileCartTotal) mobileCartTotal.innerText = '₹0.00';
                 return;
             }
 
@@ -331,6 +367,15 @@
             });
 
             cartTotalDisplay.innerText = '₹' + runningTotal.toFixed(2);
+
+            // Update mobile floating button total
+            const mobileCartTotal = document.getElementById('mobileCartTotal');
+            if (mobileCartTotal) mobileCartTotal.innerText = '₹' + runningTotal.toFixed(2);
+
+            // Trigger Pulse Animation to show something was added
+            cartTotalDisplay.classList.remove('pulse-animation');
+            void cartTotalDisplay.offsetWidth; // Force browser reflow to restart animation
+            cartTotalDisplay.classList.add('pulse-animation');
         }
 
         // Add to Cart Logic
@@ -393,7 +438,7 @@
         submitOrderBtn.addEventListener('click', async function () {
             if (cart.length === 0) return;
 
-            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending to kitchen...';
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
             this.disabled = true;
 
             // Expand cart based on quantity because backend facade handles 1 item per dictionary 
@@ -446,11 +491,20 @@
                     cart = [];
                     updateCartUI();
                 } else {
-                    alert('Error: ' + data.error);
+                    // Trigger custom error toast instead of alert
+                    const errToastEl = document.getElementById('errorToast');
+                    document.getElementById('errorToastMessage').innerHTML = `<i class="bi bi-exclamation-triangle-fill"></i> <strong>Error:</strong> ${data.error}`;
+                    const errToast = new bootstrap.Toast(errToastEl);
+                    errToast.show();
                 }
             } catch (err) {
                 console.error('Error delegating order to facade:', err);
-                alert('Network execution error placing order.');
+                
+                // Trigger custom error toast for Network Failure
+                const errToastEl = document.getElementById('errorToast');
+                document.getElementById('errorToastMessage').innerHTML = `<i class="bi bi-wifi-off"></i> <strong>Network error</strong> placing order.`;
+                const errToast = new bootstrap.Toast(errToastEl);
+                errToast.show();
             } finally {
                 this.innerHTML = '<i class="bi bi-send-check"></i> Submit Order';
                 this.disabled = false;
