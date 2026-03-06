@@ -40,6 +40,60 @@
         padding-top: 1rem;
         margin-top: 1rem;
     }
+
+    .receipt {
+        background: #fff;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .receipt::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-size: 20px 20px;
+        background-image: radial-gradient(circle at 10px 0, transparent 10px, #fff 11px);
+    }
+
+    .receipt-header {
+        border-bottom: 2px dashed #ddd;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .receipt-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .receipt-totals {
+        border-top: 2px dashed #ddd;
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* --- ADD THESE NEW LINES FOR DARK MODE RECEIPT FIX --- */
+    body.dark-mode .receipt {
+        color: #212529 !important; /* Force standard text to be dark */
+    }
+    body.dark-mode .receipt .text-dark {
+        color: #212529 !important; /* Force text-dark to remain dark */
+    }
+    body.dark-mode .receipt .text-muted {
+        color: #6c757d !important; /* Force text-muted to remain standard grey */
+    }
+    body.dark-mode .receipt .text-success {
+        color: #198754 !important; /* Keep the green text clear */
+    }
+    /* ----------------------------------------------------- */
 </style>
 {% endblock %}
 
