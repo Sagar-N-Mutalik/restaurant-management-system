@@ -4,9 +4,11 @@
 {% block extra_css %}
 <style>
     /* Hero Section */
+    /* Hero Section */
     .hero-section {
+        /* Using a high-quality Unsplash pizza image URL instead of a local static file */
         background: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7)),
-        url('{% static "restaurant/images/hero_pizza.png" %}') center/cover;
+        url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200&q=80') center/cover;
         color: #0f172a;
         padding: 5rem 2rem;
         border-radius: 1.25rem;
@@ -19,7 +21,7 @@
 
     body.dark-mode .hero-section {
         background: linear-gradient(to right, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.4)),
-        url('{% static "restaurant/images/hero_pizza.png" %}') center/cover;
+        url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200&q=80') center/cover;
         color: #f8fafc;
     }
 
@@ -223,7 +225,8 @@
         <p class="lead mb-5 hero-subtitle fs-4 animate-fade-in-up delay-100" style="max-width: 600px;">
             Experience the finest authentic Indian Fast Food crafted with architectural perfection.
         </p>
-        <div class="d-flex gap-3 justify-content-center justify-content-md-start flex-wrap animate-fade-in-up delay-200">
+        <div
+            class="d-flex gap-3 justify-content-center justify-content-md-start flex-wrap animate-fade-in-up delay-200">
             <a href="#table-selection" class="btn btn-primary-pill btn-lg px-5 rounded-pill fw-medium">Dine In Now</a>
             <a href="{% url 'design_patterns' %}" class="btn btn-hero-outline btn-lg rounded-pill px-4">
                 <i class="bi bi-code-slash me-2"></i> Design Patterns
@@ -244,9 +247,11 @@
     {% if has_available_tables %}
     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
         {% for table in tables %}
-        <div class="col" style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: {{ forloop.counter0|add:'2' }}00ms; opacity: 0;">
+        <div class="col"
+            <div class="col" style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: {{ forloop.counter0|add:2 }}00ms; opacity: 0;">
             {% if not table.is_occupied %}
-            <a href="{% url 'menu_page' table.table_number %}" class="text-decoration-none" onclick="showGlobalSpinner('Loading Menu...')">
+            <a href="{% url 'menu_page' table.table_number %}" class="text-decoration-none"
+                onclick="showGlobalSpinner('Loading Menu...')">
                 <div class="card h-100 table-card table-available">
                     <div class="card-body p-4 d-flex flex-column align-items-center position-relative">
                         <div class="position-absolute top-0 end-0 p-3 status-icon">
@@ -254,7 +259,8 @@
                         </div>
                         <h2 class="card-title fw-bold mb-1 text-dark fs-3">{{ table.table_number }}</h2>
                         <span class="text-muted small mb-3">Table</span>
-                        <p class="card-text small status-text fw-medium mt-auto mb-0"><i class="bi bi-cup-hot me-1"></i>Tap to order</p>
+                        <p class="card-text small status-text fw-medium mt-auto mb-0"><i
+                                class="bi bi-cup-hot me-1"></i>Tap to order</p>
                     </div>
                 </div>
             </a>
@@ -266,7 +272,8 @@
                     </div>
                     <h2 class="card-title fw-bold mb-1 text-muted fs-3">{{ table.table_number }}</h2>
                     <span class="text-muted small mb-3">Table</span>
-                    <p class="card-text small status-text fw-medium mt-auto mb-0"><i class="bi bi-people me-1"></i>Dining</p>
+                    <p class="card-text small status-text fw-medium mt-auto mb-0"><i
+                            class="bi bi-people me-1"></i>Dining</p>
                 </div>
             </div>
             {% endif %}
