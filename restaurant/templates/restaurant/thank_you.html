@@ -1,0 +1,21 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 text-center">
+        <div class="card border-success shadow">
+            <div class="card-body py-5">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                <h2 class="display-4 mt-4 text-success">Thank You!</h2>
+                <h4 class="text-muted mb-4">Payment Processed Successfully.</h4>
+                <p class="lead mb-5">The bill has been settled and the table is now available for the next guests.</p>
+                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                    <a href="{% url 'index' %}" class="btn btn-outline-success btn-lg px-4">Back to Customer UI</a>
+                    <a href="{% url 'staff_dashboard' %}" class="btn btn-primary btn-lg px-4">Back to Staff
+                        Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

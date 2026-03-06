@@ -1,0 +1,65 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h3 class="mb-0"><i class="bi bi-receipt"></i> Checkout - Table {{ table_number }}</h3>
+            </div>
+
+            <div class="card-body p-4">
+                {% if order %}
+                <div class="mb-4">
+                    <h5 class="text-muted">Customer: <span class="text-dark fw-bold">{{ order.customer_name }}</span>
+                    </h5>
+                    <p class="text-muted mb-0">Order ID: #{{ order.id }}</p>
+                </div>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Item</th>
+                                <th class="text-end">Base Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td class="text-end">${{ item.price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-group-divider">
+                                <td class="text-end fw-bold">Calculated Final Bill (via Strategy Pattern):</td>
+                                <td class="text-end fw-bold fs-5 text-success">${{ order.total_amount }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <form method="POST" action="{% url 'process_payment' table_number %}">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-credit-card-fill"></i>
+                            Process Dummy Payment</button>
+                        <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-secondary">Go Back</a>
+                    </div>
+                </form>
+
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-exclamation-circle fs-1 mb-3 d-block"></i>
+                    <h4>No Active Unpaid Order Found</h4>
+                    <p>There are no pending payments for this table.</p>
+                    <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-primary mt-3">Back to Dashboard</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

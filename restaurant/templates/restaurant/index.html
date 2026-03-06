@@ -1,0 +1,159 @@
+{% extends 'restaurant/base.html' %}
+
+{% block extra_css %}
+<style>
+    .table-card {
+        cursor: pointer;
+        transition: transform 0.2s;
+        height: 100%;
+    }
+
+    .table-card:hover {
+        transform: scale(1.05);
+    }
+
+    .table-available {
+        border-left: 5px solid #198754;
+    }
+
+    .table-occupied {
+        border-left: 5px solid #dc3545;
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="display-6">Welcome to Smart Restaurant</h2>
+        <p class="lead">Please select an available table to place your order.</p>
+    </div>
+</div>
+
+{% if not has_available_tables %}
+<div class="alert alert-danger mb-4" role="alert">
+    <strong><i class="bi bi-exclamation-triangle"></i> We're full!</strong> All tables are currently occupied. Please
+    wait for a table to become available.
+</div>
+{% endif %}
+
+<div class="row row-cols-2 row-cols-md-5 g-4 mb-5">
+    {% for table in tables %}
+    <div class="col">
+        <div class="card table-card {% if table.is_occupied %}table-occupied bg-light{% else %}table-available border-success{% endif %}"
+            {% if not table.is_occupied %}onclick="selectTable({{ table.table_number }})" {% endif %}>
+            <div class="card-body text-center">
+                <h5 class="card-title">Table {{ table.table_number }}</h5>
+                {% if table.is_occupied %}
+                <span class="badge bg-danger">Occupied</span>
+                {% else %}
+                <span class="badge bg-success">Available</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Order Form Section (Hidden by default) -->
+<div id="orderSection" class="card shadow-sm mb-5" style="display: none;">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Place Order - Table <span id="selectedTableDisplay"></span></h4>
+    </div>
+    <div class="card-body">
+        <form id="orderForm">
+            <input type="hidden" id="tableNumber" name="table_number">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Menu Item</label>
+                    <select class="form-select" id="menuItem" required>
+                        <option value="veg|Margherita Pizza|12.50">Margherita Pizza ($12.50)</option>
+                        <option value="non_veg|Angus Burger|15.00">Angus Burger ($15.00)</option>
+                        <option value="vegan|Quinoa Salad|10.00">Quinoa Salad ($10.00)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Customizations (Decorator Pattern)</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="addCheese">
+                    <label class="form-check-label" for="addCheese">Add Extra Cheese (+$1.50)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="addBacon">
+                    <label class="form-check-label" for="addBacon">Add Bacon (+$2.00)</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Pricing Strategy</label>
+                <select class="form-select" id="pricingStrategy">
+                    <option value="normal">Normal Pricing</option>
+                    <option value="happy_hour">Happy Hour (20% Off)</option>
+                    <option value="vip">VIP Discount (10% Off)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Confirm Order</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function selectTable(number) {
+        document.getElementById('orderSection').style.display = 'block';
+        document.getElementById('selectedTableDisplay').innerText = number;
+        document.getElementById('tableNumber').value = number;
+        // Scroll to form
+        document.getElementById('orderSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const itemVal = document.getElementById('menuItem').value.split('|');
+        const payload = {
+            table_number: parseInt(document.getElementById('tableNumber').value),
+            customer_name: document.getElementById('customerName').value,
+            category: itemVal[0],
+            item_name: itemVal[1],
+            price: parseFloat(itemVal[2]),
+            add_cheese: document.getElementById('addCheese').checked,
+            add_bacon: document.getElementById('addBacon').checked,
+            strategy: document.getElementById('pricingStrategy').value
+        };
+
+        fetch('/api/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order placed successfully! Table is now marked as occupied.');
+                    window.location.reload();
+                } else {
+                    alert('Error placing order: ' + data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
+    });
+</script>
+{% endblock %}

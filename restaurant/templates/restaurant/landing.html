@@ -1,0 +1,84 @@
+{% extends 'restaurant/base.html' %}
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200') center/cover;
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .table-card {
+        transition: transform 0.2s;
+        cursor: pointer;
+    }
+
+    .table-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .table-available {
+        background-color: #d1e7dd;
+        border-color: #badbcc;
+    }
+
+    .table-occupied {
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center">
+    <h1 class="display-4 fw-bold mb-3">Welcome to The Pattern Pizzeria</h1>
+    <p class="lead mb-4">Experience the finest authentic Indian Fast Food crafted with architectural perfection.</p>
+    <a href="#table-selection" class="btn btn-warning btn-lg px-5 rounded-pill shadow">Dine In Now</a>
+</div>
+
+<div id="table-selection" class="py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Select Your Table</h2>
+        <div>
+            <span class="badge bg-success me-2"><i class="bi bi-check-circle"></i> Available</span>
+            <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Occupied</span>
+        </div>
+    </div>
+
+    {% if has_available_tables %}
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+        {% for table in tables %}
+        <div class="col">
+            {% if not table.is_occupied %}
+            <a href="{% url 'menu_page' table.table_number %}" class="text-decoration-none text-dark">
+                <div class="card h-100 table-card table-available shadow-sm text-center">
+                    <div class="card-body py-4">
+                        <h1 class="display-5 text-success mb-2"><i class="bi bi-cup-hot"></i></h1>
+                        <h5 class="card-title fw-bold">Table {{ table.table_number }}</h5>
+                        <p class="card-text small text-success">Tap to order</p>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="card h-100 table-card table-occupied shadow-sm text-center">
+                <div class="card-body py-4">
+                    <h1 class="display-5 text-danger mb-2"><i class="bi bi-people"></i></h1>
+                    <h5 class="card-title fw-bold text-danger">Table {{ table.table_number }}</h5>
+                    <p class="card-text small text-danger">Currently dining</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning shadow-sm" role="alert">
+        <h4 class="alert-heading"><i class="bi bi-hourglass-split"></i> We're full right now!</h4>
+        <p>All tables are currently occupied. Please wait for a table to become available or ask our staff.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

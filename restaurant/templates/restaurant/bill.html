@@ -1,0 +1,137 @@
+{% extends 'restaurant/base.html' %}
+
+{% block extra_css %}
+<style>
+    .receipt {
+        background: #fff;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .receipt::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background-size: 20px 20px;
+        background-image: radial-gradient(circle at 10px 0, transparent 10px, #fff 11px);
+    }
+
+    .receipt-header {
+        border-bottom: 2px dashed #ddd;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .receipt-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .receipt-totals {
+        border-top: 2px dashed #ddd;
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row pt-5">
+    <div class="col-12">
+        {% if bill %}
+        <div class="receipt">
+            <div class="receipt-header text-center">
+                <i class="bi bi-shop fs-1 text-warning mb-2"></i>
+                <h3 class="fw-bold mb-0">The Pattern Pizzeria</h3>
+                <p class="text-muted small">TAX INVOICE</p>
+
+                <div class="d-flex justify-content-between mt-3 px-2 small text-start">
+                    <div>
+                        <strong>Table:</strong> {{ bill.table_number }}<br>
+                        <strong>Date:</strong> {% now "d M Y" %}
+                    </div>
+                    <div class="text-end">
+                        <strong>Time:</strong> {% now "H:i" %}<br>
+                        <strong>Tickets:</strong> {{ bill.order_ids|length }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="receipt-body">
+                <div class="receipt-item fw-bold border-bottom pb-2 mb-3">
+                    <span style="width: 70%">Item</span>
+                    <span style="width: 30%" class="text-end">Price (₹)</span>
+                </div>
+
+                {% for item in bill.itemized_list %}
+                <div class="receipt-item text-muted">
+                    <span style="width: 70%">{{ item.name }}</span>
+                    <span style="width: 30%" class="text-end">{{ item.price|floatformat:2 }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="receipt-totals">
+                <div class="receipt-item text-muted">
+                    <span>Subtotal</span>
+                    <span>₹{{ bill.raw_subtotal|floatformat:2 }}</span>
+                </div>
+                {% if bill.discount_applied > 0 %}
+                <div class="receipt-item text-success">
+                    <span>Discount Applied</span>
+                    <span>- ₹{{ bill.discount_applied|floatformat:2 }}</span>
+                </div>
+                <div class="receipt-item text-muted">
+                    <span>Total After Discount</span>
+                    <span>₹{{ bill.subtotal_after_discount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+                <div class="receipt-item text-muted">
+                    <span>CGST (9%) + SGST (9%)</span>
+                    <span>₹{{ bill.gst_amount|floatformat:2 }}</span>
+                </div>
+
+                <div class="receipt-item mt-3 pt-2 border-top border-dark">
+                    <span class="fs-4 fw-bold">Grand Total</span>
+                    <span class="fs-4 fw-bold text-success">₹{{ bill.grand_total|floatformat:2 }}</span>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-top text-center">
+                <p class="small text-muted mb-4">Thank you for dining with us! Implementing GoF patterns gracefully.</p>
+
+                <form action="{% url 'process_payment' bill.table_number %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow">
+                        <i class="bi bi-wallet2"></i> Pay & Leave (₹{{ bill.grand_total|floatformat:2 }})
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'menu_page' bill.table_number %}" class="btn btn-outline-secondary rounded-pill">
+                <i class="bi bi-arrow-left"></i> Wait, I want to order more
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <h1 class="display-3 text-muted"><i class="bi bi-receipt-cutoff"></i></h1>
+            <h2 class="fw-bold text-dark mt-3">Your bill is empty!</h2>
+            <p class="text-muted">You haven't ordered anything yet on Table {{ table_number }}.</p>
+            <a href="{% url 'menu_page' table_number %}" class="btn btn-warning btn-lg mt-3 rounded-pill">
+                Browse Menu
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

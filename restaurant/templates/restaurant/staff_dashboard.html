@@ -1,0 +1,108 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div class="row mb-4 bg-white p-4 shadow-sm rounded">
+    <div class="col">
+        <h2 class="display-6"><i class="bi bi-display"></i> Kitchen & Staff Dashboard</h2>
+        <p class="text-muted">Manage active orders grouped by Table. Mark items as Ready/Served to trigger Observer
+            notifications.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% for data in dashboard_data %}
+    <div class="col-12 col-xl-6">
+        <div class="card h-100 border-dark shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-cup-hot"></i> Table {{ data.table_number }}</h4>
+                <div class="text-end">
+                    <span class="fs-6 text-light opacity-75 d-block">Subtotal So Far</span>
+                    <span class="fs-5 fw-bold text-success">₹{{ data.total_bill|floatformat:2 }}</span>
+                </div>
+            </div>
+            <div class="card-body bg-light p-4">
+
+                {% for order in data.orders %}
+                <div class="bg-white p-3 rounded shadow-sm border mb-3">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                        <div>
+                            <span class="badge bg-secondary me-2">Order #{{ order.id }}</span>
+                            <strong>{{ order.customer_name }}</strong>
+                        </div>
+                        <div>
+                            <span
+                                class="badge {% if order.status == 'PENDING' %}bg-danger{% elif order.status == 'PREPARING' %}bg-warning text-dark{% else %}bg-info text-dark{% endif %} px-3 py-2">
+                                {{ order.status }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled mb-0">
+                        <li class="py-1">
+                            <i class="bi bi-check2 text-success me-2"></i>
+                            <strong>
+                                {% if order.item_description %}
+                                {{ order.item_description|safe }}
+                                {% else %}
+                                {% for item in order.items.all %}{{ item.name }}{% if not forloop.last %}, {% endif %}{%
+                                endfor %}
+                                {% endif %}
+                            </strong>
+                        </li>
+                    </ul>
+
+                    {% if order.status != 'READY' %}
+                    <div class="text-end mt-3">
+                        <button class="btn btn-sm btn-outline-success mark-ready-btn fw-bold px-4"
+                            data-id="{{ order.id }}">
+                            <i class="bi bi-check-circle"></i> Mark Ready
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="card-footer bg-white p-3 border-top-0 d-grid">
+                {% if data.table_number != 'Takeaway' %}
+                <a href="{% url 'payment_page' data.table_number %}" class="btn btn-warning btn-lg fw-bold shadow-sm">
+                    <i class="bi bi-receipt"></i> Process Final Bill & Checkout
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5 text-muted bg-white rounded shadow-sm">
+        <h1 class="display-3"><i class="bi bi-stars text-warning"></i></h1>
+        <h3 class="fw-bold text-dark mt-3">No active orders!</h3>
+        <p class="fs-5">The kitchen is fully caught up.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.mark-ready-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const orderId = this.getAttribute('data-id');
+            fetch(`/api/order/${orderId}/ready`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Order marked as ready!');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+        });
+    });
+</script>
+{% endblock %}
