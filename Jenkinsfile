@@ -2,7 +2,7 @@ pipeline{
     agent any
     environment{
         DOCKER_IMAGE = 'sagarnm/restaurant-app'
-        DOCKER_TAG="{env.BUILD_ID}"
+        DOCKER_TAG="${env.BUILD_ID}"
         DOCKER_CREDENTIALS = credentials('dockerhub-credentials-id')
         EC2_IP = '100.53.23.255'
         SSH_CREDENTIALS = credentials('ec2-ssh-key-id')
