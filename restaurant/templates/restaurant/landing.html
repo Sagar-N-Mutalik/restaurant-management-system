@@ -248,7 +248,10 @@
     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
         {% for table in tables %}
         <div class="col"
-            <div class="col" style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: {{ forloop.counter0|add:2 }}00ms; opacity: 0;">
+            <div class="col"
+                style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                animation-delay: {{ forloop.counter0|add:'2' }}00ms;
+                opacity: 0;">
             {% if not table.is_occupied %}
             <a href="{% url 'menu_page' table.table_number %}" class="text-decoration-none"
                 onclick="showGlobalSpinner('Loading Menu...')">
