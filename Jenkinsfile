@@ -5,7 +5,7 @@ pipeline{
         DOCKER_TAG="{env.BUILD_ID}"
         DOCKER_CREDENTIALS = credentials('dockerhub-credentials-id')
         EC2_IP = '100.53.23.255'
-        SSH_CREDENTIALS = credentials('ec2-ssh-credentials-id')
+        SSH_CREDENTIALS = credentials('ec2-ssh-key-id')
     }
 
     stages{
