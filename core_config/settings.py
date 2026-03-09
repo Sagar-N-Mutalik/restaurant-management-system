@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!86uk%!d@nex(c6h4io8fspv^rx6w3os3#$(p_69r=k(km$1w+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['3.237.48.201']
+ALLOWED_HOSTS = ['3.239.10.118']
 
 
 # Application definition
@@ -44,6 +44,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
