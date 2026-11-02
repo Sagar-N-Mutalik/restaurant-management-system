@@ -9,8 +9,7 @@ urlpatterns = [
     path('bill/<int:table_id>/', views.payment_page_view, name='payment_page'),
     path('payment/<int:table_id>/process/', views.process_payment_view, name='process_payment'),
     path('thank-you/', views.thank_you_view, name='thank_you'),
-    path('patterns/', views.design_patterns_view, name='design_patterns'),
-    
+
     # API Routes calling the Facade
     path('api/order', views.create_order_view, name='api_create_order'),
     path('api/order/<int:order_id>/ready', views.mark_order_ready_view, name='api_order_ready'),
