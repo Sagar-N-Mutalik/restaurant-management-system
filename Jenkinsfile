@@ -18,7 +18,8 @@ pipeline{
             steps{
                 echo 'running django tests...'
                 sh 'docker build -t test-image .'
-                sh 'docker run --rm test-image python manage.py test'
+                sh 'mkdir -p test_reports'
+                sh 'docker run --rm -v "$WORKSPACE/test_reports:/app/test_reports" test-image python manage.py generate_test_reports'
             }
         }
         stage('build docker image'){

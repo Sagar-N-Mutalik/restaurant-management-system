@@ -50,6 +50,23 @@ Backend: Python, Django
 Frontend: HTML, CSS (Django Templates), Mobile-First Responsive Design
 Database: SQLite (Development)
 
+## Automated test reports
+
+The Jenkins pipeline runs automated unit, integration, black-box, white-box, smoke,
+regression, and performance suites against Django's isolated test database. It creates
+one Excel workbook per suite in `test_reports/` and includes the latest results in the
+deployed image. The public **Test Reports** page provides a download button for each
+available workbook; it does not start tests or access live restaurant data.
+
+To run the suites and generate reports locally:
+
+```sh
+python manage.py generate_test_reports
+```
+
+The workbooks include a run summary and individual test outcomes. The white-box
+workbook also contains application source-code coverage measured across the full run.
+
 💻 Local Setup & Execution
 
 To run this project locally, ensure you have Docker installed.

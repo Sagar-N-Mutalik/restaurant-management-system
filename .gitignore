@@ -14,6 +14,8 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
+test_reports/
+.coverage
 
 # Environment Variables
 .env

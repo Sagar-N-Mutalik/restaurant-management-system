@@ -6,14 +6,18 @@ that this file contains literally zero direct business logic. All database persi
 and notifications are delegated remotely to external modular architecture.
 """
 
+from pathlib import Path
+
+from django.conf import settings
+from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
 from restaurant.models import Order, RestaurantTable
 from restaurant.patterns.facade import OrderProcessingFacade
 from restaurant.patterns.strategy import HappyHourPricing, VIPDiscountPricing, NormalPricing
+from restaurant.reporting import TEST_SUITES
 
 # Instantiate the Facade gateway orchestration component globally.
 orchestrator = OrderProcessingFacade()
@@ -125,6 +129,36 @@ def thank_you_view(request):
     Simple confirmation page post-payment.
     """
     return render(request, 'restaurant/thank_you.html')
+
+
+def test_reports_view(request):
+    reports_dir = Path(settings.BASE_DIR) / 'test_reports'
+    suites = [
+        {
+            'slug': slug,
+            'title': suite['title'],
+            'description': suite['description'],
+            'available': (reports_dir / f'{slug}.xlsx').is_file(),
+        }
+        for slug, suite in TEST_SUITES.items()
+    ]
+    return render(request, 'restaurant/test_reports.html', {'suites': suites})
+
+
+def download_test_report_view(request, suite):
+    if suite not in TEST_SUITES:
+        raise Http404('Test report not found.')
+
+    report_path = Path(settings.BASE_DIR) / 'test_reports' / f'{suite}.xlsx'
+    if not report_path.is_file():
+        raise Http404('This report is not available yet. Run the automated test report command first.')
+
+    return FileResponse(
+        report_path.open('rb'),
+        as_attachment=True,
+        filename=f'{suite}_test_report.xlsx',
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
 
 
 @csrf_exempt
