@@ -374,11 +374,62 @@
         border-radius: 1rem;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     }
+
+    /* Mobile Responsive Overrides */
+    @media (max-width: 991.98px) {
+        .menu-top-header {
+            padding: 1rem 1.15rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+        }
+        .filter-wrapper {
+            top: 64px;
+            padding: 0.65rem 0.85rem;
+            border-radius: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .filter-wrapper .overflow-auto {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .filter-wrapper .overflow-auto::-webkit-scrollbar {
+            display: none;
+        }
+        .food-card {
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        .food-title {
+            font-size: 1rem;
+        }
+        .price-tag {
+            font-size: 1.15rem;
+        }
+        /* Mobile Sticky Cart floating bar padding reserve */
+        .menu-page-container {
+            padding-bottom: 85px !important;
+        }
+        .mobile-cart-float-bar {
+            padding: 0.75rem 1.25rem;
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.15);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .menu-top-header h3 {
+            font-size: 1.25rem;
+        }
+        .menu-section-title {
+            font-size: 1.15rem;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-xl py-3">
+<div class="container-xl py-3 menu-page-container">
 
     <!-- Toast Notification Container -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
@@ -443,34 +494,34 @@
         <div class="row align-items-center gy-2">
             <!-- Dietary Filter Tabs -->
             <div class="col-12 col-md-auto">
-                <div class="d-flex align-items-center gap-2 flex-wrap" id="dietFilterGroup">
-                    <button class="diet-filter-pill active" data-diet="ALL">
+                <div class="d-flex align-items-center gap-2 overflow-auto pb-1 pb-md-0" id="dietFilterGroup" style="white-space: nowrap; scrollbar-width: none;">
+                    <button class="diet-filter-pill flex-shrink-0 active" data-diet="ALL">
                         <i class="bi bi-grid-fill"></i> All Items
                     </button>
-                    <button class="diet-filter-pill pill-veg" data-diet="VEG">
+                    <button class="diet-filter-pill flex-shrink-0 pill-veg" data-diet="VEG">
                         <span class="diet-badge-box veg"><span class="diet-dot"></span></span> Pure Veg
                     </button>
-                    <button class="diet-filter-pill pill-nonveg" data-diet="NON_VEG">
+                    <button class="diet-filter-pill flex-shrink-0 pill-nonveg" data-diet="NON_VEG">
                         <span class="diet-badge-box nonveg"><span class="diet-triangle"></span></span> Non-Veg
                     </button>
-                    <button class="diet-filter-pill pill-vegan" data-diet="VEGAN">
+                    <button class="diet-filter-pill flex-shrink-0 pill-vegan" data-diet="VEGAN">
                         <span class="diet-badge-box vegan"><i class="bi bi-flower1"></i></span> Vegan
                     </button>
                 </div>
             </div>
 
             <!-- Category Quick-Links -->
-            <div class="col-12 col-md-auto ms-md-auto d-flex align-items-center gap-1 overflow-auto pb-1 pb-md-0" style="scrollbar-width: none;">
-                <a href="#section-pizzas" class="category-nav-pill">
+            <div class="col-12 col-md-auto ms-md-auto d-flex align-items-center gap-1 overflow-auto pb-1 pb-md-0" style="white-space: nowrap; scrollbar-width: none;">
+                <a href="#section-pizzas" class="category-nav-pill flex-shrink-0">
                     <span>🍕</span> Pizzas ({{ pizzas|length }})
                 </a>
-                <a href="#section-burgers" class="category-nav-pill">
+                <a href="#section-burgers" class="category-nav-pill flex-shrink-0">
                     <span>🍔</span> Burgers ({{ burgers|length }})
                 </a>
-                <a href="#section-sides" class="category-nav-pill">
+                <a href="#section-sides" class="category-nav-pill flex-shrink-0">
                     <span>🍟</span> Sides ({{ sides|length }})
                 </a>
-                <a href="#section-beverages" class="category-nav-pill">
+                <a href="#section-beverages" class="category-nav-pill flex-shrink-0">
                     <span>🥤</span> Drinks ({{ beverages|length }})
                 </a>
             </div>

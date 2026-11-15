@@ -267,6 +267,42 @@
     .pyramid-block:hover {
         transform: scale(1.03);
     }
+
+    /* Mobile Responsive Overrides */
+    @media (max-width: 768px) {
+        .cyber-hero-banner {
+            padding: 1.75rem 1.15rem;
+            border-radius: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .cyber-hero-banner h1 {
+            font-size: 1.75rem !important;
+        }
+        .stat-counter-box {
+            padding: 0.85rem 0.5rem;
+        }
+        .stat-counter-box .display-5 {
+            font-size: 1.65rem !important;
+        }
+        .motion-tab-btn {
+            padding: 0.55rem 0.95rem;
+            font-size: 0.825rem;
+        }
+        .bento-card {
+            padding: 1.15rem;
+            border-radius: 1rem;
+        }
+        .viva-card {
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        .simulator-stage {
+            padding: 0.85rem 0.65rem;
+        }
+        .simulator-stage .fw-bold {
+            font-size: 0.9rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -663,7 +699,7 @@
             </div>
 
             <!-- Visual Pipeline Stages -->
-            <div class="row row-cols-1 row-cols-md-4 g-3 mb-4">
+            <div class="row row-cols-2 row-cols-md-4 g-2 g-md-3 mb-4">
                 <div class="col">
                     <div class="simulator-stage" id="stage1">
                         <div class="small fw-bold text-muted mb-1">STAGE 1</div>
@@ -845,6 +881,7 @@
                 </div>
             </div>
 
+            <div class="d-md-none text-muted small mb-2"><i class="bi bi-arrow-left-right me-1"></i> Swipe table horizontally to inspect test steps and remarks &rarr;</div>
             <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
                 <table class="table table-hover align-middle small mb-0" id="catalogTable">
                     <thead class="sticky-top" style="background: var(--surface-card); z-index: 10;">

@@ -142,6 +142,41 @@
         background: var(--nonveg-color);
         color: #ffffff !important;
     }
+
+    /* Mobile Responsive Overrides */
+    @media (max-width: 768px) {
+        .hero-banner {
+            padding: 2.25rem 1.25rem;
+            border-radius: 1.15rem;
+        }
+        .hero-title {
+            font-size: 1.95rem;
+            letter-spacing: -0.02em;
+        }
+        .stat-pill {
+            padding: 0.6rem 1rem;
+        }
+        .stat-pill .fs-4 {
+            font-size: 1.2rem !important;
+        }
+        .table-tile {
+            padding: 0.95rem 0.85rem;
+            border-radius: 1rem;
+        }
+        .table-number-circle {
+            width: 40px;
+            height: 40px;
+            font-size: 1.15rem;
+            border-radius: 10px;
+        }
+        .table-tile .fs-5 {
+            font-size: 1.05rem !important;
+        }
+        .table-tile .btn {
+            font-size: 0.8rem;
+            padding: 0.45rem 0.6rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -218,7 +253,7 @@
             </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-2 g-md-3">
             {% for table in tables %}
             <div class="col">
                 {% if not table.is_occupied %}

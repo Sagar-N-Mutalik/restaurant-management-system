@@ -1,6 +1,25 @@
 {% extends 'restaurant/base.html' %}
 
+{% block extra_css %}
+<style>
+    @media (max-width: 768px) {
+        .card-body.p-4.p-md-5 {
+            padding: 1.5rem 1.15rem !important;
+        }
+        .display-6 {
+            font-size: 1.65rem !important;
+        }
+        #start-testing-btn, #download-all-zip-btn, a[href*="testing/guide"] {
+            font-size: 0.95rem !important;
+            padding: 0.75rem 1.25rem !important;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="container-xl py-3 py-md-4">
 <div class="row justify-content-center">
     <div class="col-lg-11 col-xl-10">
         
@@ -204,6 +223,7 @@
         </div>
 
     </div>
+</div>
 </div>
 
 <!-- Frontend Live Runner JavaScript -->

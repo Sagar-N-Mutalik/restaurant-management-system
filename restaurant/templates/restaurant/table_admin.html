@@ -139,6 +139,44 @@
         color: #ffffff !important;
         box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
     }
+
+    /* Mobile Responsive Overrides */
+    @media (max-width: 768px) {
+        .admin-hero-card {
+            padding: 1.5rem 1.15rem;
+            border-radius: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .admin-hero-card h1 {
+            font-size: 1.65rem;
+        }
+        .kpi-card {
+            padding: 0.95rem 0.85rem;
+            border-radius: 1rem;
+        }
+        .kpi-card .fs-2 {
+            font-size: 1.45rem !important;
+        }
+        .kpi-icon-box {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 1.1rem !important;
+        }
+        .admin-table-tile {
+            padding: 0.85rem;
+            border-radius: 1rem;
+        }
+        .table-id-circle {
+            width: 38px;
+            height: 38px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+        }
+        .admin-filter-pill {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.8rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -195,7 +233,7 @@
     </div>
 
     <!-- Executive KPI Summary Cards -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+    <div class="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-2 g-md-3 mb-4">
         <!-- Total Stations -->
         <div class="col">
             <div class="kpi-card">
@@ -282,7 +320,7 @@
     </div>
 
     <!-- Table Stations Grid -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3" id="tableStationsGrid">
+    <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-2 g-md-3" id="tableStationsGrid">
         {% for item in table_details %}
         <div class="col admin-table-card-wrapper" data-table-id="{{ item.table_number }}" data-status="{% if item.is_occupied %}OCCUPIED{% else %}VACANT{% endif %}" data-search="table {{ item.table_number }} {{ item.customer_name|default:''|lower }}">
             <div class="admin-table-tile {% if item.is_occupied %}status-occupied{% else %}status-vacant{% endif %}" id="tile-table-{{ item.table_number }}">

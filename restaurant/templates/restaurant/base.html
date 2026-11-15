@@ -321,6 +321,47 @@
         .footer-main a:hover {
             color: var(--brand-primary);
         }
+
+        /* Mobile Responsive Enhancements */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: var(--surface-card);
+                border: 1px solid var(--border-subtle);
+                border-radius: 1rem;
+                padding: 1rem;
+                margin-top: 0.75rem;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            }
+            body.dark-mode .navbar-collapse {
+                background: #131b2e;
+                border-color: rgba(255, 255, 255, 0.1);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            }
+            .nav-link-custom {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.95rem;
+                border-radius: 8px;
+            }
+            #clock-pill {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 0.25rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container-xl {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            .brand-logo-icon {
+                width: 32px !important;
+                height: 32px !important;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -344,15 +385,20 @@
                 <span>Smart<span style="color: var(--brand-primary);">Resto</span></span>
             </a>
 
-            <button class="navbar-toggler border-0 shadow-none px-2" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarMainContent" aria-label="Toggle navigation">
-                <i class="bi bi-list fs-2" style="color: var(--text-heading);"></i>
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn-theme-toggle" id="themeToggleBtn" title="Toggle Theme (Dark / Light)" aria-label="Toggle Theme">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                </button>
+                <button class="navbar-toggler border-0 shadow-none px-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarMainContent" aria-label="Toggle navigation">
+                    <i class="bi bi-list fs-2" style="color: var(--text-heading);"></i>
+                </button>
+            </div>
 
             <div class="collapse navbar-collapse" id="navbarMainContent">
-                <ul class="navbar-nav ms-auto align-items-center gap-1 gap-lg-2 mt-2 mt-lg-0">
+                <ul class="navbar-nav ms-auto align-items-stretch align-items-lg-center gap-1 gap-lg-2 mt-2 mt-lg-0">
                     <li class="nav-item">
-                        <span class="badge rounded-pill px-3 py-2 d-flex align-items-center gap-2" id="clock-pill">
+                        <span class="badge rounded-pill px-3 py-2 d-flex align-items-center justify-content-center gap-2" id="clock-pill">
                             <i class="bi bi-clock"></i> <span id="globalClock">--:--:--</span>
                         </span>
                     </li>
@@ -381,11 +427,6 @@
                             <i class="bi bi-journal-bookmark-fill"></i> Testing Guide
                         </a>
                     </li>
-                    <li class="nav-item ms-lg-2">
-                        <button class="btn-theme-toggle" id="themeToggleBtn" title="Toggle Theme (Dark / Light)" aria-label="Toggle Theme">
-                            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
-                        </button>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -399,12 +440,12 @@
     <!-- Footer -->
     <footer class="footer-main py-4">
         <div class="container-xl">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                <div class="d-flex align-items-center gap-2">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 text-center text-md-start">
+                <div class="d-flex align-items-center justify-content-center gap-2">
                     <span class="fw-bold" style="color: var(--text-heading);">SmartResto</span>
                     <span>• Smart Autonomous Dining System</span>
                 </div>
-                <div class="d-flex gap-4">
+                <div class="d-flex flex-wrap justify-content-center gap-3 gap-md-4">
                     <a href="{% url 'index' %}">Home</a>
                     <a href="{% url 'table_admin' %}">Table Admin</a>
                     <a href="{% url 'staff_dashboard' %}">Kitchen KDS</a>

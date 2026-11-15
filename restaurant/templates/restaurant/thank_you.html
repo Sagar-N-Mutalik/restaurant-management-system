@@ -1,16 +1,29 @@
 {% extends 'restaurant/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-8 text-center">
-        <div class="card border-success shadow">
-            <div class="card-body py-5">
-                <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
-                <h2 class="display-4 mt-4 text-success">Thank You!</h2>
-                <h4 class="text-muted mb-4">Payment Processed Successfully.</h4>
-                <p class="lead mb-5">The bill has been settled and the table is now available for the next guests.</p>
-                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
-                    <a href="{% url 'index' %}" class="btn btn-success btn-lg px-4">Return to Home</a>
+<div class="container-xl py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 text-center">
+            <div class="card border-0 rounded-4 shadow-lg overflow-hidden" style="background: var(--surface-card); border: 1px solid var(--border-subtle) !important;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-4">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background: rgba(22, 163, 74, 0.12); color: var(--veg-color);">
+                            <i class="bi bi-check-circle-fill fs-1"></i>
+                        </span>
+                    </div>
+                    <h2 class="fw-bold mb-2" style="color: var(--text-heading);">Thank You!</h2>
+                    <h5 class="text-success fw-semibold mb-3">Payment Settled Successfully</h5>
+                    <p class="text-muted mb-4" style="line-height: 1.6;">
+                        Your bill has been processed and your dining station is now clear. We hope you enjoyed your meal at SmartResto!
+                    </p>
+                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                        <a href="{% url 'index' %}" class="btn btn-enter-menu px-4 py-2 fs-6">
+                            <i class="bi bi-house-door me-2"></i>Return to Home
+                        </a>
+                        <a href="{% url 'table_admin' %}" class="btn btn-outline-secondary rounded-pill px-4 py-2 fs-6">
+                            <i class="bi bi-shield-lock me-2"></i>Table Admin
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
