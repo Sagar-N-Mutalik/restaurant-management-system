@@ -6,18 +6,23 @@ that this file contains literally zero direct business logic. All database persi
 and notifications are delegated remotely to external modular architecture.
 """
 
+import io
+import json
+import queue
+import threading
+import zipfile
+from datetime import datetime
 from pathlib import Path
 
 from django.conf import settings
-from django.http import FileResponse, Http404, JsonResponse
+from django.http import FileResponse, Http404, JsonResponse, StreamingHttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-import json
 
 from restaurant.models import Order, RestaurantTable
 from restaurant.patterns.facade import OrderProcessingFacade
 from restaurant.patterns.strategy import HappyHourPricing, VIPDiscountPricing, NormalPricing
-from restaurant.reporting import TEST_SUITES
+from restaurant.reporting import TEST_SUITES, generate_all_reports
 
 # Instantiate the Facade gateway orchestration component globally.
 orchestrator = OrderProcessingFacade()
@@ -133,32 +138,158 @@ def thank_you_view(request):
 
 def test_reports_view(request):
     reports_dir = Path(settings.BASE_DIR) / 'test_reports'
-    suites = [
-        {
+    topics_guide_file = reports_dir / 'testing_topics_guide.xlsx'
+    topics_guide_available = topics_guide_file.is_file()
+
+    suites = []
+    any_available = False
+    for slug, suite in TEST_SUITES.items():
+        report_file = reports_dir / f'{slug}.xlsx'
+        is_avail = report_file.is_file()
+        if is_avail:
+            any_available = True
+        suites.append({
             'slug': slug,
             'title': suite['title'],
             'description': suite['description'],
-            'available': (reports_dir / f'{slug}.xlsx').is_file(),
-        }
-        for slug, suite in TEST_SUITES.items()
-    ]
-    return render(request, 'restaurant/test_reports.html', {'suites': suites})
+            'available': is_avail,
+            'filename': f'{slug}.xlsx',
+            'filesize': f'{report_file.stat().st_size / 1024:.1f} KB' if is_avail else None,
+            'updated_at': datetime.fromtimestamp(report_file.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S') if is_avail else None,
+        })
+
+    return render(request, 'restaurant/test_reports.html', {
+        'suites': suites,
+        'topics_guide_available': topics_guide_available,
+        'all_reports_available': any_available or topics_guide_available,
+        'total_suites': len(TEST_SUITES),
+    })
 
 
 def download_test_report_view(request, suite):
-    if suite not in TEST_SUITES:
+    reports_dir = Path(settings.BASE_DIR) / 'test_reports'
+
+    if suite in ('topics-guide', 'testing_topics_guide', 'testing-topics-guide', 'guide'):
+        report_path = reports_dir / 'testing_topics_guide.xlsx'
+        filename = 'SmartResto_Testing_Topics_and_Methodology_Guide.xlsx'
+    elif suite in TEST_SUITES:
+        report_path = reports_dir / f'{suite}.xlsx'
+        filename = f'{suite}_test_report.xlsx'
+    else:
         raise Http404('Test report not found.')
 
-    report_path = Path(settings.BASE_DIR) / 'test_reports' / f'{suite}.xlsx'
     if not report_path.is_file():
-        raise Http404('This report is not available yet. Run the automated test report command first.')
+        raise Http404('This report is not available yet. Please click Start Testing Process first.')
 
     return FileResponse(
         report_path.open('rb'),
         as_attachment=True,
-        filename=f'{suite}_test_report.xlsx',
+        filename=filename,
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
+
+
+def download_all_reports_view(request):
+    reports_dir = Path(settings.BASE_DIR) / 'test_reports'
+    xlsx_files = list(reports_dir.glob('*.xlsx')) if reports_dir.is_dir() else []
+
+    if not xlsx_files:
+        raise Http404('No test reports have been generated yet. Please run the automated testing process first.')
+
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for file_path in xlsx_files:
+            zip_file.write(file_path, arcname=file_path.name)
+
+    zip_buffer.seek(0)
+    return FileResponse(
+        zip_buffer,
+        as_attachment=True,
+        filename='SmartResto_Automated_Test_Reports.zip',
+        content_type='application/zip',
+    )
+
+
+@csrf_exempt
+def run_tests_api_view(request):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed. Use POST.'}, status=405)
+
+    logs = []
+
+    def log_collector(event):
+        msg = event.get('message')
+        if msg:
+            logs.append({
+                'type': event.get('type', 'log'),
+                'message': msg,
+                'progress': event.get('progress'),
+                'slug': event.get('slug'),
+                'timestamp': datetime.now().strftime('%H:%M:%S'),
+            })
+
+    try:
+        summary = generate_all_reports(progress_callback=log_collector)
+        return JsonResponse({
+            'success': summary['success'],
+            'summary': summary,
+            'logs': logs,
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e),
+            'logs': logs,
+        }, status=500)
+
+
+def run_tests_stream_view(request):
+    """
+    Server-Sent Events (SSE) streaming endpoint.
+    Emits real-time progress and logs as test suites execute.
+    """
+    def event_stream():
+        event_queue = queue.Queue()
+
+        def push_event(event):
+            event_queue.put(event)
+
+        runner_thread = threading.Thread(
+            target=lambda: (
+                generate_all_reports(progress_callback=push_event),
+                event_queue.put({'type': '__DONE__'})
+            )[0]
+        )
+        runner_thread.daemon = True
+        runner_thread.start()
+
+        while True:
+            try:
+                event = event_queue.get(timeout=10)
+                if event.get('type') == '__DONE__':
+                    break
+                payload = json.dumps(event)
+                yield f"data: {payload}\n\n"
+            except queue.Empty:
+                if not runner_thread.is_alive():
+                    break
+                yield f": keep-alive\n\n"
+
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no'
+    return response
+
+
+def testing_guide_view(request):
+    """
+    Renders the Comprehensive Academic Testing Guide and Topic Explanations.
+    """
+    reports_dir = Path(settings.BASE_DIR) / 'test_reports'
+    guide_available = (reports_dir / 'testing_topics_guide.xlsx').is_file()
+    return render(request, 'restaurant/testing_guide.html', {
+        'guide_available': guide_available,
+    })
 
 
 @csrf_exempt
