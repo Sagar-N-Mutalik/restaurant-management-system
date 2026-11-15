@@ -15,8 +15,16 @@ from restaurant.reporting import (
 class Command(BaseCommand):
     help = 'Run every automated test suite and create an Excel workbook for each.'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--output-dir',
+            type=Path,
+            default=Path(settings.BASE_DIR) / 'test_reports',
+            help='Directory for generated Excel workbooks (defaults to the project test_reports directory).',
+        )
+
     def handle(self, *args, **options):
-        reports_dir = Path(settings.BASE_DIR) / 'test_reports'
+        reports_dir = options['output_dir']
         reports_dir.mkdir(parents=True, exist_ok=True)
         coverage_run = coverage.Coverage(
             source=['restaurant'],

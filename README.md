@@ -64,8 +64,9 @@ To run the suites and generate reports locally:
 python manage.py generate_test_reports
 ```
 
-The workbooks include a run summary and individual test outcomes. The white-box
-workbook also contains application source-code coverage measured across the full run.
+Each workbook lists test cases with **Test Case**, **Expected Result**, **Actual Result**,
+and **Remark** columns, followed by Total, Pass, Fail, and Not Executed counts. The
+white-box workbook also contains application source-code coverage measured across the full run.
 
 💻 Local Setup & Execution
 
