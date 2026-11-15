@@ -138,6 +138,145 @@ def thank_you_view(request):
     return render(request, 'restaurant/thank_you.html')
 
 
+def table_admin_view(request):
+    """
+    Dedicated Table Vacancy & Floor Management Admin Panel.
+    Allows managers to inspect live occupancy, toggle table vacancy,
+    clear table orders, and execute bulk vacancy operations.
+    """
+    tables = RestaurantTable.objects.all().order_by('table_number')
+    
+    table_details = []
+    total_active_orders = 0
+    total_active_revenue = 0.0
+    
+    for t in tables:
+        active_orders = Order.objects.filter(table=t).exclude(status='COMPLETED').order_by('-created_at')
+        orders_count = active_orders.count()
+        total_active_orders += orders_count
+        
+        bill_data = None
+        bill_amount = 0.0
+        if t.is_occupied:
+            bill_data = orchestrator.calculate_table_bill(t.table_number)
+            if bill_data:
+                bill_amount = float(bill_data.get('grand_total', 0.0))
+                total_active_revenue += bill_amount
+
+        first_order = active_orders.first()
+        table_details.append({
+            'table': t,
+            'table_number': t.table_number,
+            'is_occupied': t.is_occupied,
+            'orders_count': orders_count,
+            'orders': active_orders,
+            'bill_amount': bill_amount,
+            'customer_name': first_order.customer_name if first_order else (f"Table {t.table_number} Guest" if t.is_occupied else None),
+            'latest_order_time': first_order.created_at.strftime("%I:%M %p") if first_order else None
+        })
+
+    total_count = len(table_details)
+    occupied_count = sum(1 for item in table_details if item['is_occupied'])
+    vacant_count = total_count - occupied_count
+    occupancy_percentage = round((occupied_count / total_count * 100), 1) if total_count > 0 else 0.0
+
+    return render(request, 'restaurant/table_admin.html', {
+        'table_details': table_details,
+        'total_tables': total_count,
+        'occupied_tables': occupied_count,
+        'vacant_tables': vacant_count,
+        'occupancy_percentage': occupancy_percentage,
+        'total_active_orders': total_active_orders,
+        'total_active_revenue': total_active_revenue,
+    })
+
+
+@csrf_exempt
+def api_toggle_table_vacancy(request, table_id):
+    """
+    API endpoint to toggle or explicitly set table vacancy status.
+    """
+    table = get_object_or_404(RestaurantTable, table_number=table_id)
+    
+    if request.method == 'POST':
+        try:
+            if request.body:
+                try:
+                    data = json.loads(request.body)
+                    if 'is_occupied' in data:
+                        table.is_occupied = bool(data['is_occupied'])
+                    else:
+                        table.is_occupied = not table.is_occupied
+                except Exception:
+                    table.is_occupied = not table.is_occupied
+            else:
+                table.is_occupied = not table.is_occupied
+                
+            table.save()
+            status_text = "OCCUPIED" if table.is_occupied else "VACANT"
+            return JsonResponse({
+                'success': True,
+                'table_number': table.table_number,
+                'is_occupied': table.is_occupied,
+                'status_text': status_text,
+                'message': f"Table {table.table_number} is now {status_text}."
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'POST method required.'}, status=405)
+
+
+@csrf_exempt
+def api_clear_table_orders(request, table_id):
+    """
+    Clears all active orders for a table, marks them completed/paid, and sets table to Vacant.
+    """
+    if request.method == 'POST':
+        table = get_object_or_404(RestaurantTable, table_number=table_id)
+        orders = Order.objects.filter(table=table).exclude(status='COMPLETED')
+        count = orders.count()
+        orders.update(status='COMPLETED', is_paid=True)
+        table.is_occupied = False
+        table.save()
+        
+        return JsonResponse({
+            'success': True,
+            'table_number': table.table_number,
+            'is_occupied': False,
+            'cleared_orders_count': count,
+            'message': f"Table {table.table_number} cleared ({count} order(s)) and marked VACANT."
+        })
+
+    return JsonResponse({'error': 'POST method required.'}, status=405)
+
+
+@csrf_exempt
+def api_bulk_table_action(request):
+    """
+    Bulk operation to free all tables or occupy all tables.
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body) if request.body else {}
+            action = data.get('action', request.POST.get('action', 'free_all'))
+            
+            if action == 'free_all':
+                RestaurantTable.objects.all().update(is_occupied=False)
+                if data.get('complete_orders', False):
+                    Order.objects.filter(table__isnull=False).exclude(status='COMPLETED').update(status='COMPLETED', is_paid=True)
+                return JsonResponse({'success': True, 'message': 'All tables marked as VACANT.'})
+            elif action == 'occupy_all':
+                RestaurantTable.objects.all().update(is_occupied=True)
+                return JsonResponse({'success': True, 'message': 'All tables marked as OCCUPIED.'})
+            else:
+                return JsonResponse({'success': False, 'error': 'Unknown bulk action.'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'POST method required.'}, status=405)
+
+
 def test_reports_view(request):
     reports_dir = Path(settings.BASE_DIR) / 'test_reports'
     topics_guide_file = reports_dir / 'testing_topics_guide.xlsx'

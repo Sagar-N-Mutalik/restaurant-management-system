@@ -1,0 +1,686 @@
+{% extends 'restaurant/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Admin Hero Header */
+    .admin-hero-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.98)),
+                    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80') center/cover no-repeat;
+        border-radius: 1.25rem;
+        padding: 2.25rem 2rem;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+        margin-bottom: 2rem;
+    }
+
+    /* KPI Metrics Cards */
+    .kpi-card {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.15rem;
+        padding: 1.35rem 1.25rem;
+        box-shadow: var(--card-shadow);
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--card-hover-shadow);
+        border-color: var(--border-hover);
+    }
+
+    .kpi-card .kpi-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    /* Table Grid Tile */
+    .admin-table-tile {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+    }
+
+    .admin-table-tile:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .admin-table-tile.status-vacant {
+        border-top: 4px solid var(--veg-color);
+    }
+
+    .admin-table-tile.status-occupied {
+        border-top: 4px solid var(--nonveg-color);
+        background: rgba(220, 38, 38, 0.02);
+    }
+
+    body.dark-mode .admin-table-tile.status-occupied {
+        background: rgba(220, 38, 38, 0.05);
+    }
+
+    /* Table ID Circle */
+    .table-id-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        font-weight: 800;
+        transition: all 0.25s ease;
+    }
+
+    .admin-table-tile.status-vacant .table-id-circle {
+        background: rgba(22, 163, 74, 0.12);
+        color: var(--veg-color);
+        box-shadow: 0 0 15px rgba(22, 163, 74, 0.2);
+    }
+
+    .admin-table-tile.status-occupied .table-id-circle {
+        background: rgba(220, 38, 38, 0.12);
+        color: var(--nonveg-color);
+        box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
+    }
+
+    /* Tactile Toggle Switch */
+    .vacancy-switch-box {
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-subtle);
+        border-radius: 9999px;
+        padding: 0.35rem 0.65rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Filter Pills */
+    .admin-filter-pill {
+        border: 1px solid var(--border-subtle);
+        background: var(--surface-card);
+        color: var(--text-body);
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.45rem 1rem;
+        border-radius: 9999px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .admin-filter-pill:hover {
+        border-color: var(--brand-primary);
+        color: var(--brand-primary);
+    }
+
+    .admin-filter-pill.active {
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-xl py-4">
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
+        <div id="adminToast" class="toast toast-modern align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex p-3">
+                <div class="fs-4 text-success me-3" id="adminToastIcon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1" id="adminToastTitle">Table Status Updated</h6>
+                    <p class="small text-muted mb-0" id="adminToastMessage">Status successfully synced.</p>
+                </div>
+                <button type="button" class="btn-close ms-auto my-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Hero Banner -->
+    <div class="admin-hero-card">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill bg-warning text-dark fw-bold px-3 py-1">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Management Station
+                    </span>
+                    <span class="badge rounded-pill bg-success bg-opacity-25 text-white border border-success border-opacity-50 px-3 py-1 small">
+                        <i class="bi bi-broadcast me-1"></i> Real-Time Floor Control
+                    </span>
+                </div>
+                <h1 class="display-6 fw-bold mb-2">Table Vacancy Admin Panel</h1>
+                <p class="lead text-white-50 mb-0" style="font-size: 1.05rem; max-width: 680px;">
+                    Control real-time table vacancies, seat guests, monitor active table billing, release tables, and manage dining room floor capacity.
+                </p>
+            </div>
+
+            <!-- Quick Action Controls -->
+            <div class="d-flex flex-wrap gap-2 mt-3 mt-lg-0">
+                <button class="btn btn-outline-light rounded-pill px-3 py-2 fw-semibold" id="btnFreeAllTables">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Free All Tables
+                </button>
+                <button class="btn btn-outline-light rounded-pill px-3 py-2 fw-semibold" id="btnOccupyAllTables">
+                    <i class="bi bi-people-fill me-1"></i> Seat All Tables
+                </button>
+                <a href="/admin/restaurant/restauranttable/" target="_blank" class="btn btn-warning rounded-pill px-3 py-2 fw-semibold shadow-sm">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Django Admin (DB)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Executive KPI Summary Cards -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-4">
+        <!-- Total Stations -->
+        <div class="col">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="text-muted small fw-semibold">TOTAL STATIONS</span>
+                    <div class="kpi-icon-box bg-secondary bg-opacity-10 text-secondary">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                    </div>
+                </div>
+                <div class="fs-2 fw-bold" style="color: var(--text-heading);" id="kpiTotalTables">{{ total_tables }}</div>
+                <div class="small text-muted">Configured Dining Tables</div>
+            </div>
+        </div>
+
+        <!-- Vacant Tables -->
+        <div class="col">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="text-muted small fw-semibold">VACANT (AVAILABLE)</span>
+                    <div class="kpi-icon-box bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                </div>
+                <div class="fs-2 fw-bold text-success" id="kpiVacantTables">{{ vacant_tables }}</div>
+                <div class="small text-success fw-medium">Ready for Guest Seating</div>
+            </div>
+        </div>
+
+        <!-- Occupied Tables -->
+        <div class="col">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="text-muted small fw-semibold">OCCUPIED (DINING)</span>
+                    <div class="kpi-icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+                <div class="fs-2 fw-bold text-danger" id="kpiOccupiedTables">{{ occupied_tables }}</div>
+                <div class="small text-danger fw-medium">{{ total_active_orders }} active kitchen order(s)</div>
+            </div>
+        </div>
+
+        <!-- Floor Occupancy Rate -->
+        <div class="col">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="text-muted small fw-semibold">OCCUPANCY RATE</span>
+                    <div class="kpi-icon-box bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-pie-chart-fill"></i>
+                    </div>
+                </div>
+                <div class="fs-2 fw-bold text-primary" id="kpiOccupancyRate">{{ occupancy_percentage }}%</div>
+                <div class="progress mt-2" style="height: 6px;">
+                    <div class="progress-bar bg-primary" id="kpiProgressBar" role="progressbar" style="width: {{ occupancy_percentage }}%;" aria-valuenow="{{ occupancy_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <!-- Filter Tabs -->
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="admin-filter-pill active" data-filter="ALL">
+                <i class="bi bi-grid-fill"></i> All Stations ({{ total_tables }})
+            </button>
+            <button class="admin-filter-pill" data-filter="VACANT">
+                <span class="p-1 bg-success rounded-circle"></span> Vacant Only (<span id="filterVacantCount">{{ vacant_tables }}</span>)
+            </button>
+            <button class="admin-filter-pill" data-filter="OCCUPIED">
+                <span class="p-1 bg-danger rounded-circle"></span> Occupied Only (<span id="filterOccupiedCount">{{ occupied_tables }}</span>)
+            </button>
+        </div>
+
+        <!-- Search Input -->
+        <div style="min-width: 260px;">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-transparent" style="border-color: var(--border-subtle); color: var(--text-muted);">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" id="tableSearchInput" class="form-control" placeholder="Search table # or guest..." style="border-color: var(--border-subtle); background: var(--surface-card); color: var(--text-heading);">
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Stations Grid -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3" id="tableStationsGrid">
+        {% for item in table_details %}
+        <div class="col admin-table-card-wrapper" data-table-id="{{ item.table_number }}" data-status="{% if item.is_occupied %}OCCUPIED{% else %}VACANT{% endif %}" data-search="table {{ item.table_number }} {{ item.customer_name|default:''|lower }}">
+            <div class="admin-table-tile {% if item.is_occupied %}status-occupied{% else %}status-vacant{% endif %}" id="tile-table-{{ item.table_number }}">
+                <!-- Tile Header: Table Number & Toggle -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="table-id-circle">
+                        {{ item.table_number }}
+                    </div>
+
+                    <!-- Tactile Vacancy Toggle Switch -->
+                    <div class="form-check form-switch m-0" title="Toggle Table Vacancy">
+                        <input class="form-check-input table-vacancy-toggle fs-5" type="checkbox" role="switch" id="toggle-{{ item.table_number }}" data-table="{{ item.table_number }}" {% if item.is_occupied %}checked{% endif %}>
+                    </div>
+                </div>
+
+                <!-- Table Status Badge & Info -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <strong class="fs-5" style="color: var(--text-heading);">Table {{ item.table_number }}</strong>
+                        <span class="badge rounded-pill px-2 py-1 small table-status-badge {% if item.is_occupied %}bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25{% else %}bg-success bg-opacity-10 text-success border border-success border-opacity-25{% endif %}" id="badge-table-{{ item.table_number }}">
+                            {% if item.is_occupied %}OCCUPIED{% else %}VACANT{% endif %}
+                        </span>
+                    </div>
+                    <div class="text-muted small">Standard 4-Seat Dining</div>
+                </div>
+
+                <!-- Dynamic Status Details (Occupied vs Vacant) -->
+                <div class="mb-3 p-2 rounded" style="background: var(--surface-subtle); border: 1px solid var(--border-subtle); min-height: 82px;" id="details-table-{{ item.table_number }}">
+                    {% if item.is_occupied %}
+                    <div class="small">
+                        <div class="d-flex justify-content-between text-muted mb-1">
+                            <span>Guest:</span>
+                            <strong class="text-truncate" style="max-width: 110px; color: var(--text-heading);">{{ item.customer_name }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted mb-1">
+                            <span>Active Orders:</span>
+                            <span class="badge bg-secondary rounded-pill">{{ item.orders_count }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Live Bill:</span>
+                            <strong class="text-success">₹{{ item.bill_amount|floatformat:2 }}</strong>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center py-2 text-muted small">
+                        <i class="bi bi-cup-hot text-success fs-5 mb-1"></i>
+                        <span>Ready for Guests</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons Footer -->
+                <div class="mt-auto d-flex flex-column gap-2" id="actions-table-{{ item.table_number }}">
+                    {% if item.is_occupied %}
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'payment_page' item.table_number %}" class="btn btn-outline-secondary btn-sm rounded-pill flex-grow-1 text-truncate" title="View Table Bill">
+                            <i class="bi bi-receipt"></i> Bill
+                        </a>
+                        <button class="btn btn-danger btn-sm rounded-pill flex-grow-1 btn-clear-table text-truncate" data-table="{{ item.table_number }}" title="Clear orders and vacate table">
+                            <i class="bi bi-x-circle"></i> Vacate
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-outline-success btn-sm rounded-pill flex-grow-1 btn-seat-table text-truncate" data-table="{{ item.table_number }}">
+                            <i class="bi bi-person-plus"></i> Seat Guest
+                        </button>
+                        <a href="{% url 'menu_page' item.table_number %}" class="btn btn-primary btn-sm rounded-pill flex-grow-1 text-truncate" title="Open Menu">
+                            <i class="bi bi-cart"></i> Menu
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Empty Search Results -->
+    <div id="noAdminResults" class="text-center py-5 d-none">
+        <i class="bi bi-search fs-1 text-muted opacity-50 mb-3 d-block"></i>
+        <h5 class="fw-bold" style="color: var(--text-heading);">No tables found</h5>
+        <p class="text-muted small">Try searching with a different keyword or reset filters.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentFilter = 'ALL';
+        let searchQuery = '';
+
+        // Toast Helper
+        function showAdminToast(title, message, isSuccess = true) {
+            const toastEl = document.getElementById('adminToast');
+            const titleEl = document.getElementById('adminToastTitle');
+            const msgEl = document.getElementById('adminToastMessage');
+            const iconEl = document.getElementById('adminToastIcon');
+
+            if (titleEl) titleEl.innerText = title;
+            if (msgEl) msgEl.innerText = message;
+            if (iconEl) {
+                iconEl.className = isSuccess ? 'fs-4 text-success me-3' : 'fs-4 text-danger me-3';
+                iconEl.innerHTML = isSuccess ? '<i class="bi bi-check-circle-fill"></i>' : '<i class="bi bi-exclamation-triangle-fill"></i>';
+            }
+
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            }
+        }
+
+        // Recalculate KPI metrics dynamically on the page
+        function recalculateKPIs() {
+            const cards = document.querySelectorAll('.admin-table-card-wrapper');
+            let total = cards.length;
+            let occupied = 0;
+
+            cards.forEach(card => {
+                if (card.getAttribute('data-status') === 'OCCUPIED') {
+                    occupied++;
+                }
+            });
+
+            let vacant = total - occupied;
+            let percent = total > 0 ? ((occupied / total) * 100).toFixed(1) : '0.0';
+
+            const kpiTotal = document.getElementById('kpiTotalTables');
+            const kpiVacant = document.getElementById('kpiVacantTables');
+            const kpiOccupied = document.getElementById('kpiOccupiedTables');
+            const kpiRate = document.getElementById('kpiOccupancyRate');
+            const kpiBar = document.getElementById('kpiProgressBar');
+            const filterVacant = document.getElementById('filterVacantCount');
+            const filterOccupied = document.getElementById('filterOccupiedCount');
+
+            if (kpiTotal) kpiTotal.innerText = total;
+            if (kpiVacant) kpiVacant.innerText = vacant;
+            if (kpiOccupied) kpiOccupied.innerText = occupied;
+            if (kpiRate) kpiRate.innerText = percent + '%';
+            if (kpiBar) {
+                kpiBar.style.width = percent + '%';
+                kpiBar.setAttribute('aria-valuenow', percent);
+            }
+            if (filterVacant) filterVacant.innerText = vacant;
+            if (filterOccupied) filterOccupied.innerText = occupied;
+        }
+
+        // Filter & Search Handler
+        function filterTables() {
+            const cards = document.querySelectorAll('.admin-table-card-wrapper');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const status = card.getAttribute('data-status');
+                const search = card.getAttribute('data-search') || '';
+
+                let matchFilter = true;
+                if (currentFilter === 'VACANT') matchFilter = (status === 'VACANT');
+                else if (currentFilter === 'OCCUPIED') matchFilter = (status === 'OCCUPIED');
+
+                let matchSearch = true;
+                if (searchQuery) matchSearch = search.includes(searchQuery);
+
+                if (matchFilter && matchSearch) {
+                    card.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            const noResults = document.getElementById('noAdminResults');
+            if (visibleCount === 0) noResults.classList.remove('d-none');
+            else noResults.classList.add('d-none');
+        }
+
+        // Filter Pills
+        document.querySelectorAll('.admin-filter-pill').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.admin-filter-pill').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.getAttribute('data-filter');
+                filterTables();
+            });
+        });
+
+        // Search Input
+        const searchInput = document.getElementById('tableSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                searchQuery = this.value.trim().toLowerCase();
+                filterTables();
+            });
+        }
+
+        // Asynchronous Table Vacancy Toggle
+        async function toggleVacancy(tableId, targetState = null) {
+            const tile = document.getElementById(`tile-table-${tableId}`);
+            const badge = document.getElementById(`badge-table-${tableId}`);
+            const cardWrapper = document.querySelector(`.admin-table-card-wrapper[data-table-id="${tableId}"]`);
+            const toggleCheckbox = document.getElementById(`toggle-${tableId}`);
+
+            try {
+                const payload = (targetState !== null) ? { is_occupied: targetState } : {};
+                const response = await fetch(`/api/table/${tableId}/toggle-vacancy`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const isOccupied = data.is_occupied;
+                    const statusText = isOccupied ? 'OCCUPIED' : 'VACANT';
+
+                    // Update DOM element states
+                    if (cardWrapper) cardWrapper.setAttribute('data-status', statusText);
+                    if (toggleCheckbox) toggleCheckbox.checked = isOccupied;
+
+                    if (tile) {
+                        tile.classList.toggle('status-occupied', isOccupied);
+                        tile.classList.toggle('status-vacant', !isOccupied);
+                    }
+
+                    if (badge) {
+                        badge.innerText = statusText;
+                        if (isOccupied) {
+                            badge.className = 'badge rounded-pill px-2 py-1 small table-status-badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25';
+                        } else {
+                            badge.className = 'badge rounded-pill px-2 py-1 small table-status-badge bg-success bg-opacity-10 text-success border border-success border-opacity-25';
+                        }
+                    }
+
+                    // Update tile details and buttons dynamically
+                    const detailsBox = document.getElementById(`details-table-${tableId}`);
+                    const actionsBox = document.getElementById(`actions-table-${tableId}`);
+
+                    if (isOccupied) {
+                        if (detailsBox) {
+                            detailsBox.innerHTML = `
+                                <div class="small">
+                                    <div class="d-flex justify-content-between text-muted mb-1">
+                                        <span>Guest:</span>
+                                        <strong class="text-truncate" style="max-width: 110px; color: var(--text-heading);">Table ${tableId} Guest</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted mb-1">
+                                        <span>Active Orders:</span>
+                                        <span class="badge bg-secondary rounded-pill">0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted">Live Bill:</span>
+                                        <strong class="text-success">₹0.00</strong>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        if (actionsBox) {
+                            actionsBox.innerHTML = `
+                                <div class="d-flex gap-1">
+                                    <a href="/bill/${tableId}/" class="btn btn-outline-secondary btn-sm rounded-pill flex-grow-1 text-truncate">
+                                        <i class="bi bi-receipt"></i> Bill
+                                    </a>
+                                    <button class="btn btn-danger btn-sm rounded-pill flex-grow-1 btn-clear-table text-truncate" data-table="${tableId}">
+                                        <i class="bi bi-x-circle"></i> Vacate
+                                    </button>
+                                </div>
+                            `;
+                            bindActionButtons();
+                        }
+                    } else {
+                        if (detailsBox) {
+                            detailsBox.innerHTML = `
+                                <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center py-2 text-muted small">
+                                    <i class="bi bi-cup-hot text-success fs-5 mb-1"></i>
+                                    <span>Ready for Guests</span>
+                                </div>
+                            `;
+                        }
+                        if (actionsBox) {
+                            actionsBox.innerHTML = `
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-outline-success btn-sm rounded-pill flex-grow-1 btn-seat-table text-truncate" data-table="${tableId}">
+                                        <i class="bi bi-person-plus"></i> Seat Guest
+                                    </button>
+                                    <a href="/menu/${tableId}/" class="btn btn-primary btn-sm rounded-pill flex-grow-1 text-truncate">
+                                        <i class="bi bi-cart"></i> Menu
+                                    </a>
+                                </div>
+                            `;
+                            bindActionButtons();
+                        }
+                    }
+
+                    recalculateKPIs();
+                    filterTables();
+                    showAdminToast('Table Status Updated', data.message, true);
+                } else {
+                    if (toggleCheckbox) toggleCheckbox.checked = !toggleCheckbox.checked;
+                    showAdminToast('Update Failed', data.error || 'Server error', false);
+                }
+            } catch (err) {
+                console.error('Toggle error:', err);
+                if (toggleCheckbox) toggleCheckbox.checked = !toggleCheckbox.checked;
+                showAdminToast('Network Error', 'Could not reach server', false);
+            }
+        }
+
+        // Toggle Switch Listeners
+        document.querySelectorAll('.table-vacancy-toggle').forEach(sw => {
+            sw.addEventListener('change', function () {
+                const tableId = this.getAttribute('data-table');
+                toggleVacancy(tableId, this.checked);
+            });
+        });
+
+        // Clear Table Orders & Mark Vacant
+        async function clearTableOrders(tableId) {
+            if (!confirm(`Are you sure you want to vacate Table ${tableId} and clear any active orders?`)) return;
+
+            try {
+                const response = await fetch(`/api/table/${tableId}/clear-orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAdminToast('Table Vacated', data.message, true);
+                    setTimeout(() => window.location.reload(), 600);
+                } else {
+                    showAdminToast('Vacate Failed', data.error, false);
+                }
+            } catch (err) {
+                showAdminToast('Error', 'Failed to vacate table', false);
+            }
+        }
+
+        function bindActionButtons() {
+            document.querySelectorAll('.btn-clear-table').forEach(btn => {
+                btn.onclick = function () {
+                    const tableId = this.getAttribute('data-table');
+                    clearTableOrders(tableId);
+                };
+            });
+
+            document.querySelectorAll('.btn-seat-table').forEach(btn => {
+                btn.onclick = function () {
+                    const tableId = this.getAttribute('data-table');
+                    toggleVacancy(tableId, true);
+                };
+            });
+        }
+        bindActionButtons();
+
+        // Bulk Actions
+        const btnFreeAll = document.getElementById('btnFreeAllTables');
+        if (btnFreeAll) {
+            btnFreeAll.addEventListener('click', async function () {
+                if (!confirm('Free and mark ALL tables as VACANT?')) return;
+                try {
+                    const response = await fetch('/api/table/bulk-action', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'free_all', complete_orders: true })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        showAdminToast('Bulk Success', data.message, true);
+                        setTimeout(() => window.location.reload(), 600);
+                    }
+                } catch (err) {
+                    showAdminToast('Error', 'Bulk action failed', false);
+                }
+            });
+        }
+
+        const btnOccupyAll = document.getElementById('btnOccupyAllTables');
+        if (btnOccupyAll) {
+            btnOccupyAll.addEventListener('click', async function () {
+                if (!confirm('Mark ALL tables as OCCUPIED?')) return;
+                try {
+                    const response = await fetch('/api/table/bulk-action', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'occupy_all' })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        showAdminToast('Bulk Success', data.message, true);
+                        setTimeout(() => window.location.reload(), 600);
+                    }
+                } catch (err) {
+                    showAdminToast('Error', 'Bulk action failed', false);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+

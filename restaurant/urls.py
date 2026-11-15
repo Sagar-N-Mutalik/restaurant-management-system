@@ -16,6 +16,12 @@ urlpatterns = [
     path('payment/<int:table_id>/process/', views.process_payment_view, name='process_payment'),
     path('thank-you/', views.thank_you_view, name='thank_you'),
 
+    # Table Vacancy Admin Panel & APIs
+    path('table-admin/', views.table_admin_view, name='table_admin'),
+    path('api/table/<int:table_id>/toggle-vacancy', views.api_toggle_table_vacancy, name='api_toggle_table_vacancy'),
+    path('api/table/<int:table_id>/clear-orders', views.api_clear_table_orders, name='api_clear_table_orders'),
+    path('api/table/bulk-action', views.api_bulk_table_action, name='api_bulk_table_action'),
+
     # API Routes calling the Facade
     path('api/order', views.create_order_view, name='api_create_order'),
     path('api/order/<int:order_id>/ready', views.mark_order_ready_view, name='api_order_ready'),

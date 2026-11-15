@@ -21,6 +21,7 @@
             --bg-body: #f8fafc;
             --surface-card: #ffffff;
             --surface-elevated: #ffffff;
+            --surface-subtle: #f1f5f9;
             --text-heading: #0f172a;
             --text-body: #334155;
             --text-muted: #64748b;
@@ -31,19 +32,22 @@
             --vegan-color: #0d9488;
             --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
             --card-hover-shadow: 0 16px 32px -4px rgba(15, 23, 42, 0.1);
+            --glow-accent: rgba(249, 115, 22, 0.2);
         }
 
         body.dark-mode {
-            --bg-body: #0b0f19;
-            --surface-card: #151d2f;
-            --surface-elevated: #1e293b;
+            --bg-body: #090d16;
+            --surface-card: #131b2e;
+            --surface-elevated: #1a243c;
+            --surface-subtle: #172136;
             --text-heading: #f8fafc;
             --text-body: #cbd5e1;
             --text-muted: #94a3b8;
             --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.16);
-            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
-            --card-hover-shadow: 0 16px 32px -4px rgba(0, 0, 0, 0.6);
+            --border-hover: rgba(255, 255, 255, 0.18);
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+            --card-hover-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.08);
+            --glow-accent: rgba(249, 115, 22, 0.35);
         }
 
         * {
@@ -57,7 +61,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.25s ease, color 0.25s ease;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -100,9 +104,9 @@
         }
 
         body.dark-mode .navbar-main {
-            background: rgba(11, 15, 25, 0.88) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.5);
+            background: rgba(9, 13, 22, 0.9) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.6);
         }
 
         .navbar-brand {
@@ -157,7 +161,7 @@
         }
 
         body.dark-mode #clock-pill {
-            background-color: rgba(30, 41, 59, 0.7);
+            background-color: rgba(23, 33, 54, 0.8);
             border-color: rgba(255, 255, 255, 0.08);
             color: #e2e8f0;
         }
@@ -184,7 +188,7 @@
         }
 
         body.dark-mode .btn-theme-toggle {
-            background: #1e293b;
+            background: #172136;
             border-color: rgba(255, 255, 255, 0.1);
             color: #f8fafc;
         }
@@ -253,7 +257,7 @@
         }
 
         body.dark-mode #global-spinner-overlay {
-            background: rgba(11, 15, 25, 0.9);
+            background: rgba(9, 13, 22, 0.92);
             color: #f8fafc;
         }
 
@@ -269,18 +273,33 @@
             color: var(--brand-primary);
         }
 
-        /* Utility Card Styles */
-        .card-custom {
+        /* Universal Bootstrap Dark Mode Overrides */
+        body.dark-mode .card {
             background-color: var(--surface-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 1rem;
-            box-shadow: var(--card-shadow);
-            transition: all 0.25s ease;
+            border-color: var(--border-subtle);
+            color: var(--text-body);
         }
 
-        .card-custom:hover {
-            box-shadow: var(--card-hover-shadow);
-            border-color: var(--border-hover);
+        body.dark-mode .form-control,
+        body.dark-mode .form-select {
+            background-color: var(--surface-subtle);
+            border-color: var(--border-subtle);
+            color: var(--text-heading);
+        }
+
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus {
+            background-color: var(--surface-subtle);
+            border-color: var(--brand-primary);
+            color: var(--text-heading);
+            box-shadow: 0 0 0 0.25rem rgba(249, 115, 22, 0.25);
+        }
+
+        body.dark-mode .modal-content,
+        body.dark-mode .offcanvas {
+            background-color: var(--surface-card);
+            border-color: var(--border-subtle);
+            color: var(--text-body);
         }
 
         /* Footer */
@@ -343,6 +362,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link-custom" href="{% url 'table_admin' %}">
+                            <i class="bi bi-shield-lock-fill"></i> Table Admin
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link-custom" href="{% url 'staff_dashboard' %}">
                             <i class="bi bi-kanban-fill"></i> Kitchen KDS
                         </a>
@@ -382,6 +406,7 @@
                 </div>
                 <div class="d-flex gap-4">
                     <a href="{% url 'index' %}">Home</a>
+                    <a href="{% url 'table_admin' %}">Table Admin</a>
                     <a href="{% url 'staff_dashboard' %}">Kitchen KDS</a>
                     <a href="{% url 'test_reports' %}">Test Reports</a>
                     <a href="{% url 'testing_guide' %}">Testing Guide</a>
@@ -441,6 +466,15 @@
                     syncThemeIcon();
                 });
             }
+
+            // Highlight Active Nav Link
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-link-custom').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+                    link.classList.add('active');
+                }
+            });
         });
 
         // Spinner Helpers

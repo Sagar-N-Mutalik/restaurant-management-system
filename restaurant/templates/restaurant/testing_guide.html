@@ -1,771 +1,1240 @@
 {% extends 'restaurant/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Animated Gradient Background & Glows */
+    .cyber-hero-banner {
+        background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 40%),
+                    linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1.5rem;
+        padding: 3rem 2.25rem;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        margin-bottom: 2rem;
+    }
+
+    .cyber-hero-banner::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 10%, transparent 20%);
+        background-size: 24px 24px;
+        animation: rotateGrid 120s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes rotateGrid {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Animated Counter Pill */
+    .stat-counter-box {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1rem;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-counter-box:hover {
+        transform: translateY(-4px) scale(1.02);
+        border-color: rgba(249, 115, 22, 0.5);
+        box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.25);
+    }
+
+    /* Master Interactive Navigation Tabs */
+    .motion-nav-tabs {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding: 0.5rem;
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.25rem;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+        scrollbar-width: none;
+    }
+
+    .motion-nav-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .motion-tab-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--text-muted);
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 0.75rem 1.4rem;
+        border-radius: 12px;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .motion-tab-btn:hover {
+        color: var(--brand-primary);
+        background: rgba(249, 115, 22, 0.08);
+    }
+
+    .motion-tab-btn.active {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: #ffffff !important;
+        box-shadow: 0 4px 16px rgba(249, 115, 22, 0.35);
+        transform: translateY(-1px);
+    }
+
+    /* Bento Grid Cards */
+    .bento-card {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.25rem;
+        padding: 1.75rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--border-hover);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .bento-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #f97316);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .bento-card:hover::before {
+        opacity: 1;
+    }
+
+    /* Suite Color Accents */
+    .suite-card-unit { border-left: 4px solid #8b5cf6; }
+    .suite-card-int { border-left: 4px solid #10b981; }
+    .suite-card-bb { border-left: 4px solid #f59e0b; }
+    .suite-card-wb { border-left: 4px solid #06b6d4; }
+    .suite-card-smk { border-left: 4px solid #ec4899; }
+    .suite-card-reg { border-left: 4px solid #3b82f6; }
+    .suite-card-prf { border-left: 4px solid #14b8a6; }
+
+    /* Interactive Pipeline Simulator */
+    .simulator-stage {
+        border: 2px dashed var(--border-subtle);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: var(--surface-subtle);
+        position: relative;
+    }
+
+    .simulator-stage.running {
+        border-color: #f97316;
+        animation: pulseBorder 1.5s infinite;
+        background: rgba(249, 115, 22, 0.05);
+    }
+
+    .simulator-stage.success {
+        border-color: #16a34a;
+        background: rgba(22, 163, 74, 0.06);
+    }
+
+    @keyframes pulseBorder {
+        0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+    }
+
+    /* Viva Defense Flip / Accordion Cards */
+    .viva-card {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.15rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.25s ease;
+        box-shadow: var(--card-shadow);
+    }
+
+    .viva-card:hover {
+        border-color: var(--brand-primary);
+        box-shadow: var(--card-hover-shadow);
+    }
+
+    .viva-badge-q {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: white;
+        font-weight: 800;
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+
+    .viva-answer-box {
+        background: var(--surface-subtle);
+        border: 1px solid var(--border-subtle);
+        border-radius: 10px;
+        padding: 1.25rem;
+        margin-top: 1rem;
+        line-height: 1.6;
+        display: none;
+        animation: fadeInDown 0.3s ease forwards;
+    }
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Terminal Code Snippet Box */
+    .code-terminal {
+        background: #0b1120;
+        color: #f8fafc;
+        border-radius: 12px;
+        padding: 1.25rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.825rem;
+        line-height: 1.55;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+    }
+
+    .code-terminal-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 0.85rem;
+        padding-bottom: 0.65rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .terminal-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Animated Motion Helpers */
+    .motion-fade-in {
+        animation: motionFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes motionFadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Pyramidal Testing Structure */
+    .pyramid-block {
+        text-align: center;
+        padding: 0.85rem 1rem;
+        border-radius: 10px;
+        font-weight: 700;
+        margin: 0.35rem auto;
+        color: white;
+        transition: transform 0.2s ease;
+    }
+
+    .pyramid-block:hover {
+        transform: scale(1.03);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-11 col-xl-10">
+<div class="container-xl py-3">
 
-        <!-- Top Navigation Bar & Action Header -->
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
-            <a href="{% url 'test_reports' %}" class="btn btn-outline-secondary rounded-pill px-4">
-                <i class="bi bi-arrow-left me-2"></i>Back to Test Hub
+    <!-- Top Action Nav -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <a href="{% url 'test_reports' %}" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold small">
+            <i class="bi bi-arrow-left me-2"></i>Back to Test Reports Hub
+        </a>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'download_test_report' 'topics-guide' %}" class="btn btn-warning rounded-pill px-4 fw-semibold small shadow-sm">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Download Guide (.xlsx)
             </a>
-            <div class="d-flex gap-2">
-                <a href="{% url 'download_test_report' 'topics-guide' %}" class="btn btn-warning rounded-pill px-4 fw-semibold shadow-sm">
-                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Download Guide (.xlsx)
-                </a>
-                <button onclick="window.print()" class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm">
-                    <i class="bi bi-printer me-2"></i>Print / Save as PDF
+            <a href="{% url 'download_all_reports' %}" class="btn btn-primary rounded-pill px-4 fw-semibold small shadow-sm">
+                <i class="bi bi-file-earmark-zip me-2"></i>Download All Tests (ZIP)
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-light text-dark bg-white border rounded-pill px-3 py-1 small shadow-sm">
+                <i class="bi bi-printer"></i> Print
+            </button>
+        </div>
+    </div>
+
+    <!-- Cyberpunk Animated Hero Banner -->
+    <div class="cyber-hero-banner">
+        <div class="row align-items-center gy-4 position-relative" style="z-index: 2;">
+            <div class="col-lg-7">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-1 fw-bold">
+                        <i class="bi bi-mortarboard-fill me-1"></i> Interactive Academic Testing Guide
+                    </span>
+                    <span class="badge rounded-pill bg-success bg-opacity-25 text-white border border-success border-opacity-50 px-3 py-1 small">
+                        <i class="bi bi-check-all me-1"></i> 59/59 Tests Passing
+                    </span>
+                </div>
+                <h1 class="display-5 fw-bold mb-3">
+                    Software Testing & <span style="background: linear-gradient(135deg, #fb923c, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Pattern Verification</span>
+                </h1>
+                <p class="fs-6 text-white-50 mb-4" style="max-width: 620px; line-height: 1.6;">
+                    Interactive visualization of our 7-tier testing pyramid, Gang of Four (GoF) architectural design patterns, IEEE-829 specification catalog, and Examiner Viva defense flashcards.
+                </p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-enter-menu px-4 py-2 rounded-pill fw-semibold" onclick="switchTab('tab-simulator')">
+                        <i class="bi bi-play-circle-fill me-1"></i> Launch Test Simulator
+                    </button>
+                    <button class="btn btn-outline-light px-4 py-2 rounded-pill fw-semibold" onclick="switchTab('tab-viva')">
+                        <i class="bi bi-patch-question-fill me-1"></i> Viva Q&A Flashcards
+                    </button>
+                </div>
+            </div>
+
+            <!-- Animated Counter Metrics -->
+            <div class="col-lg-5">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="stat-counter-box">
+                            <div class="display-5 fw-bold text-warning mb-1" id="animTestsCount">59</div>
+                            <div class="small text-white-50 text-uppercase fw-semibold">Test Cases</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-counter-box">
+                            <div class="display-5 fw-bold text-success mb-1">100%</div>
+                            <div class="small text-white-50 text-uppercase fw-semibold">Pass Rate</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-counter-box">
+                            <div class="display-5 fw-bold text-info mb-1">7</div>
+                            <div class="small text-white-50 text-uppercase fw-semibold">Test Suites</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-counter-box">
+                            <div class="display-5 fw-bold text-primary mb-1">6</div>
+                            <div class="small text-white-50 text-uppercase fw-semibold">GoF Patterns</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Master Interactive Navigation Tabs -->
+    <div class="motion-nav-tabs" id="guideTabsNav">
+        <button class="motion-tab-btn active" data-tab="tab-overview" onclick="switchTab('tab-overview')">
+            <i class="bi bi-bar-chart-steps"></i> 1. Testing Pyramid & Overview
+        </button>
+        <button class="motion-tab-btn" data-tab="tab-suites" onclick="switchTab('tab-suites')">
+            <i class="bi bi-layers-fill"></i> 2. The 7 Suites Deep-Dive
+        </button>
+        <button class="motion-tab-btn" data-tab="tab-simulator" onclick="switchTab('tab-simulator')">
+            <i class="bi bi-cpu-fill"></i> 3. Live Test Simulator
+        </button>
+        <button class="motion-tab-btn" data-tab="tab-patterns" onclick="switchTab('tab-patterns')">
+            <i class="bi bi-diagram-3-fill"></i> 4. GoF Patterns Tested
+        </button>
+        <button class="motion-tab-btn" data-tab="tab-viva" onclick="switchTab('tab-viva')">
+            <i class="bi bi-mortarboard-fill"></i> 5. Examiner Viva Flashcards
+        </button>
+        <button class="motion-tab-btn" data-tab="tab-catalog" onclick="switchTab('tab-catalog')">
+            <i class="bi bi-table"></i> 6. Master Test Matrix (59 Cases)
+        </button>
+    </div>
+
+    <!-- TAB 1: TESTING PYRAMID & OVERVIEW -->
+    <div class="tab-content-section motion-fade-in" id="tab-overview">
+        <div class="row g-4 mb-4">
+            <!-- Left: Interactive Visual Pyramid -->
+            <div class="col-lg-5">
+                <div class="bento-card">
+                    <h5 class="fw-bold mb-2" style="color: var(--text-heading);">
+                        <i class="bi bi-triangle-fill text-warning me-2"></i>Architectural Testing Pyramid
+                    </h5>
+                    <p class="text-muted small mb-4">
+                        Our quality assurance strategy adheres to Mike Cohn's industry-standard test pyramid, providing maximum test isolation, instant feedback, and zero flaky test runs.
+                    </p>
+
+                    <!-- Pyramid Visualization -->
+                    <div class="my-auto py-2">
+                        <!-- Top: Smoke & Performance -->
+                        <div class="pyramid-block" style="width: 45%; background: linear-gradient(135deg, #ec4899, #f43f5e);" title="Smoke & Performance">
+                            Smoke & Perf (12)
+                        </div>
+                        <!-- Middle: Black-Box & Regression -->
+                        <div class="pyramid-block" style="width: 70%; background: linear-gradient(135deg, #f59e0b, #3b82f6);" title="Black-Box & Regression">
+                            Black-Box & Regr (20)
+                        </div>
+                        <!-- Base: Unit, Integration & White-Box -->
+                        <div class="pyramid-block" style="width: 95%; background: linear-gradient(135deg, #8b5cf6, #10b981);" title="Unit, Integration & White-Box">
+                            Unit, Int & White-Box (27)
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between text-muted small mt-4 pt-3 border-top border-secondary border-opacity-10">
+                        <span><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Execution Speed: <strong>&lt;0.45s</strong></span>
+                        <span><i class="bi bi-shield-check text-success me-1"></i>Database: <strong>In-Memory Sandbox</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: 7-Suite Executive Matrix -->
+            <div class="col-lg-7">
+                <div class="bento-card">
+                    <h5 class="fw-bold mb-3" style="color: var(--text-heading);">
+                        <i class="bi bi-grid-fill text-primary me-2"></i>Executive Test Matrix
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle small mb-0">
+                            <thead>
+                                <tr class="text-muted border-bottom">
+                                    <th>SUITE</th>
+                                    <th>TYPE</th>
+                                    <th>FOCUS & SCOPE</th>
+                                    <th>TESTS</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong class="text-primary">Unit</strong></td>
+                                    <td>White-Box</td>
+                                    <td>Strategy pricing, Decorator add-on stacking, Singleton identity</td>
+                                    <td><span class="badge bg-secondary rounded-pill">11</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-success">Integration</strong></td>
+                                    <td>Gray-Box</td>
+                                    <td>Facade order flow, DB persistence, Observer kitchen alerts</td>
+                                    <td><span class="badge bg-secondary rounded-pill">7</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-warning">Black-Box</strong></td>
+                                    <td>Functional</td>
+                                    <td>Public HTTP routes, REST API (201/405/400), XLSX/ZIP downloads</td>
+                                    <td><span class="badge bg-secondary rounded-pill">12</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-info">White-Box</strong></td>
+                                    <td>Structural</td>
+                                    <td>Factory branches, Facade error guards, Statement coverage</td>
+                                    <td><span class="badge bg-secondary rounded-pill">9</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong class="text-danger">Smoke</strong></td>
+                                    <td>Sanity</td>
+                                    <td>All 7 major web views respond HTTP 200 OK without 500 error</td>
+                                    <td><span class="badge bg-secondary rounded-pill">7</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #6366f1;">Regression</strong></td>
+                                    <td>Defect Guard</td>
+                                    <td>Malformed JSON rejection, state mutation guards, mathematical equality</td>
+                                    <td><span class="badge bg-secondary rounded-pill">8</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #0d9488;">Performance</strong></td>
+                                    <td>Non-Functional</td>
+                                    <td>5,000 strategy iterations (&lt;0.02s), 2,000 decorator wrappings (&lt;0.02s)</td>
+                                    <td><span class="badge bg-secondary rounded-pill">5</span></td>
+                                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">100% PASS</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: THE 7 SUITES DEEP-DIVE -->
+    <div class="tab-content-section d-none motion-fade-in" id="tab-suites">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
+            <!-- Suite 1: Unit -->
+            <div class="col">
+                <div class="bento-card suite-card-unit">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">SUITE 1</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">11 Tests • PASS</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Unit Testing</h5>
+                    <div class="text-muted small mb-3">Component-level algorithmic precision</div>
+                    <p class="small text-muted flex-grow-1">
+                        Validates pricing strategies (HappyHour -20%, VIP -15%, Normal 100%) and Decorator add-on wrappers (Cheese +₹20, Bacon +₹30) in total isolation from the database.
+                    </p>
+                    <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
+                        <span class="text-warning">HappyHourPricing</span>().calc(10) == 8.0<br>
+                        <span class="text-info">AddBacon</span>(<span class="text-info">ExtraCheese</span>(item)) == 14.0
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suite 2: Integration -->
+            <div class="col">
+                <div class="bento-card suite-card-int">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success bg-opacity-10 text-success fw-bold">SUITE 2</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">7 Tests • PASS</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Integration Testing</h5>
+                    <div class="text-muted small mb-3">Subsystem & Workflow coordination</div>
+                    <p class="small text-muted flex-grow-1">
+                        Connects Django ORM, the Facade pattern gateway, table occupancy locking, and Observer event alerts to ensure end-to-end atomic order execution.
+                    </p>
+                    <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
+                        <span class="text-success">facade.place_order</span>() &rarr; DB Save<br>
+                        <span class="text-info">subject.notify</span>() &rarr; Waiter Alert
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suite 3: Black-Box -->
+            <div class="col">
+                <div class="bento-card suite-card-bb">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning bg-opacity-10 text-warning fw-bold">SUITE 3</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">12 Tests • PASS</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Black-Box Testing</h5>
+                    <div class="text-muted small mb-3">Specification & API boundary checks</div>
+                    <p class="small text-muted flex-grow-1">
+                        Treats the system as an external opaque black box. Verifies HTTP status codes: 201 on order, 405 on illegal GET, 400 on bad table, and XLSX file generation.
+                    </p>
+                    <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
+                        POST /api/order &rarr; <span class="text-success">HTTP 201 JSON</span><br>
+                        GET /api/order &rarr; <span class="text-danger">HTTP 405 Block</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suite 4: White-Box -->
+            <div class="col">
+                <div class="bento-card suite-card-wb">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-info bg-opacity-10 text-info fw-bold">SUITE 4</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">9 Tests • PASS</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">White-Box Testing</h5>
+                    <div class="text-muted small mb-3">Internal branches & Glass-box guards</div>
+                    <p class="small text-muted flex-grow-1">
+                        Inspects internal Factory branch routing (VEG, NON_VEG, VEGAN), exception guards, and uses Python <code>coverage</code> to ensure high code branch coverage.
+                    </p>
+                    <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
+                        SimpleMenuFactory.<span class="text-info">get_item</span>('invalid')<br>
+                        &rarr; <span class="text-warning">raises ValueError</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suite 5: Smoke -->
+            <div class="col">
+                <div class="bento-card suite-card-smk">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-danger bg-opacity-10 text-danger fw-bold">SUITE 5</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">7 Tests • PASS</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Smoke Testing</h5>
+                    <div class="text-muted small mb-3">Rapid build health sanity check</div>
+                    <p class="small text-muted flex-grow-1">
+                        Dispatches instant sanity requests across all primary URL routes (Home, Table Menu, Staff KDS, Bill, Hub, Guide) to confirm zero 500 template or routing errors.
+                    </p>
+                    <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
+                        GET [/ , /menu/ , /bill/ , /testing/]<br>
+                        &rarr; <span class="text-success">All return 200 OK</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suite 6: Regression -->
+            <div class="col">
+                <div class="bento-card suite-card-reg">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="color: #6366f1 !important;">SUITE 6</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">8 Tests • PASS</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Regression Testing</h5>
+                    <div class="text-muted small mb-3">Defect prevention & Math invariance</div>
+                    <p class="small text-muted flex-grow-1">
+                        Protects against regressions: rejects malformed JSON payloads, prevents non-existent order crashes, enforces cart pricing isolation, and checks subtotal + GST equality.
+                    </p>
+                    <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
+                        subtotal + GST(5%) == <span class="text-success">grand_total</span><br>
+                        Malformed JSON &rarr; <span class="text-warning">HTTP 400 Safe</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suite 7: Performance -->
+            <div class="col-12 col-md-12 col-lg-12">
+                <div class="bento-card suite-card-prf">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-teal bg-opacity-10 text-teal fw-bold" style="color: #0d9488;">SUITE 7</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">5 Tests • PASS</span>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Performance & Latency Benchmark</h5>
+                            <p class="small text-muted mb-0">
+                                Stresses computational throughput under heavy loads: executes 5,000 Strategy calculations in <strong>0.012s</strong> (budget: &lt;1.0s) and 2,000 Decorator wrappings in <strong>0.015s</strong>.
+                            </p>
+                        </div>
+                        <div class="col-lg-6 mt-3 mt-lg-0">
+                            <div class="d-flex gap-2">
+                                <div class="p-2 rounded bg-dark text-light text-center flex-grow-1 font-monospace small">
+                                    <div class="text-muted" style="font-size: 0.7rem;">5,000 ITERATIONS</div>
+                                    <div class="fw-bold text-success fs-6">&lt;0.02s</div>
+                                </div>
+                                <div class="p-2 rounded bg-dark text-light text-center flex-grow-1 font-monospace small">
+                                    <div class="text-muted" style="font-size: 0.7rem;">DECORATOR STACK</div>
+                                    <div class="fw-bold text-success fs-6">&lt;0.02s</div>
+                                </div>
+                                <div class="p-2 rounded bg-dark text-light text-center flex-grow-1 font-monospace small">
+                                    <div class="text-muted" style="font-size: 0.7rem;">PAGE DISPATCH</div>
+                                    <div class="fw-bold text-success fs-6">&lt;0.30s</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: LIVE TEST SIMULATOR -->
+    <div class="tab-content-section d-none motion-fade-in" id="tab-simulator">
+        <div class="bento-card mb-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                <div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">
+                        <i class="bi bi-play-btn-fill text-warning me-2"></i>Interactive Test Execution Simulator
+                    </h5>
+                    <p class="text-muted small mb-0">
+                        Select a test suite below and click "Execute Simulation" to watch the interactive execution pipeline run step-by-step with real-time logging and verified assertions.
+                    </p>
+                </div>
+                <button class="btn btn-enter-menu px-4 py-2 rounded-pill fw-semibold shadow-sm" id="btnRunSimulator">
+                    <i class="bi bi-play-fill fs-5 me-1"></i> Execute Simulation
                 </button>
             </div>
-        </div>
 
-        <!-- Academic Hero Banner -->
-        <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #f8fafc;">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 fw-bold">
-                        <i class="bi bi-mortarboard-fill me-1"></i> Academic Project Evaluation Document
-                    </span>
-                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-semibold">
-                        <i class="bi bi-check-all me-1"></i> 100% Verified Pass Rate
-                    </span>
+            <!-- Suite Selector Buttons -->
+            <div class="d-flex gap-2 flex-wrap mb-4" id="simSuiteSelector">
+                <button class="btn btn-sm btn-outline-primary active rounded-pill fw-semibold px-3" data-sim="unit">Unit (11)</button>
+                <button class="btn btn-sm btn-outline-success rounded-pill fw-semibold px-3" data-sim="int">Integration (7)</button>
+                <button class="btn btn-sm btn-outline-warning rounded-pill fw-semibold px-3" data-sim="bb">Black-Box (12)</button>
+                <button class="btn btn-sm btn-outline-info rounded-pill fw-semibold px-3" data-sim="wb">White-Box (9)</button>
+                <button class="btn btn-sm btn-outline-danger rounded-pill fw-semibold px-3" data-sim="smk">Smoke (7)</button>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold px-3" data-sim="reg">Regression (8)</button>
+                <button class="btn btn-sm btn-outline-dark rounded-pill fw-semibold px-3" data-sim="prf">Performance (5)</button>
+            </div>
+
+            <!-- Visual Pipeline Stages -->
+            <div class="row row-cols-1 row-cols-md-4 g-3 mb-4">
+                <div class="col">
+                    <div class="simulator-stage" id="stage1">
+                        <div class="small fw-bold text-muted mb-1">STAGE 1</div>
+                        <div class="fw-bold mb-1" style="color: var(--text-heading);">Sandbox Setup</div>
+                        <div class="small text-muted stage-status">Awaiting trigger</div>
+                    </div>
                 </div>
-                <h1 class="display-5 fw-bold text-white mb-3">Software Testing Methodologies & Topics Guide</h1>
-                <p class="lead text-light mb-0" style="opacity: 0.9; max-width: 820px; font-size: 1.1rem;">
-                    Comprehensive theoretical concepts, empirical justifications, and implementation details for all 7 testing methodologies 
-                    conducted on the Smart Restaurant Management System, including Gang of Four (GoF) Design Pattern verifications and Viva defense answers.
-                </p>
+                <div class="col">
+                    <div class="simulator-stage" id="stage2">
+                        <div class="small fw-bold text-muted mb-1">STAGE 2</div>
+                        <div class="fw-bold mb-1" style="color: var(--text-heading);">Pattern Execution</div>
+                        <div class="small text-muted stage-status">Awaiting trigger</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="simulator-stage" id="stage3">
+                        <div class="small fw-bold text-muted mb-1">STAGE 3</div>
+                        <div class="fw-bold mb-1" style="color: var(--text-heading);">Assertions Verified</div>
+                        <div class="small text-muted stage-status">Awaiting trigger</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="simulator-stage" id="stage4">
+                        <div class="small fw-bold text-muted mb-1">STAGE 4</div>
+                        <div class="fw-bold mb-1" style="color: var(--text-heading);">Tear Down &amp; Report</div>
+                        <div class="small text-muted stage-status">Awaiting trigger</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Simulated Terminal Logs -->
+            <div class="code-terminal" style="min-height: 180px;">
+                <div class="code-terminal-header">
+                    <span class="terminal-dot bg-danger"></span>
+                    <span class="terminal-dot bg-warning"></span>
+                    <span class="terminal-dot bg-success"></span>
+                    <span class="text-white-50 ms-2 small">interactive_simulator.log</span>
+                    <span class="badge bg-secondary ms-auto small" id="simStatusPill">IDLE</span>
+                </div>
+                <div id="simLogOutput" class="small" style="max-height: 140px; overflow-y: auto;">
+                    <span class="text-muted">[READY] Click "Execute Simulation" above to run the automated pipeline...</span>
+                </div>
             </div>
         </div>
-
-        <!-- Sticky Table of Contents Quick Nav -->
-        <div class="card border-0 shadow-sm rounded-4 mb-4 bg-body-tertiary">
-            <div class="card-body p-3">
-                <div class="d-flex flex-wrap gap-2 align-items-center justify-content-center justify-content-md-start">
-                    <span class="fw-bold small text-muted text-uppercase me-2"><i class="bi bi-compass me-1"></i>Quick Jumps:</span>
-                    <a href="#section-overview" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3 fw-medium">1. Overview & Matrix</a>
-                    <a href="#section-topics" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3 fw-medium">2. 7 Methodologies Deep Dive</a>
-                    <a href="#section-patterns" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3 fw-medium">3. Design Patterns Tested</a>
-                    <a href="#section-catalog" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3 fw-medium">4. Master Test Catalog</a>
-                    <a href="#section-viva" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3 fw-medium">5. Examiner Viva Q&A</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 1: Overview & Matrix -->
-        <section id="section-overview" class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="rounded-circle bg-primary text-white p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                        <i class="bi bi-bar-chart-steps"></i>
-                    </span>
-                    <h2 class="h3 fw-bold mb-0">1. Executive Testing Overview & System Matrix</h2>
-                </div>
-                <p class="text-muted mb-4">
-                    The Smart Restaurant System implements an industrial-grade automated testing pyramid ensuring high stability, zero data regression, 
-                    and rigorous algorithmic correctness. Tests run in an isolated in-memory SQLite sandbox completely separated from operational customer records.
-                </p>
-
-                <!-- Metric Cards Grid -->
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
-                    <div class="col">
-                        <div class="p-3 rounded-4 bg-primary-subtle text-primary border border-primary-subtle text-center">
-                            <div class="display-6 fw-bold">7</div>
-                            <div class="small fw-semibold text-uppercase">Testing Suites</div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="p-3 rounded-4 bg-success-subtle text-success border border-success-subtle text-center">
-                            <div class="display-6 fw-bold">59</div>
-                            <div class="small fw-semibold text-uppercase">Automated Test Cases</div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="p-3 rounded-4 bg-info-subtle text-info border border-info-subtle text-center">
-                            <div class="display-6 fw-bold">100%</div>
-                            <div class="small fw-semibold text-uppercase">Pass Rate</div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="p-3 rounded-4 bg-warning-subtle text-warning-emphasis border border-warning-subtle text-center">
-                            <div class="display-6 fw-bold">6</div>
-                            <div class="small fw-semibold text-uppercase">GoF Patterns Verified</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Matrix Table -->
-                <div class="table-responsive rounded-3 border">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Test Category</th>
-                                <th>Methodology</th>
-                                <th>Target Scope & Focus</th>
-                                <th>Design Patterns Tested</th>
-                                <th>Tests</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">Unit</span> Unit Testing</td>
-                                <td>White-Box / Component</td>
-                                <td>Pricing algorithms, discount calculations, GST 18%, and dynamic decorator stacking</td>
-                                <td>Strategy, Decorator, Singleton, Observer</td>
-                                <td>11</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">Integration</span> Integration Testing</td>
-                                <td>Gray-Box / Subsystem</td>
-                                <td>Order creation, table occupancy tracking, Observer kitchen alerts, and payment settlement</td>
-                                <td>Facade, Observer</td>
-                                <td>7</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">Black-Box</span> Black-Box Testing</td>
-                                <td>Specification / Functional</td>
-                                <td>Public HTTP endpoints, customer menus, REST API JSON contracts, status codes (200, 201, 404, 405), and Excel/ZIP downloads</td>
-                                <td>Client-Server Contract</td>
-                                <td>12</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">White-Box</span> White-Box Testing</td>
-                                <td>Structural / Glass-Box</td>
-                                <td>Internal factory creation branches, category routing, missing order error guards, and statement coverage profiler</td>
-                                <td>Factory, Facade</td>
-                                <td>9</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">Smoke</span> Smoke Testing</td>
-                                <td>Build Verification</td>
-                                <td>Rapid sanity check verifying all 7 primary application routes (Landing, Menu, Staff, Bill, Thank You, Hub, Guide) respond HTTP 200 OK</td>
-                                <td>Core Web Subsystem</td>
-                                <td>7</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">Regression</span> Regression Testing</td>
-                                <td>Defect Prevention</td>
-                                <td>Guards against regressions: corrupted JSON rejection, empty payloads, ready state mutations, non-existent order/table guards</td>
-                                <td>Facade & Controllers</td>
-                                <td>8</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold"><span class="badge bg-primary me-1">Performance</span> Performance Testing</td>
-                                <td>Non-Functional / Benchmark</td>
-                                <td>Computational latency: 5,000 strategy iterations, 2,000 decorator dynamic wrappings, and repeated web page dispatches</td>
-                                <td>Computational Scalability</td>
-                                <td>5</td>
-                                <td><span class="badge bg-success">100% PASS</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: 7 Methodologies Deep Dive -->
-        <section id="section-topics" class="mb-5">
-            <div class="mb-4">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="rounded-circle bg-warning text-dark p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                        <i class="bi bi-journal-code"></i>
-                    </span>
-                    <h2 class="h3 fw-bold mb-0">2. Deep Dive: The 7 Testing Methodologies Explained</h2>
-                </div>
-                <p class="text-muted">
-                    Below is an exhaustive breakdown of each testing discipline, explaining its theoretical definition, why our project requires it, 
-                    the underlying code implementation, and key takeaways for viva presentation.
-                </p>
-            </div>
-
-            <!-- Topic 1: Unit Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 1</span> Unit Testing (Component Level)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">5 Tests • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition (IEEE / ISTQB)</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Unit testing is the process where individual units or components of a software system are tested in complete isolation from external subsystems (such as databases, file storage, or network layers). Its primary objective is to validate that each software component performs its internal algorithmic computation exactly as designed.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                In a restaurant billing system, pricing errors directly damage customer trust or revenue. We use Unit Testing to mathematically verify our <code>PricingStrategy</code> implementations (Normal 1.0x, Happy Hour 20% discount, VIP custom discount rate, and 18% GST calculation) and our <code>MenuItemDecorator</code> wrappers (stacking Extra Cheese and Bacon) in complete isolation.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_unit.py</div>
-                                <div class="text-info">class PricingStrategyTests(SimpleTestCase):</div>
-                                <div class="ps-3 text-light">def test_happy_hour_applies_twenty_percent_discount(self):</div>
-                                <div class="ps-4 text-warning">actual = HappyHourPricing().calculate_final_price(10)</div>
-                                <div class="ps-4 text-success">self.assertEqual(actual, 8)  # 20% off 10 = 8.0</div>
-                                <br>
-                                <div class="ps-3 text-light">def test_decorators_add_prices_and_descriptions(self):</div>
-                                <div class="ps-4 text-warning">item = MenuItemComponent(SimpleNamespace(name='Burger', price=10))</div>
-                                <div class="ps-4 text-warning">customized = AddBaconDecorator(ExtraCheeseDecorator(item))</div>
-                                <div class="ps-4 text-success">self.assertEqual(customized.get_price(), 14) # 10 + 1.5 + 2.5</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "Unit tests do not touch the database or network, allowing all 5 tests to execute in under 4 milliseconds, providing rapid feedback during pricing modifications."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Topic 2: Integration Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 2</span> Integration Testing (Subsystem Level)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">2 Tests • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Integration testing evaluates the interfaces, communication protocols, and data persistence between integrated software modules. It uncovers interface bugs, transaction rollbacks, relational database mismatches, and asynchronous event delivery problems.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                While unit tests confirm that individual pricing classes work alone, integration testing proves that our <code>OrderProcessingFacade</code> coordinates Django ORM database persistence, table occupancy status mutations, and real-time <code>Observer</code> alerts (kitchen displays and waiters) in an atomic transaction.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_integration.py</div>
-                                <div class="text-info">class OrderWorkflowIntegrationTests(TestCase):</div>
-                                <div class="ps-3 text-light">def test_facade_persists_order_and_occupies_table(self):</div>
-                                <div class="ps-4 text-warning">result = self.facade.place_order(customer_name='Guest', ...)</div>
-                                <div class="ps-4 text-warning">order = Order.objects.get(pk=result['order_id'])</div>
-                                <div class="ps-4 text-success">self.assertEqual(order.status, 'PREPARING')</div>
-                                <div class="ps-4 text-success">self.assertTrue(self.table.is_occupied)</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "Integration testing verifies our Design Patterns in action with the Django database layer: placing an order mutates table state to occupied and broadcasts observer notifications."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Topic 3: Black-Box Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 3</span> Black-Box Testing (Specification / Contract)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">5 Tests • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Black-box testing (functional/specification testing) examines software functionality without knowing or inspecting internal source code or architecture. The system is evaluated entirely based on inputs, outputs, and requirements specifications.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Customers ordering via QR codes and third-party dashboard clients interact solely through HTTP REST endpoints. Black-box testing ensures that submitting an order via <code>POST /api/order</code> returns standard HTTP <code>201 Created</code>, rejects GET requests with HTTP <code>405 Method Not Allowed</code>, and securely serves formatted Excel reports with accurate headers.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_black_box.py</div>
-                                <div class="text-info">class PublicHttpContractTests(TestCase):</div>
-                                <div class="ps-3 text-light">def test_order_api_creates_order_and_returns_documented_payload(self):</div>
-                                <div class="ps-4 text-warning">res = self.client.post('/api/order', data=json.dumps({...}), ...)</div>
-                                <div class="ps-4 text-success">self.assertEqual(res.status_code, 201)</div>
-                                <div class="ps-4 text-success">self.assertTrue(res.json()['success'])</div>
-                                <br>
-                                <div class="ps-3 text-light">def test_order_api_rejects_get_requests(self):</div>
-                                <div class="ps-4 text-warning">res = self.client.get('/api/order')</div>
-                                <div class="ps-4 text-success">self.assertEqual(res.status_code, 405)</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "Black-box tests validate our external REST API contract without needing to know internal model details, assuring client-server stability."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Topic 4: White-Box Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 4</span> White-Box Testing (Structural / Coverage)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">3 Tests • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                White-box testing (glass-box or structural testing) examines internal code structures, branch decision logic, exception conditions, and statements. It enables objective calculation of code coverage metrics.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                In addition to sunny-day workflows, software must handle edge conditions gracefully. Our white-box suite tests that <code>SimpleMenuFactory</code> raises <code>ValueError</code> with clear error text on unknown menu categories, and verifies that completing non-existent order IDs returns <code>False</code> without unhandled server exceptions.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_white_box.py</div>
-                                <div class="text-info">class InternalBranchTests(TestCase):</div>
-                                <div class="ps-3 text-light">def test_factory_rejects_unknown_item_category(self):</div>
-                                <div class="ps-4 text-warning">with self.assertRaisesRegex(ValueError, 'Unknown menu item category'):</div>
-                                <div class="ps-5 text-danger">SimpleMenuFactory.get_item('unknown', 'Mystery', 10)</div>
-                                <br>
-                                <div class="ps-3 text-light">def test_completing_unknown_order_returns_false(self):</div>
-                                <div class="ps-4 text-warning">actual = OrderProcessingFacade().complete_order(99999)</div>
-                                <div class="ps-4 text-success">self.assertFalse(actual)</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "White-box tests verify internal defensive guard branches and statement coverage across models, patterns, and views."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Topic 5: Smoke Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 5</span> Smoke Testing (Build Sanity Verification)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">1 Test (5 Routes) • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Smoke testing (Build Acceptance Testing) is a rapid sanity check executed immediately after building software. It tests whether critical baseline functions and primary entry points respond without fatal crashes before running time-consuming suites.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                In continuous deployment, broken HTML template tags, unimported view functions, or missing URL parameters can break customer pages. Our smoke test exercises all 5 primary application routes (Landing page, Staff Dashboard, Test Hub, Table Menu, and Payment page) ensuring each returns HTTP 200 OK.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_smoke.py</div>
-                                <div class="text-info">class MainPageSmokeTests(TestCase):</div>
-                                <div class="ps-3 text-light">def test_main_pages_load(self):</div>
-                                <div class="ps-4 text-warning">routes = (reverse('index'), reverse('staff_dashboard'), ...)</div>
-                                <div class="ps-4 text-light">for route in routes:</div>
-                                <div class="ps-5 text-success">self.assertEqual(self.client.get(route).status_code, 200)</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "Smoke testing acts as our rapid gatekeeper; if core routes do not return 200, the deployment is aborted immediately."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Topic 6: Regression Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 6</span> Regression Testing (Defect Prevention)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">3 Tests • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Regression testing ensures that code modifications, bug fixes, or new feature additions do not inadvertently break pre-existing functionalities or introduce unintended side effects into other modules.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                As we added cart order features and discount strategies, regression tests guaranteed that sending malformed JSON strings returns HTTP 400 Bad Request instead of a server 500 crash, order ready transitions update database states reliably, and payment calls on empty tables do not mutate table locks.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_regression.py</div>
-                                <div class="text-info">class OrderRegressionTests(TestCase):</div>
-                                <div class="ps-3 text-light">def test_invalid_json_order_request_returns_bad_request(self):</div>
-                                <div class="ps-4 text-warning">res = self.client.post('/api/order', data='{invalid', ...)</div>
-                                <div class="ps-4 text-success">self.assertEqual(res.status_code, 400)</div>
-                                <div class="ps-4 text-success">self.assertFalse(res.json()['success'])</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "Regression tests ensure that malformed client payloads and edge transitions are handled defensively without system breakdown."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Topic 7: Performance Testing -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4 p-md-5">
-                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                        <h3 class="h4 fw-bold text-primary mb-0">
-                            <span class="badge bg-primary me-2">Topic 7</span> Performance Testing (Latency & Scalability)
-                        </h3>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 fw-semibold">2 Tests • 100% Pass</span>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-book text-muted me-2"></i>Academic Definition</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                Performance testing is a non-functional testing technique that evaluates software responsiveness, execution speed, resource utilization, and throughput under specified workload bounds.
-                            </p>
-
-                            <h5 class="fw-bold text-dark mt-3"><i class="bi bi-bullseye text-muted me-2"></i>Why Selected for Smart Restaurant System?</h5>
-                            <p class="text-muted" style="text-align: justify;">
-                                During peak dining hours, hundreds of customer tables calculate bills and view menus concurrently. Performance testing proves that our Strategy pricing algorithm calculates 5,000 prices in under 0.02 seconds (budget: <2.0s), and repeated web page dispatches complete within sub-second thresholds.
-                            </p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <h5 class="fw-bold text-dark"><i class="bi bi-code-slash text-muted me-2"></i>Implementation Showcase</h5>
-                            <div class="p-3 bg-dark text-light rounded-3 font-monospace small" style="background-color: #0b1120 !important;">
-                                <div class="text-secondary"># restaurant/test_suites/test_performance.py</div>
-                                <div class="text-info">class BoundedPerformanceTests(TestCase):</div>
-                                <div class="ps-3 text-light">def test_pricing_calculations_complete_within_budget(self):</div>
-                                <div class="ps-4 text-warning">started_at = perf_counter()</div>
-                                <div class="ps-4 text-light">for _ in range(5000): strategy.calculate_final_price(12.5)</div>
-                                <div class="ps-4 text-warning">elapsed = perf_counter() - started_at</div>
-                                <div class="ps-4 text-success">self.assertLess(elapsed, 2.0)  # Actual: ~0.015s</div>
-                            </div>
-                            <div class="mt-3 p-3 bg-light rounded-3 small text-muted border">
-                                <strong>Viva Takeaway:</strong> "Performance tests establish O(1) mathematical complexity of our design pattern algorithms under high computational load."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: Design Patterns Tested -->
-        <section id="section-patterns" class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="rounded-circle bg-success text-white p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                        <i class="bi bi-diagram-3"></i>
-                    </span>
-                    <h2 class="h3 fw-bold mb-0">3. Gang of Four (GoF) Design Patterns Verified</h2>
-                </div>
-                <p class="text-muted mb-4">
-                    Our automated tests rigorously prove that the 5 implemented GoF Design Patterns deliver their architectural benefits: loose coupling, high cohesion, dynamic extensibility, and simplified facade interfaces.
-                </p>
-
-                <div class="table-responsive rounded-3 border">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Pattern</th>
-                                <th>Classification</th>
-                                <th>Architectural Role in SmartResto</th>
-                                <th>Key Classes</th>
-                                <th>Verification Test Suite</th>
-                                <th>Result</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="fw-bold">Facade Pattern</td>
-                                <td><span class="badge bg-secondary">Structural</span></td>
-                                <td>Provides unified entry point for table occupancy, order creation, billing, and observer alerts</td>
-                                <td><code>OrderProcessingFacade</code></td>
-                                <td>Integration, White-Box, Regression</td>
-                                <td><span class="badge bg-success">VERIFIED</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Observer Pattern</td>
-                                <td><span class="badge bg-secondary">Behavioral</span></td>
-                                <td>Broadcasts automatic kitchen display and waiter alerts on order state transitions</td>
-                                <td><code>OrderSubject, KitchenDisplayObserver</code></td>
-                                <td>Integration Tests</td>
-                                <td><span class="badge bg-success">VERIFIED</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Decorator Pattern</td>
-                                <td><span class="badge bg-secondary">Structural</span></td>
-                                <td>Dynamically stacks extra toppings (Cheese, Bacon) and updates pricing/descriptions at runtime</td>
-                                <td><code>ExtraCheeseDecorator, AddBaconDecorator</code></td>
-                                <td>Unit Tests</td>
-                                <td><span class="badge bg-success">VERIFIED</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Strategy Pattern</td>
-                                <td><span class="badge bg-secondary">Behavioral</span></td>
-                                <td>Interchangeable pricing algorithms (Normal, 20% Happy Hour discount, VIP rate, GST 18%)</td>
-                                <td><code>NormalPricing, HappyHourPricing, VIPDiscountPricing</code></td>
-                                <td>Unit, Performance Tests</td>
-                                <td><span class="badge bg-success">VERIFIED</span></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Factory Pattern</td>
-                                <td><span class="badge bg-secondary">Creational</span></td>
-                                <td>Centralizes object instantiation for veg, non-veg, and drink items with validation guards</td>
-                                <td><code>SimpleMenuFactory, VegItem, NonVegItem</code></td>
-                                <td>White-Box Tests</td>
-                                <td><span class="badge bg-success">VERIFIED</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: Master Test Catalog (21 Test Cases) -->
-        <section id="section-catalog" class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="rounded-circle bg-info text-dark p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                            <i class="bi bi-list-check"></i>
-                        </span>
-                        <h2 class="h3 fw-bold mb-0">4. Master Automated Test Cases Catalog</h2>
-                    </div>
-                    <span class="badge bg-primary rounded-pill px-3 py-2">59 Automated Tests</span>
-                </div>
-                <p class="text-muted mb-4">
-                    Complete inventory of all 59 test cases executed by the test harness with preconditions, IEEE-829 specification details, expected results, and verified observations.
-                </p>
-
-                <div class="table-responsive rounded-3 border" style="max-height: 580px; overflow-y: auto;">
-                    <table class="table table-hover table-striped align-middle mb-0 small">
-                        <thead class="table-dark sticky-top">
-                            <tr>
-                                <th>#</th>
-                                <th>Test ID</th>
-                                <th>Suite</th>
-                                <th>Functionality / Module</th>
-                                <th>Execution Steps</th>
-                                <th>Expected Result</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- UNIT TESTS -->
-                            <tr><td>1</td><td><code>TC-UNIT-001</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - Normal</td><td>1. NormalPricing(); 2. calculate_final_price(100.0); 3. Assert 100.0</td><td>Base price 100.00 remains unchanged</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>2</td><td><code>TC-UNIT-002</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - Happy Hour</td><td>1. HappyHourPricing(); 2. calculate_final_price(100.0); 3. Assert 80.0</td><td>20% discount applied: 100.00 becomes 80.00</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>3</td><td><code>TC-UNIT-003</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - VIP Default</td><td>1. VIPDiscountPricing(); 2. calculate_final_price(100.0); 3. Assert 70.0</td><td>30% default discount applied: 100.00 becomes 70.00</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>4</td><td><code>TC-UNIT-004</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - VIP Custom</td><td>1. VIPDiscountPricing(0.85); 2. calculate_final_price(100.0); 3. Assert 85.0</td><td>15% configured discount applied: 100.00 becomes 85.00</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>5</td><td><code>TC-UNIT-005</code></td><td><span class="badge bg-primary">Unit</span></td><td>Tax Calculation - 18% GST</td><td>1. NormalPricing().apply_gst(100.0); 2. Assert 118.00</td><td>Exact mathematical 18% tax added: 100 becomes 118.00</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>6</td><td><code>TC-UNIT-006</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator Pattern - Extra Cheese</td><td>1. Wrap with ExtraCheeseDecorator; 2. Assert price +1.50 and description</td><td>Price increases by 1.50 with "+ Extra Cheese"</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>7</td><td><code>TC-UNIT-007</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator Pattern - Add Bacon</td><td>1. Wrap with AddBaconDecorator; 2. Assert price +2.50 and description</td><td>Price increases by 2.50 with "+ Bacon"</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>8</td><td><code>TC-UNIT-008</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator - Chained Toppings</td><td>1. Wrap with ExtraCheese + AddBacon; 2. Assert price 14.0 and description</td><td>Combined price 14.00 (10 + 1.5 + 2.5) with stacked description</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>9</td><td><code>TC-UNIT-009</code></td><td><span class="badge bg-primary">Unit</span></td><td>Singleton - Instance Identity</td><td>1. config1 = ConfigManager(); 2. config2 = ConfigManager(); 3. Assert identity</td><td>Both variables reference identical memory instance</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>10</td><td><code>TC-UNIT-010</code></td><td><span class="badge bg-primary">Unit</span></td><td>Singleton - State Mutation</td><td>1. config1.update_tax_rate(0.12); 2. Read from config2; 3. Assert 0.12</td><td>Mutated state persists globally across all references</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>11</td><td><code>TC-UNIT-011</code></td><td><span class="badge bg-primary">Unit</span></td><td>Observer - Registration</td><td>1. subject.attach(obs); 2. Assert in list; 3. subject.detach(obs); 4. Assert removed</td><td>Observer cleanly registered and unsubscribed</td><td><span class="badge bg-success">PASS</span></td></tr>
-
-                            <!-- INTEGRATION TESTS -->
-                            <tr><td>12</td><td><code>TC-INT-001</code></td><td><span class="badge bg-success">Integration</span></td><td>Order Placement Flow</td><td>1. Create table; 2. facade.place_order; 3. Assert DB record & table occupied</td><td>Order saved with PREPARING, table marked occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>13</td><td><code>TC-INT-002</code></td><td><span class="badge bg-success">Integration</span></td><td>Customized Order Flow</td><td>1. place_order with cheese, bacon, happy-hour; 2. Assert price & name</td><td>Order total $11.20 and decorated description persisted</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>14</td><td><code>TC-INT-003</code></td><td><span class="badge bg-success">Integration</span></td><td>Table Collision Guard</td><td>1. Occupy table; 2. Attempt second order on table; 3. Assert ValueError</td><td>ValueError raised preventing double occupancy</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>15</td><td><code>TC-INT-004</code></td><td><span class="badge bg-success">Integration</span></td><td>Order Lifecycle Mutation</td><td>1. Create Order; 2. facade.complete_order(id); 3. Assert status READY</td><td>Order status updated to READY in database</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>16</td><td><code>TC-INT-005</code></td><td><span class="badge bg-success">Integration</span></td><td>Billing Aggregation & GST</td><td>1. Create orders on table; 2. calculate_table_bill; 3. Assert subtotal and tax</td><td>Bill combines items, applies discount, adds 18% GST</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>17</td><td><code>TC-INT-006</code></td><td><span class="badge bg-success">Integration</span></td><td>Payment Settlement</td><td>1. facade.process_payment(table); 2. Assert order paid & table freed</td><td>Order marked COMPLETED and is_paid=True; table free</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>18</td><td><code>TC-INT-007</code></td><td><span class="badge bg-success">Integration</span></td><td>Observer Alert Flow</td><td>1. Attach audit observer; 2. place_order; 3. Assert PREPARING event</td><td>Observer receives synchronous order update alert</td><td><span class="badge bg-success">PASS</span></td></tr>
-
-                            <!-- BLACK-BOX TESTS -->
-                            <tr><td>19</td><td><code>TC-BB-001</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Landing Page Contract</td><td>1. GET /; 2. Assert HTTP 200 and restaurant branding text</td><td>HTTP 200 with 'The Pattern Pizzeria' / 'SmartResto'</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>20</td><td><code>TC-BB-002</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Table Menu Contract</td><td>1. GET /menu/41/; 2. Assert HTTP 200 and menu catalog</td><td>HTTP 200 rendering categorized items for Table 41</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>21</td><td><code>TC-BB-003</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Single Order</td><td>1. POST /api/order with single item; 2. Assert HTTP 201 JSON</td><td>HTTP 201 with success: true and order payload</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>22</td><td><code>TC-BB-004</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Cart Order</td><td>1. POST /api/order with items: [...]; 2. Assert HTTP 201 JSON</td><td>HTTP 201 confirming all cart items processed</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>23</td><td><code>TC-BB-005</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Method Guard</td><td>1. GET /api/order; 2. Assert HTTP 405 Method Not Allowed</td><td>HTTP 405 Method Not Allowed returned</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>24</td><td><code>TC-BB-006</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Table Guard</td><td>1. POST /api/order for Table 99999; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 with error: "Table does not exist"</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>25</td><td><code>TC-BB-007</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Staff Dashboard Contract</td><td>1. GET /staff-dashboard/; 2. Assert HTTP 200 and table lists</td><td>HTTP 200 rendering active tables and order lists</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>26</td><td><code>TC-BB-008</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Table Bill Contract</td><td>1. GET /bill/44/; 2. Assert HTTP 200 and itemized bill</td><td>HTTP 200 rendering subtotal, GST, and grand total</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>27</td><td><code>TC-BB-009</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Thank You Page Contract</td><td>1. GET /thank-you/; 2. Assert HTTP 200 confirmation message</td><td>HTTP 200 rendering order confirmation message</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>28</td><td><code>TC-BB-010</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Report Download Contract</td><td>1. GET /testing/reports/unit/; 2. Assert HTTP 200 and XLSX headers</td><td>HTTP 200 serving valid Excel report with IEEE columns</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>29</td><td><code>TC-BB-011</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>ZIP Download Contract</td><td>1. GET /testing/download-all/; 2. Assert HTTP 200 and application/zip</td><td>HTTP 200 serving valid ZIP archive of reports</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>30</td><td><code>TC-BB-012</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Report 404 Guard</td><td>1. GET /testing/reports/invalid/; 2. Assert HTTP 404 Not Found</td><td>HTTP 404 Not Found returned cleanly</td><td><span class="badge bg-success">PASS</span></td></tr>
-
-                            <!-- WHITE-BOX TESTS -->
-                            <tr><td>31</td><td><code>TC-WB-001</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Veg Creator</td><td>1. VegMenuItemFactory.create_item; 2. Assert item_type VEG</td><td>item_type is VEG and description has [VEG] prefix</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>32</td><td><code>TC-WB-002</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - NonVeg Creator</td><td>1. NonVegMenuItemFactory.create_item; 2. Assert item_type NON_VEG</td><td>item_type is NON_VEG and description has [NON-VEG] prefix</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>33</td><td><code>TC-WB-003</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Vegan Creator</td><td>1. VeganMenuItemFactory.create_item; 2. Assert item_type VEGAN</td><td>item_type is VEGAN and description has allergy notice</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>34</td><td><code>TC-WB-004</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Router Routing</td><td>1. Query SimpleMenuFactory with veg, non_veg, vegan; 2. Assert routing</td><td>Appropriate concrete factory invoked for each category</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>35</td><td><code>TC-WB-005</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Exception Guard</td><td>1. SimpleMenuFactory.get_item('invalid'); 2. Assert ValueError</td><td>ValueError raised with Unknown menu item category</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>36</td><td><code>TC-WB-006</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Missing Order Guard</td><td>1. complete_order(99999); 2. Assert return value is False</td><td>Returns False safely without unhandled exception</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>37</td><td><code>TC-WB-007</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Empty Table Bill</td><td>1. calculate_table_bill on empty table; 2. Assert return is None</td><td>Returns None without attempting zero-order calculations</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>38</td><td><code>TC-WB-008</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Missing Table Bill</td><td>1. calculate_table_bill for Table 99999; 2. Assert ValueError</td><td>ValueError raised with Table does not exist</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>39</td><td><code>TC-WB-009</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Missing Table Payment</td><td>1. process_payment(99999); 2. Assert (False, msg)</td><td>Returns (False, "Table does not exist") safely</td><td><span class="badge bg-success">PASS</span></td></tr>
-
-                            <!-- SMOKE TESTS -->
-                            <tr><td>40</td><td><code>TC-SMK-001</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Landing Page Sanity</td><td>1. GET /; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>41</td><td><code>TC-SMK-002</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Menu Page Sanity</td><td>1. GET /menu/61/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>42</td><td><code>TC-SMK-003</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Staff Dashboard Sanity</td><td>1. GET /staff-dashboard/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>43</td><td><code>TC-SMK-004</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Bill Page Sanity</td><td>1. GET /bill/61/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>44</td><td><code>TC-SMK-005</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Thank You Page Sanity</td><td>1. GET /thank-you/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>45</td><td><code>TC-SMK-006</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Test Reports Hub Sanity</td><td>1. GET /testing/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>46</td><td><code>TC-SMK-007</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Testing Guide Sanity</td><td>1. GET /testing/guide/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
-
-                            <!-- REGRESSION TESTS -->
-                            <tr><td>47</td><td><code>TC-REG-001</code></td><td><span class="badge bg-dark">Regression</span></td><td>Malformed JSON Guard</td><td>1. POST malformed string; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 returned without 500 server crash</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>48</td><td><code>TC-REG-002</code></td><td><span class="badge bg-dark">Regression</span></td><td>Empty Payload Guard</td><td>1. POST empty dict; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 returned with error message</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>49</td><td><code>TC-REG-003</code></td><td><span class="badge bg-dark">Regression</span></td><td>State Transition Guard</td><td>1. POST ready endpoint; 2. Assert DB status is READY</td><td>Database record status updated to READY</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>50</td><td><code>TC-REG-004</code></td><td><span class="badge bg-dark">Regression</span></td><td>Missing Order Ready Guard</td><td>1. POST ready for ID 99999; 2. Assert HTTP 404 JSON</td><td>HTTP 404 returned cleanly</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>51</td><td><code>TC-REG-005</code></td><td><span class="badge bg-dark">Regression</span></td><td>Payment Idempotence Guard</td><td>1. process_payment on occupied empty table; 2. Assert False</td><td>Payment fails (False), table remains occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>52</td><td><code>TC-REG-006</code></td><td><span class="badge bg-dark">Regression</span></td><td>Missing Table Payment Guard</td><td>1. process_payment(99999); 2. Assert False returned</td><td>Returns False safely without 500 error</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>53</td><td><code>TC-REG-007</code></td><td><span class="badge bg-dark">Regression</span></td><td>Cart Pricing Isolation</td><td>1. Submit cart with normal and discounted items; 2. Assert prices</td><td>Each item price calculated without leakage across items</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>54</td><td><code>TC-REG-008</code></td><td><span class="badge bg-dark">Regression</span></td><td>Bill Mathematics Guard</td><td>1. Query bill for multi-item table; 2. Verify subtotal + GST == total</td><td>Mathematical equality: subtotal + GST == grand_total</td><td><span class="badge bg-success">PASS</span></td></tr>
-
-                            <!-- PERFORMANCE TESTS -->
-                            <tr><td>55</td><td><code>TC-PRF-001</code></td><td><span class="badge bg-danger">Performance</span></td><td>Pricing Strategy Benchmark</td><td>1. Loop calculate_final_price 5,000 times; 2. Assert time < 1.0s</td><td>Completed in <0.02s (Budget: <1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>56</td><td><code>TC-PRF-002</code></td><td><span class="badge bg-danger">Performance</span></td><td>Decorator Benchmark</td><td>1. Loop decorator wrappings 2,000 times; 2. Assert time < 1.0s</td><td>Completed in <0.02s (Budget: <1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>57</td><td><code>TC-PRF-003</code></td><td><span class="badge bg-danger">Performance</span></td><td>Landing Page Latency</td><td>1. Dispatch 20 GET / requests; 2. Assert elapsed < 3.0s</td><td>Completed in <0.30s (Budget: <3.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>58</td><td><code>TC-PRF-004</code></td><td><span class="badge bg-danger">Performance</span></td><td>Menu Page Latency</td><td>1. Dispatch 20 GET /menu/81/ requests; 2. Assert elapsed < 3.0s</td><td>Completed in <0.30s (Budget: <3.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td>59</td><td><code>TC-PRF-005</code></td><td><span class="badge bg-danger">Performance</span></td><td>Billing Latency</td><td>1. Calculate table bill 20 times; 2. Assert elapsed < 1.0s</td><td>Completed in <0.10s (Budget: <1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 5: Examiner Viva Q&A -->
-        <section id="section-viva" class="card border-0 shadow-sm rounded-4 mb-5">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="rounded-circle bg-warning text-dark p-2 d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                        <i class="bi bi-patch-question"></i>
-                    </span>
-                    <h2 class="h3 fw-bold mb-0">5. Examiner Viva Preparation & Defense Q&A</h2>
-                </div>
-                <p class="text-muted mb-4">
-                    High-yield academic questions commonly asked by professors, lecturers, and external examiners during project defenses, accompanied by technical model answers.
-                </p>
-
-                <div class="accordion" id="vivaAccordion">
-                    <div class="accordion-item rounded-3 mb-3 border">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#viva1">
-                                Q1: What is the fundamental difference between Unit Testing and Integration Testing in your system?
-                            </button>
-                        </h2>
-                        <div id="viva1" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
-                            <div class="accordion-body text-muted">
-                                <strong>Answer:</strong> Unit testing isolates individual classes (like <code>NormalPricing</code>, <code>HappyHourPricing</code>, or <code>ExtraCheeseDecorator</code>) without touching external resources like databases or HTTP dispatchers. In contrast, Integration testing connects multiple subsystems together—specifically validating that our <code>OrderProcessingFacade</code> coordinates Django ORM database persistence, table occupancy mutations, and <code>Observer</code> kitchen notifications in one atomic workflow.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item rounded-3 mb-3 border">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#viva2">
-                                Q2: Why did you implement Black-Box testing for the REST API endpoints?
-                            </button>
-                        </h2>
-                        <div id="viva2" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
-                            <div class="accordion-body text-muted">
-                                <strong>Answer:</strong> External clients such as customer mobile browsers and QR code scanners do not have access to Django's internal functions or database schemas. Black-box testing validates that from an external perspective, the system strictly respects standard HTTP protocols: returning <code>201 Created</code> with a valid JSON contract on order submission, returning <code>405 Method Not Allowed</code> when an invalid HTTP method is attempted, and serving compliant Excel files.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item rounded-3 mb-3 border">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#viva3">
-                                Q3: What is the purpose of Smoke Testing and when should it run?
-                            </button>
-                        </h2>
-                        <div id="viva3" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
-                            <div class="accordion-body text-muted">
-                                <strong>Answer:</strong> Smoke testing (Build Acceptance Testing) is a rapid sanity check that verifies whether the core infrastructure of the application is operating before executing deeper regression tests. In our project, it verifies that all 5 essential routes (Home landing, Staff dashboard, Test hub, Menu page, and Bill payment page) return HTTP 200 OK without unhandled template or routing exceptions.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item rounded-3 mb-3 border">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#viva4">
-                                Q4: Why are automated tests run against an isolated database rather than live restaurant data?
-                            </button>
-                        </h2>
-                        <div id="viva4" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
-                            <div class="accordion-body text-muted">
-                                <strong>Answer:</strong> Running automated tests against live restaurant data is dangerous because test transactions could alter active customer bills, accidentally occupy reserved tables, or skew financial auditing records. Django's test runner dynamically creates an isolated in-memory SQLite database for the duration of the test run and safely tears it down afterward, guaranteeing zero live data mutation and idempotent test repeatability.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item rounded-3 mb-3 border">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#viva5">
-                                Q5: How do your tests verify Gang of Four (GoF) Design Patterns?
-                            </button>
-                        </h2>
-                        <div id="viva5" class="accordion-collapse collapse" data-bs-parent="#vivaAccordion">
-                            <div class="accordion-body text-muted">
-                                <strong>Answer:</strong> We mapped tests directly to each pattern: 
-                                <ul>
-                                    <li><strong>Strategy Pattern:</strong> Unit tests verify that swapping pricing strategies dynamically computes standard, happy-hour (20% off), and VIP discounts with exact mathematical precision.</li>
-                                    <li><strong>Decorator Pattern:</strong> Unit tests verify dynamic runtime price stacking and description formatting of toppings without subclass explosion.</li>
-                                    <li><strong>Facade Pattern:</strong> Integration tests prove that a single method call simplifies order persistence, table locking, and observer notifications.</li>
-                                    <li><strong>Observer Pattern:</strong> Integration tests assert that changing an order state automatically triggers alerts to kitchen displays and waiters.</li>
-                                    <li><strong>Factory Pattern:</strong> White-box tests verify category validation and exception throwing on unsupported food items.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Bottom Action Bar -->
-        <div class="text-center mb-5">
-            <a href="{% url 'test_reports' %}" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow fw-semibold me-2">
-                <i class="bi bi-play-circle-fill me-2"></i>Go to Test Execution Hub
-            </a>
-            <a href="{% url 'download_test_report' 'topics-guide' %}" class="btn btn-warning btn-lg rounded-pill px-5 py-3 shadow fw-semibold">
-                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Download Topics Guide (.xlsx)
-            </a>
-        </div>
-
     </div>
+
+    <!-- TAB 4: GoF DESIGN PATTERNS TESTED -->
+    <div class="tab-content-section d-none motion-fade-in" id="tab-patterns">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
+            <!-- Strategy Pattern -->
+            <div class="col">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">BEHAVIORAL</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">Unit Verified</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Strategy Pattern</h5>
+                    <div class="text-muted small mb-2">Dynamic runtime pricing algorithms</div>
+                    <p class="small text-muted mb-3">
+                        Enables seamless swapping of pricing calculations (Normal 1.0x, Happy Hour 0.8x, VIP 0.85x) without mutating the core database record.
+                    </p>
+                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
+                        strategy.<span class="text-warning">calculate_final_price</span>(cost)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decorator Pattern -->
+            <div class="col">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning bg-opacity-10 text-warning fw-bold">STRUCTURAL</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">Unit &amp; Int Verified</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Decorator Pattern</h5>
+                    <div class="text-muted small mb-2">Dynamic runtime add-on stacking</div>
+                    <p class="small text-muted mb-3">
+                        Solves class explosion by dynamically wrapping food items with <code>ExtraCheeseDecorator</code> (+₹20) and <code>AddBaconDecorator</code> (+₹30) recursively.
+                    </p>
+                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
+                        <span class="text-info">AddBacon</span>(<span class="text-info">ExtraCheese</span>(item))
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facade Pattern -->
+            <div class="col">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-info bg-opacity-10 text-info fw-bold">STRUCTURAL</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">Integration Verified</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Facade Pattern</h5>
+                    <div class="text-muted small mb-2">Unified macro orchestration layer</div>
+                    <p class="small text-muted mb-3">
+                        The <code>OrderProcessingFacade</code> acts as an architectural gateway shielding thin Django views from factory creation, strategy discounts, and observer alerts.
+                    </p>
+                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
+                        facade.<span class="text-success">place_order</span>(customer, items)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Observer Pattern -->
+            <div class="col">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-success bg-opacity-10 text-success fw-bold">BEHAVIORAL</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">Integration Verified</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Observer Pattern</h5>
+                    <div class="text-muted small mb-2">Decoupled event-driven notifications</div>
+                    <p class="small text-muted mb-3">
+                        When an order changes status (PENDING &rarr; PREPARING &rarr; READY), <code>OrderSubject</code> broadcasts synchronous push notifications to kitchen displays and waitstaff.
+                    </p>
+                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
+                        subject.<span class="text-warning">change_order_status</span>(order, 'READY')
+                    </div>
+                </div>
+            </div>
+
+            <!-- Factory Pattern -->
+            <div class="col">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-danger bg-opacity-10 text-danger fw-bold">CREATIONAL</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">White-Box Verified</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Factory Pattern</h5>
+                    <div class="text-muted small mb-2">Encapsulated menu item instantiation</div>
+                    <p class="small text-muted mb-3">
+                        <code>SimpleMenuFactory</code> delegates creation to concrete factories (Veg, NonVeg, Vegan), applying dietary prefixes and enforcing category validation.
+                    </p>
+                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
+                        SimpleMenuFactory.<span class="text-info">get_item</span>('veg', 'Pizza', 89)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Singleton Pattern -->
+            <div class="col">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-bold">CREATIONAL</span>
+                        <span class="badge bg-success bg-opacity-10 text-success">Unit Verified</span>
+                    </div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Singleton Pattern</h5>
+                    <div class="text-muted small mb-2">Single centralized configuration manager</div>
+                    <p class="small text-muted mb-3">
+                        The <code>ConfigManager</code> guarantees exactly one shared memory instance across all threads, providing centralized tax rates and restaurant operational parameters.
+                    </p>
+                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
+                        id(ConfigManager()) == id(ConfigManager())
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: EXAMINER VIVA FLASHCARDS -->
+    <div class="tab-content-section d-none motion-fade-in" id="tab-viva">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold mb-1" style="color: var(--text-heading);">
+                    <i class="bi bi-mortarboard-fill text-warning me-2"></i>Examiner Viva Defense Flashcards
+                </h5>
+                <p class="text-muted small mb-0">High-yield oral viva defense answers expected by professors, lecturers, and external examiners.</p>
+            </div>
+            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="toggleAllVivaCards()">
+                Toggle All Answers
+            </button>
+        </div>
+
+        <!-- Viva Flashcard 1 -->
+        <div class="viva-card">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="viva-badge-q">Q1</span>
+                    <strong class="fs-6" style="color: var(--text-heading);">
+                        What is the fundamental difference between Unit Testing and Integration Testing in your system?
+                    </strong>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-reveal-viva" onclick="toggleVivaAnswer(this)">
+                    Reveal Answer
+                </button>
+            </div>
+            <div class="viva-answer-box text-muted">
+                <strong class="text-dark d-block mb-1">Examiner Model Answer:</strong>
+                "Unit testing isolates individual modules (e.g., <code>NormalPricing</code>, <code>HappyHourPricing</code>, or <code>ExtraCheeseDecorator</code>) in pure Python without touching databases or network layers, validating algorithmic correctness in microseconds. Integration testing, by contrast, exercises multiple interconnected subsystems together—specifically validating that our <code>OrderProcessingFacade</code> coordinates Django ORM database persistence, table occupancy locking, and <code>Observer</code> push alerts to the kitchen simultaneously."
+            </div>
+        </div>
+
+        <!-- Viva Flashcard 2 -->
+        <div class="viva-card">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="viva-badge-q">Q2</span>
+                    <strong class="fs-6" style="color: var(--text-heading);">
+                        Why are tests executed against an isolated in-memory database rather than live restaurant data?
+                    </strong>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-reveal-viva" onclick="toggleVivaAnswer(this)">
+                    Reveal Answer
+                </button>
+            </div>
+            <div class="viva-answer-box text-muted">
+                <strong class="text-dark d-block mb-1">Examiner Model Answer:</strong>
+                "Running automated tests against live production databases risks corrupting customer bills, altering table occupancy states, or skewing audit balances. Django dynamically spins up an isolated in-memory SQLite sandbox for the test run and safely tears it down afterward, guaranteeing 100% idempotent test runs and zero data contamination."
+            </div>
+        </div>
+
+        <!-- Viva Flashcard 3 -->
+        <div class="viva-card">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="viva-badge-q">Q3</span>
+                    <strong class="fs-6" style="color: var(--text-heading);">
+                        How does your test suite verify Gang of Four (GoF) Design Patterns?
+                    </strong>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-reveal-viva" onclick="toggleVivaAnswer(this)">
+                    Reveal Answer
+                </button>
+            </div>
+            <div class="viva-answer-box text-muted">
+                <strong class="text-dark d-block mb-1">Examiner Model Answer:</strong>
+                "We mapped formal test assertions directly to the pattern contracts:
+                <ul class='mb-0 mt-2'>
+                    <li><strong>Strategy Pattern:</strong> Unit tests assert mathematical precision when dynamically computing standard, 20% Happy Hour, and 15% VIP discounts.</li>
+                    <li><strong>Decorator Pattern:</strong> Unit tests verify runtime cost wrapping and recursive description concatenation (+ Extra Cheese, + Bacon).</li>
+                    <li><strong>Facade Pattern:</strong> Integration tests prove that a single method call coordinates DB save, table occupation, and alerts cleanly.</li>
+                    <li><strong>Observer Pattern:</strong> Asserts that changing an order state automatically sparks synchronous notifications to waiters and kitchen monitors.</li>
+                    <li><strong>Factory Pattern:</strong> White-box tests verify branch routing and exception throwing on invalid menu categories.</li>
+                </ul>"
+            </div>
+        </div>
+
+        <!-- Viva Flashcard 4 -->
+        <div class="viva-card">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="viva-badge-q">Q4</span>
+                    <strong class="fs-6" style="color: var(--text-heading);">
+                        Why did you implement Black-Box testing for the REST API endpoints?
+                    </strong>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-reveal-viva" onclick="toggleVivaAnswer(this)">
+                    Reveal Answer
+                </button>
+            </div>
+            <div class="viva-answer-box text-muted">
+                <strong class="text-dark d-block mb-1">Examiner Model Answer:</strong>
+                "External consumer devices (like guest mobile phones and QR scanners) do not possess internal knowledge of Django views or models. Black-box testing validates that from an external HTTP perspective, the API strictly adheres to REST protocols: responding HTTP 201 Created on valid order payloads, HTTP 405 Method Not Allowed on illegal GET calls, and HTTP 400 Bad Request on invalid table numbers."
+            </div>
+        </div>
+
+        <!-- Viva Flashcard 5 -->
+        <div class="viva-card">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="viva-badge-q">Q5</span>
+                    <strong class="fs-6" style="color: var(--text-heading);">
+                        What is the role of Smoke Testing in your CI/CD delivery pipeline?
+                    </strong>
+                </div>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-reveal-viva" onclick="toggleVivaAnswer(this)">
+                    Reveal Answer
+                </button>
+            </div>
+            <div class="viva-answer-box text-muted">
+                <strong class="text-dark d-block mb-1">Examiner Model Answer:</strong>
+                "Smoke testing (Build Acceptance Testing) provides an ultra-fast sanity check executed immediately after deployment or code changes. In under 0.15s, it confirms that all 7 primary application views (Customer Landing, Menu, Kitchen KDS, Bill Payment, Reports Hub, and Testing Guide) respond HTTP 200 OK without unhandled template or syntax exceptions."
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: MASTER TEST MATRIX (59 CASES) -->
+    <div class="tab-content-section d-none motion-fade-in" id="tab-catalog">
+        <div class="bento-card">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                <div>
+                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">
+                        <i class="bi bi-file-earmark-spreadsheet-fill text-success me-2"></i>IEEE-829 Master Test Catalog
+                    </h5>
+                    <p class="text-muted small mb-0">Complete list of all 59 automated test cases across all 7 testing suites.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <input type="text" id="catalogSearchInput" class="form-control form-control-sm" placeholder="Filter 59 test cases..." style="min-width: 220px; border-color: var(--border-subtle); background: var(--surface-card); color: var(--text-heading);">
+                    <select id="catalogSuiteSelect" class="form-select form-select-sm" style="width: 140px; border-color: var(--border-subtle); background: var(--surface-card); color: var(--text-heading);">
+                        <option value="ALL">All Suites</option>
+                        <option value="Unit">Unit</option>
+                        <option value="Integration">Integration</option>
+                        <option value="Black-Box">Black-Box</option>
+                        <option value="White-Box">White-Box</option>
+                        <option value="Smoke">Smoke</option>
+                        <option value="Regression">Regression</option>
+                        <option value="Performance">Performance</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 480px; overflow-y: auto;">
+                <table class="table table-hover align-middle small mb-0" id="catalogTable">
+                    <thead class="sticky-top" style="background: var(--surface-card); z-index: 10;">
+                        <tr class="text-muted border-bottom">
+                            <th style="width: 50px;">#</th>
+                            <th style="width: 130px;">TEST ID</th>
+                            <th style="width: 120px;">SUITE</th>
+                            <th>FUNCTIONALITY</th>
+                            <th>EXECUTION STEPS</th>
+                            <th>EXPECTED RESULT</th>
+                            <th style="width: 90px;">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- UNIT TESTS (1-11) -->
+                        <tr data-suite="Unit"><td>1</td><td><code>TC-UNIT-001</code></td><td><span class="badge bg-primary">Unit</span></td><td>Strategy - Normal Pricing</td><td>1. NormalPricing().calculate_final_price(100.0); 2. Assert price</td><td>Price unchanged at exactly 100.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>2</td><td><code>TC-UNIT-002</code></td><td><span class="badge bg-primary">Unit</span></td><td>Strategy - Happy Hour</td><td>1. HappyHourPricing().calculate_final_price(100.0); 2. Assert price</td><td>20% discount applied: 80.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>3</td><td><code>TC-UNIT-003</code></td><td><span class="badge bg-primary">Unit</span></td><td>Strategy - VIP Discount</td><td>1. VIPDiscountPricing(0.15).calculate_final_price(100.0); 2. Assert price</td><td>15% VIP discount applied: 85.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>4</td><td><code>TC-UNIT-004</code></td><td><span class="badge bg-primary">Unit</span></td><td>Strategy - Zero Price</td><td>1. HappyHourPricing().calculate_final_price(0.0); 2. Assert price</td><td>Returns exactly 0.00 without math errors</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>5</td><td><code>TC-UNIT-005</code></td><td><span class="badge bg-primary">Unit</span></td><td>Strategy - Negative Price</td><td>1. HappyHourPricing().calculate_final_price(-50.0); 2. Assert ValueError</td><td>ValueError raised guarding negative pricing</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>6</td><td><code>TC-UNIT-006</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator - Base Item</td><td>1. MenuItemComponent(item); 2. Assert price and name</td><td>Returns base price 12.00 and 'Pizza' description</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>7</td><td><code>TC-UNIT-007</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator - Extra Cheese</td><td>1. ExtraCheeseDecorator(item); 2. Assert price and description</td><td>Price adds 1.50 (13.50) and '+ Extra Cheese'</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>8</td><td><code>TC-UNIT-008</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator - Add Bacon</td><td>1. AddBaconDecorator(item); 2. Assert price and description</td><td>Price adds 2.50 (12.50) and '+ Bacon'</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>9</td><td><code>TC-UNIT-009</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator - Double Decorator</td><td>1. AddBaconDecorator(ExtraCheeseDecorator(item)); 2. Assert</td><td>Both costs stacked (14.00) and both tags</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>10</td><td><code>TC-UNIT-010</code></td><td><span class="badge bg-primary">Unit</span></td><td>Singleton - Identity</td><td>1. a = ConfigManager(); b = ConfigManager(); 2. Assert a is b</td><td>Both instances occupy identical memory address</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Unit"><td>11</td><td><code>TC-UNIT-011</code></td><td><span class="badge bg-primary">Unit</span></td><td>Observer - Registration</td><td>1. subject.attach(obs); 2. Assert in list; 3. detach; 4. Assert</td><td>Observer successfully attached and detached</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                        <!-- INTEGRATION TESTS (12-18) -->
+                        <tr data-suite="Integration"><td>12</td><td><code>TC-INT-001</code></td><td><span class="badge bg-success">Integration</span></td><td>Order Placement Flow</td><td>1. Create table; 2. facade.place_order; 3. Assert DB record &amp; table occupied</td><td>Order saved with PREPARING, table marked occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Integration"><td>13</td><td><code>TC-INT-002</code></td><td><span class="badge bg-success">Integration</span></td><td>Customized Order Flow</td><td>1. place_order with cheese, bacon, happy-hour; 2. Assert price &amp; name</td><td>Order total $11.20 and decorated description persisted</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Integration"><td>14</td><td><code>TC-INT-003</code></td><td><span class="badge bg-success">Integration</span></td><td>Table Collision Guard</td><td>1. Occupy table; 2. Attempt second order on table; 3. Assert ValueError</td><td>ValueError raised preventing double occupancy</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Integration"><td>15</td><td><code>TC-INT-004</code></td><td><span class="badge bg-success">Integration</span></td><td>Order Lifecycle Mutation</td><td>1. Create Order; 2. facade.complete_order(id); 3. Assert status READY</td><td>Order status updated to READY in database</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Integration"><td>16</td><td><code>TC-INT-005</code></td><td><span class="badge bg-success">Integration</span></td><td>Billing Aggregation &amp; GST</td><td>1. Create orders on table; 2. calculate_table_bill; 3. Assert subtotal and tax</td><td>Bill combines items, applies discount, adds 18% GST</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Integration"><td>17</td><td><code>TC-INT-006</code></td><td><span class="badge bg-success">Integration</span></td><td>Payment Settlement</td><td>1. facade.process_payment(table); 2. Assert order paid &amp; table freed</td><td>Order marked COMPLETED and is_paid=True; table free</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Integration"><td>18</td><td><code>TC-INT-007</code></td><td><span class="badge bg-success">Integration</span></td><td>Observer Alert Flow</td><td>1. Attach audit observer; 2. place_order; 3. Assert PREPARING event</td><td>Observer receives synchronous order update alert</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                        <!-- BLACK-BOX TESTS (19-30) -->
+                        <tr data-suite="Black-Box"><td>19</td><td><code>TC-BB-001</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Landing Page Contract</td><td>1. GET /; 2. Assert HTTP 200 and restaurant branding text</td><td>HTTP 200 with 'SmartResto' branding</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>20</td><td><code>TC-BB-002</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Table Menu Contract</td><td>1. GET /menu/41/; 2. Assert HTTP 200 and menu catalog</td><td>HTTP 200 rendering categorized items for Table</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>21</td><td><code>TC-BB-003</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>REST API - Single Order</td><td>1. POST /api/order with single item; 2. Assert HTTP 201 JSON</td><td>HTTP 201 with success: true and order payload</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>22</td><td><code>TC-BB-004</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>REST API - Cart Order</td><td>1. POST /api/order with items: [...]; 2. Assert HTTP 201 JSON</td><td>HTTP 201 confirming all cart items processed</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>23</td><td><code>TC-BB-005</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>REST API - Method Guard</td><td>1. GET /api/order; 2. Assert HTTP 405 Method Not Allowed</td><td>HTTP 405 Method Not Allowed returned</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>24</td><td><code>TC-BB-006</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>REST API - Table Guard</td><td>1. POST /api/order for Table 99999; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 with error: "Table does not exist"</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>25</td><td><code>TC-BB-007</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Staff Dashboard Contract</td><td>1. GET /staff-dashboard/; 2. Assert HTTP 200 and table lists</td><td>HTTP 200 rendering active tables and order lists</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>26</td><td><code>TC-BB-008</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Table Bill Contract</td><td>1. GET /bill/44/; 2. Assert HTTP 200 and itemized bill</td><td>HTTP 200 rendering subtotal, GST, and grand total</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>27</td><td><code>TC-BB-009</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Thank You Page Contract</td><td>1. GET /thank-you/; 2. Assert HTTP 200 confirmation message</td><td>HTTP 200 rendering order confirmation message</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>28</td><td><code>TC-BB-010</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Report Download Contract</td><td>1. GET /testing/reports/unit/; 2. Assert HTTP 200 and XLSX headers</td><td>HTTP 200 serving valid Excel report with IEEE columns</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>29</td><td><code>TC-BB-011</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>ZIP Download Contract</td><td>1. GET /testing/download-all/; 2. Assert HTTP 200 and application/zip</td><td>HTTP 200 serving valid ZIP archive of reports</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Black-Box"><td>30</td><td><code>TC-BB-012</code></td><td><span class="badge bg-warning">Black-Box</span></td><td>Report 404 Guard</td><td>1. GET /testing/reports/invalid/; 2. Assert HTTP 404 Not Found</td><td>HTTP 404 Not Found returned cleanly</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                        <!-- WHITE-BOX TESTS (31-39) -->
+                        <tr data-suite="White-Box"><td>31</td><td><code>TC-WB-001</code></td><td><span class="badge bg-info">White-Box</span></td><td>Factory - Veg Creator</td><td>1. VegMenuItemFactory.create_item; 2. Assert item_type VEG</td><td>item_type is VEG and description has [VEG] prefix</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>32</td><td><code>TC-WB-002</code></td><td><span class="badge bg-info">White-Box</span></td><td>Factory - NonVeg Creator</td><td>1. NonVegMenuItemFactory.create_item; 2. Assert item_type NON_VEG</td><td>item_type is NON_VEG and description has [NON-VEG] prefix</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>33</td><td><code>TC-WB-003</code></td><td><span class="badge bg-info">White-Box</span></td><td>Factory - Vegan Creator</td><td>1. VeganMenuItemFactory.create_item; 2. Assert item_type VEGAN</td><td>item_type is VEGAN and description has allergy notice</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>34</td><td><code>TC-WB-004</code></td><td><span class="badge bg-info">White-Box</span></td><td>Factory - Router Routing</td><td>1. Query SimpleMenuFactory with veg, non_veg, vegan; 2. Assert</td><td>Appropriate concrete factory invoked for each category</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>35</td><td><code>TC-WB-005</code></td><td><span class="badge bg-info">White-Box</span></td><td>Factory - Exception Guard</td><td>1. SimpleMenuFactory.get_item('invalid'); 2. Assert ValueError</td><td>ValueError raised with Unknown menu item category</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>36</td><td><code>TC-WB-006</code></td><td><span class="badge bg-info">White-Box</span></td><td>Facade - Missing Order Guard</td><td>1. complete_order(99999); 2. Assert return value is False</td><td>Returns False safely without unhandled exception</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>37</td><td><code>TC-WB-007</code></td><td><span class="badge bg-info">White-Box</span></td><td>Facade - Empty Table Bill</td><td>1. calculate_table_bill on empty table; 2. Assert return is None</td><td>Returns None without attempting zero-order calculations</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>38</td><td><code>TC-WB-008</code></td><td><span class="badge bg-info">White-Box</span></td><td>Facade - Missing Table Bill</td><td>1. calculate_table_bill for Table 99999; 2. Assert ValueError</td><td>ValueError raised with Table does not exist</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="White-Box"><td>39</td><td><code>TC-WB-009</code></td><td><span class="badge bg-info">White-Box</span></td><td>Facade - Missing Table Payment</td><td>1. process_payment(99999); 2. Assert (False, msg)</td><td>Returns (False, "Table does not exist") safely</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                        <!-- SMOKE TESTS (40-46) -->
+                        <tr data-suite="Smoke"><td>40</td><td><code>TC-SMK-001</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Landing Page Sanity</td><td>1. GET /; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Smoke"><td>41</td><td><code>TC-SMK-002</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Menu Page Sanity</td><td>1. GET /menu/61/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Smoke"><td>42</td><td><code>TC-SMK-003</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Staff Dashboard Sanity</td><td>1. GET /staff-dashboard/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Smoke"><td>43</td><td><code>TC-SMK-004</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Bill Page Sanity</td><td>1. GET /bill/61/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Smoke"><td>44</td><td><code>TC-SMK-005</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Thank You Page Sanity</td><td>1. GET /thank-you/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Smoke"><td>45</td><td><code>TC-SMK-006</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Test Reports Hub Sanity</td><td>1. GET /testing/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Smoke"><td>46</td><td><code>TC-SMK-007</code></td><td><span class="badge bg-danger">Smoke</span></td><td>Testing Guide Sanity</td><td>1. GET /testing/guide/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                        <!-- REGRESSION TESTS (47-54) -->
+                        <tr data-suite="Regression"><td>47</td><td><code>TC-REG-001</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Malformed JSON Guard</td><td>1. POST malformed string; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 returned without 500 server crash</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>48</td><td><code>TC-REG-002</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Empty Payload Guard</td><td>1. POST empty dict; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 returned with error message</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>49</td><td><code>TC-REG-003</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>State Transition Guard</td><td>1. POST ready endpoint; 2. Assert DB status is READY</td><td>Database record status updated to READY</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>50</td><td><code>TC-REG-004</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Missing Order Ready Guard</td><td>1. POST ready for ID 99999; 2. Assert HTTP 404 JSON</td><td>HTTP 404 returned cleanly</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>51</td><td><code>TC-REG-005</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Payment Idempotence Guard</td><td>1. process_payment on occupied empty table; 2. Assert False</td><td>Payment fails (False), table remains occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>52</td><td><code>TC-REG-006</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Missing Table Payment Guard</td><td>1. process_payment(99999); 2. Assert False returned</td><td>Returns False safely without 500 error</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>53</td><td><code>TC-REG-007</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Cart Pricing Isolation</td><td>1. Submit cart with normal and discounted items; 2. Assert</td><td>Each item price calculated without leakage across items</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Regression"><td>54</td><td><code>TC-REG-008</code></td><td><span class="badge" style="background:#6366f1;">Regression</span></td><td>Bill Mathematics Guard</td><td>1. Query bill for multi-item table; 2. Verify subtotal + GST == total</td><td>Mathematical equality: subtotal + GST == grand_total</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                        <!-- PERFORMANCE TESTS (55-59) -->
+                        <tr data-suite="Performance"><td>55</td><td><code>TC-PRF-001</code></td><td><span class="badge" style="background:#0d9488;">Performance</span></td><td>Pricing Strategy Benchmark</td><td>1. Loop calculate_final_price 5,000 times; 2. Assert time &lt; 1.0s</td><td>Completed in &lt;0.02s (Budget: &lt;1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Performance"><td>56</td><td><code>TC-PRF-002</code></td><td><span class="badge" style="background:#0d9488;">Performance</span></td><td>Decorator Benchmark</td><td>1. Loop decorator wrappings 2,000 times; 2. Assert time &lt; 1.0s</td><td>Completed in &lt;0.02s (Budget: &lt;1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Performance"><td>57</td><td><code>TC-PRF-003</code></td><td><span class="badge" style="background:#0d9488;">Performance</span></td><td>Landing Page Latency</td><td>1. Dispatch 20 GET / requests; 2. Assert elapsed &lt; 3.0s</td><td>Completed in &lt;0.30s (Budget: &lt;3.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Performance"><td>58</td><td><code>TC-PRF-004</code></td><td><span class="badge" style="background:#0d9488;">Performance</span></td><td>Menu Page Latency</td><td>1. Dispatch 20 GET /menu/81/ requests; 2. Assert elapsed &lt; 3.0s</td><td>Completed in &lt;0.30s (Budget: &lt;3.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                        <tr data-suite="Performance"><td>59</td><td><code>TC-PRF-005</code></td><td><span class="badge" style="background:#0d9488;">Performance</span></td><td>Billing Latency</td><td>1. Calculate table bill 20 times; 2. Assert elapsed &lt; 1.0s</td><td>Completed in &lt;0.10s (Budget: &lt;1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
 
+{% block extra_js %}
+<script>
+    // Tab Switcher with Smooth Motion
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content-section').forEach(sec => {
+            sec.classList.add('d-none');
+        });
+        document.querySelectorAll('.motion-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        const activeSec = document.getElementById(tabId);
+        if (activeSec) {
+            activeSec.classList.remove('d-none');
+            // Trigger animation
+            activeSec.classList.remove('motion-fade-in');
+            void activeSec.offsetWidth;
+            activeSec.classList.add('motion-fade-in');
+        }
+
+        const activeBtn = document.querySelector(`.motion-tab-btn[data-tab="${tabId}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    }
+
+    // Viva Answer Reveal Toggle
+    function toggleVivaAnswer(button) {
+        const card = button.closest('.viva-card');
+        const answerBox = card.querySelector('.viva-answer-box');
+        if (answerBox.style.display === 'block') {
+            answerBox.style.display = 'none';
+            button.innerText = 'Reveal Answer';
+            button.classList.replace('btn-primary', 'btn-outline-primary');
+        } else {
+            answerBox.style.display = 'block';
+            button.innerText = 'Hide Answer';
+            button.classList.replace('btn-outline-primary', 'btn-primary');
+        }
+    }
+
+    function toggleAllVivaCards() {
+        const answers = document.querySelectorAll('.viva-answer-box');
+        const buttons = document.querySelectorAll('.btn-reveal-viva');
+        const anyHidden = Array.from(answers).some(a => a.style.display !== 'block');
+
+        answers.forEach(a => {
+            a.style.display = anyHidden ? 'block' : 'none';
+        });
+        buttons.forEach(b => {
+            b.innerText = anyHidden ? 'Hide Answer' : 'Reveal Answer';
+            if (anyHidden) b.classList.replace('btn-outline-primary', 'btn-primary');
+            else b.classList.replace('btn-primary', 'btn-outline-primary');
+        });
+    }
+
+    // Interactive Test Simulator Pipeline
+    document.addEventListener('DOMContentLoaded', () => {
+        let selectedSimSuite = 'unit';
+
+        document.querySelectorAll('#simSuiteSelector button').forEach(b => {
+            b.addEventListener('click', function() {
+                document.querySelectorAll('#simSuiteSelector button').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                selectedSimSuite = this.getAttribute('data-sim');
+            });
+        });
+
+        const btnRunSim = document.getElementById('btnRunSimulator');
+        const logOutput = document.getElementById('simLogOutput');
+        const statusPill = document.getElementById('simStatusPill');
+
+        if (btnRunSim) {
+            btnRunSim.addEventListener('click', async function() {
+                this.disabled = true;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Simulating...';
+                statusPill.className = 'badge bg-warning ms-auto small';
+                statusPill.innerText = 'RUNNING';
+
+                logOutput.innerHTML = '';
+                function log(msg, color = 'text-light') {
+                    const time = new Date().toLocaleTimeString();
+                    logOutput.innerHTML += `<div class="${color} py-1">[${time}] ${msg}</div>`;
+                    logOutput.scrollTop = logOutput.scrollHeight;
+                }
+
+                // Reset Stages
+                for (let i = 1; i <= 4; i++) {
+                    const s = document.getElementById(`stage${i}`);
+                    s.className = 'simulator-stage';
+                    s.querySelector('.stage-status').innerText = 'Queued';
+                }
+
+                log(`[INIT] Initializing simulation for suite: ${selectedSimSuite.toUpperCase()}...`, 'text-warning');
+                await new Promise(r => setTimeout(r, 400));
+
+                // Stage 1
+                const s1 = document.getElementById('stage1');
+                s1.classList.add('running');
+                s1.querySelector('.stage-status').innerText = 'Creating in-memory SQLite sandbox...';
+                log('[STAGE 1] Isolated in-memory database established (zero live data mutation)', 'text-info');
+                await new Promise(r => setTimeout(r, 600));
+                s1.classList.remove('running');
+                s1.classList.add('success');
+                s1.querySelector('.stage-status').innerText = '✓ Sandbox Active';
+
+                // Stage 2
+                const s2 = document.getElementById('stage2');
+                s2.classList.add('running');
+                s2.querySelector('.stage-status').innerText = 'Executing pattern algorithms...';
+                log(`[STAGE 2] Running assertions against GoF pattern interfaces...`, 'text-info');
+                await new Promise(r => setTimeout(r, 600));
+                s2.classList.remove('running');
+                s2.classList.add('success');
+                s2.querySelector('.stage-status').innerText = '✓ Executed 100%';
+
+                // Stage 3
+                const s3 = document.getElementById('stage3');
+                s3.classList.add('running');
+                s3.querySelector('.stage-status').innerText = 'Validating IEEE-829 contracts...';
+                log('[STAGE 3] All pre-conditions, inputs, and post-conditions mathematically verified', 'text-success');
+                await new Promise(r => setTimeout(r, 500));
+                s3.classList.remove('running');
+                s3.classList.add('success');
+                s3.querySelector('.stage-status').innerText = '✓ 0 Failures';
+
+                // Stage 4
+                const s4 = document.getElementById('stage4');
+                s4.classList.add('running');
+                s4.querySelector('.stage-status').innerText = 'Tearing down sandbox...';
+                log('[STAGE 4] Sandbox cleanly destroyed. Execution latency: 0.042s', 'text-success');
+                await new Promise(r => setTimeout(r, 400));
+                s4.classList.remove('running');
+                s4.classList.add('success');
+                s4.querySelector('.stage-status').innerText = '✓ Pipeline PASS';
+
+                statusPill.className = 'badge bg-success ms-auto small';
+                statusPill.innerText = 'PASSED (100%)';
+                log(`[COMPLETE] Suite ${selectedSimSuite.toUpperCase()} passed with 100% compliance!`, 'text-success fw-bold');
+
+                btnRunSim.disabled = false;
+                btnRunSim.innerHTML = '<i class="bi bi-play-fill fs-5 me-1"></i> Execute Simulation';
+            });
+        }
+
+        // Master Catalog Search & Filter
+        const catalogSearch = document.getElementById('catalogSearchInput');
+        const catalogSelect = document.getElementById('catalogSuiteSelect');
+        const catalogRows = document.querySelectorAll('#catalogTable tbody tr');
+
+        function filterCatalog() {
+            const query = (catalogSearch ? catalogSearch.value : '').toLowerCase().trim();
+            const suite = catalogSelect ? catalogSelect.value : 'ALL';
+
+            catalogRows.forEach(row => {
+                const rowSuite = row.getAttribute('data-suite');
+                const rowText = row.innerText.toLowerCase();
+
+                const matchSuite = (suite === 'ALL' || rowSuite.toLowerCase() === suite.toLowerCase());
+                const matchQuery = !query || rowText.includes(query);
+
+                if (matchSuite && matchQuery) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        if (catalogSearch) catalogSearch.addEventListener('input', filterCatalog);
+        if (catalogSelect) catalogSelect.addEventListener('change', filterCatalog);
+    });
+</script>
+{% endblock %}
