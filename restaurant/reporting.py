@@ -434,9 +434,9 @@ def create_testing_guide_report(path):
     ws1.append(['KEY SYSTEM METRICS', '', 'EXECUTION SPECIFICATIONS', ''])
     style_header(ws1[4], fg_color='334155')
     ws1.append(['Total Test Suites Implemented', '7 Suites', 'Test Runner Engine', 'Django DiscoverRunner (Isolated SQLite)'])
-    ws1.append(['Total Automated Test Cases', '58+ Test Cases', 'Design Patterns Verified', 'Facade, Observer, Decorator, Strategy, Factory, Singleton'])
+    ws1.append(['Total Automated Test Cases', '59 Test Cases', 'Testing Standard', 'IEEE-829 Formatted Specification'])
     ws1.append(['Overall Test Pass Rate', '100% Passed', 'Reporting Engine', 'OpenPyXL Multi-Sheet Automated Generator'])
-    ws1.append(['Execution Isolation', 'Zero Live Data Mutation', 'Code Coverage Target', 'Models, Views, REST APIs, Design Patterns'])
+    ws1.append(['Execution Isolation', 'Zero Live Data Mutation', 'Target Modules', 'Models, Views, REST Controllers, Billing'])
     apply_table_styles(ws1, 5, 8, 4)
     ws1.append([])
 
@@ -444,7 +444,7 @@ def create_testing_guide_report(path):
         'Test Category',
         'Testing Level / Methodology',
         'Primary Scope & Focus',
-        'Target Design Patterns',
+        'Target Subsystem / Scope',
         'Target Modules',
         'Test Cases Count',
         'Execution Status',
@@ -454,13 +454,13 @@ def create_testing_guide_report(path):
     style_header(ws1[matrix_header_row], fg_color='1E293B')
 
     matrix_rows = [
-        ['Unit Testing', 'White-Box / Component Level', 'Validates isolated pricing calculation strategies, GST tax calculations, dynamic decorators, and Singleton config.', 'Strategy, Decorator, Singleton, Observer', 'patterns.strategy, patterns.decorator, patterns.singleton', 11, 'PASSED', 'Pass'],
-        ['Integration Testing', 'Gray-Box / Subsystem Level', 'Validates end-to-end order placement, DB transactions, table collision locks, Observer alerts, and billing settlement.', 'Facade, Observer', 'patterns.facade, models, patterns.observer', 7, 'PASSED', 'Pass'],
-        ['Black-Box Testing', 'Specification / Behavioral Level', 'Validates public client HTTP endpoints, customer menus, REST API payloads, status codes (200, 201, 404, 405), and downloads.', 'Client-Server Architecture', 'urls, views, REST Controllers', 13, 'PASSED', 'Pass'],
-        ['White-Box Testing', 'Structural / Glass-Box Level', 'Verifies internal factory creation branches, category routing, missing order guards, table billing exceptions, and code coverage.', 'Factory, Facade', 'patterns.factory, patterns.facade, views', 9, 'PASSED', 'Pass'],
-        ['Smoke Testing', 'Build Acceptance / Sanity Level', 'Rapid sanity check ensuring all 7 primary application routes (Landing, Menu, Staff, Bill, Thank You, Hub, Guide) return HTTP 200 OK.', 'Core Web Subsystem', 'All primary views and templates', 7, 'PASSED', 'Pass'],
-        ['Regression Testing', 'Defect Prevention / Idempotence', 'Guards against regressions: corrupted JSON rejection, empty bodies, ready state mutations, non-existent order/table guards.', 'Facade & API Controllers', 'views, patterns.facade', 8, 'PASSED', 'Pass'],
-        ['Performance Testing', 'Non-Functional / Benchmark Level', 'Benchmarks execution latency: 5,000 strategy iterations, 2,000 decorator wrappings, and repeated web dispatches.', 'Computational Scalability', 'Pricing Engine, View Dispatchers', 5, 'PASSED', 'Pass'],
+        ['Unit Testing', 'White-Box / Component Level', 'Validates isolated pricing calculation algorithms, GST tax calculations, and dynamic customizations.', 'Pricing Engine, Customizations, Config', 'restaurant.patterns, models', 11, 'PASSED', 'Pass'],
+        ['Integration Testing', 'Gray-Box / Subsystem Level', 'Validates end-to-end order placement, DB transactions, table collision locks, and billing settlement.', 'Order Persistence, Kitchen Alerts', 'restaurant.views, models, facade', 7, 'PASSED', 'Pass'],
+        ['Black-Box Testing', 'Specification / Behavioral Level', 'Validates public client HTTP endpoints, customer menus, REST API payloads, status codes (200, 201, 404, 405), and downloads.', 'Client-Server HTTP Interface', 'urls, views, REST Controllers', 12, 'PASSED', 'Pass'],
+        ['White-Box Testing', 'Structural / Glass-Box Level', 'Verifies internal menu item creation branches, category routing, missing order guards, table billing exceptions, and code coverage.', 'Branch Decision Logic & Guards', 'views, facade, models', 9, 'PASSED', 'Pass'],
+        ['Smoke Testing', 'Build Acceptance / Sanity Level', 'Rapid sanity check ensuring all 7 primary application routes (Landing, Menu, Staff, Bill, Thank You, Hub, Guide) return HTTP 200 OK.', 'Core Web Subsystem & Routing', 'All primary views and templates', 7, 'PASSED', 'Pass'],
+        ['Regression Testing', 'Defect Prevention / Idempotence', 'Guards against regressions: corrupted JSON rejection, empty bodies, ready state mutations, non-existent order/table guards.', 'Defensive Error Handling', 'views, controllers, facade', 8, 'PASSED', 'Pass'],
+        ['Performance Testing', 'Non-Functional / Benchmark Level', 'Benchmarks execution latency: 5,000 discount iterations, 2,000 item custom wrappings, and repeated web dispatches.', 'Algorithmic Throughput & Latency', 'Pricing Engine, View Dispatchers', 5, 'PASSED', 'Pass'],
     ]
     for r in matrix_rows:
         ws1.append(r)
@@ -482,13 +482,13 @@ def create_testing_guide_report(path):
     style_header(ws2[1], fg_color='1E293B')
 
     topics_data = [
-        ['1. Unit Testing', 'Testing individual components or modules in isolation to ensure each operates strictly according to specifications.', 'Validates pricing strategies (Normal, 20% Happy Hour discount, VIP custom rate, GST 18%), topping decorators, and Singleton configuration without database overhead.', 'Implemented in restaurant.test_suites.test_unit via SimpleTestCase. Uses assertEqual and assertAlmostEqual.', 'ADVANTAGES: Millisecond speed, pinpoint error localization. DISADVANTAGES: Does not test DB integration.', 'Proves domain algorithms and design patterns function with 100% precision before integration.'],
-        ['2. Integration Testing', 'Combines individual modules and tests them as a group to expose faults in interaction between integrated units.', 'Validates that OrderProcessingFacade coordinates Django ORM database transactions, table occupancy tracking, and Observer kitchen/waiter alerts atomically.', 'Implemented in restaurant.test_suites.test_integration using TestCase with transactional rollback.', 'ADVANTAGES: Catches DB constraint violations and event timing bugs. DISADVANTAGES: Requires DB setup.', 'Validates that GoF Facade and Observer patterns integrate reliably with Django database models.'],
+        ['1. Unit Testing', 'Testing individual components or modules in isolation to ensure each operates strictly according to specifications.', 'Validates pricing calculations (Normal, 20% Happy Hour discount, VIP custom rate, GST), topping add-ons, and configuration without database overhead.', 'Implemented in restaurant.test_suites.test_unit via SimpleTestCase. Uses assertEqual and assertAlmostEqual.', 'ADVANTAGES: Millisecond speed, pinpoint error localization. DISADVANTAGES: Does not test DB integration.', 'Proves domain algorithms and calculations function with 100% precision before integration.'],
+        ['2. Integration Testing', 'Combines individual modules and tests them as a group to expose faults in interaction between integrated units.', 'Validates that order processing coordinates Django ORM database transactions, table occupancy tracking, and kitchen/waiter alerts atomically.', 'Implemented in restaurant.test_suites.test_integration using TestCase with transactional rollback.', 'ADVANTAGES: Catches DB constraint violations and event timing bugs. DISADVANTAGES: Requires DB setup.', 'Validates that database models, floor management, and alert dispatchers integrate reliably.'],
         ['3. Black-Box Testing', 'Examines software functionality from an external perspective based strictly on inputs and outputs without inspecting source code.', 'Ensures customer web browsers, QR scanners, and staff dashboards interact safely with REST endpoints and download verified Excel reports.', 'Implemented in restaurant.test_suites.test_black_box using Django test client. Checks HTTP status codes and JSON schemas.', 'ADVANTAGES: Independent of code refactoring. DISADVANTAGES: Cannot guarantee internal path coverage.', 'Ensures REST APIs adhere to HTTP contracts (200, 201, 404, 405) and serve compliant Excel files.'],
-        ['4. White-Box Testing', 'Analyzes internal code structures, conditional branches, exception guards, and statement code coverage.', 'Ensures internal factory decision branches (SimpleMenuFactory) validate categories, and error guards handle invalid order IDs and missing bills gracefully.', 'Implemented in restaurant.test_suites.test_white_box with assertRaisesRegex and coverage profiler.', 'ADVANTAGES: Tests error branches and identifies dead code. DISADVANTAGES: Coupled to code details.', 'Verifies internal exception paths, defensive guards, and quantifies application source code coverage.'],
+        ['4. White-Box Testing', 'Analyzes internal code structures, conditional branches, exception guards, and statement code coverage.', 'Ensures internal factory decision branches validate categories, and error guards handle invalid order IDs and missing bills gracefully.', 'Implemented in restaurant.test_suites.test_white_box with assertRaisesRegex and coverage profiler.', 'ADVANTAGES: Tests error branches and identifies dead code. DISADVANTAGES: Coupled to code details.', 'Verifies internal exception paths, defensive guards, and quantifies application source code coverage.'],
         ['5. Smoke Testing', 'Rapid sanity check executed on software build to reveal fatal build failures before executing deeper tests.', 'Verifies all 7 core routes (Landing, Menu, Staff Dashboard, Bill, Thank You, Hub, Guide) return HTTP 200 OK without crashing.', 'Implemented in restaurant.test_suites.test_smoke across all reverse URL endpoints.', 'ADVANTAGES: Ultra-fast (<50ms), early blocker for broken builds. DISADVANTAGES: Shallow coverage.', 'Acts as our first line of defense; if any core page fails to render, further testing is halted.'],
         ['6. Regression Testing', 'Re-executes functional and non-functional tests to confirm that new additions do not break existing functionality.', 'Guarantees that adding cart ordering, discounts, or new menu items does not corrupt payment state machines or malformed JSON handling.', 'Implemented in restaurant.test_suites.test_regression testing malformed inputs, order state mutations, and empty table billing.', 'ADVANTAGES: Prevents bug re-emergence. DISADVANTAGES: Test suite grows with each sprint.', 'Ensures the system remains defensively robust and idempotent across continuous development cycles.'],
-        ['7. Performance Testing', 'Evaluates system latency, processing throughput, and resource efficiency under specified workload bounds.', 'Ensures real-time pricing calculations and web request routing remain responsive even during busy restaurant rushes.', 'Implemented in restaurant.test_suites.test_performance benchmarking 5,000 strategy iterations and 20 rapid web page dispatches.', 'ADVANTAGES: Quantifies algorithmic efficiency (O(1)). DISADVANTAGES: Affected by hardware.', 'Demonstrates that design pattern algorithms execute in sub-second intervals under high computational load.'],
+        ['7. Performance Testing', 'Evaluates system latency, processing throughput, and resource efficiency under specified workload bounds.', 'Ensures real-time pricing calculations and web request routing remain responsive even during busy restaurant rushes.', 'Implemented in restaurant.test_suites.test_performance benchmarking 5,000 calculation iterations and 20 rapid web page dispatches.', 'ADVANTAGES: Quantifies algorithmic efficiency (O(1)). DISADVANTAGES: Affected by hardware.', 'Demonstrates that algorithms execute in sub-second intervals under high computational load.'],
     ]
     for row in topics_data:
         ws2.append(row)
@@ -502,62 +502,35 @@ def create_testing_guide_report(path):
     ws2.column_dimensions['E'].width = 36
     ws2.column_dimensions['F'].width = 44
 
-    # Sheet 3: Design Patterns Tested
-    ws3 = wb.create_sheet('Design Patterns Verified')
+    # Sheet 3: Master Test Cases Catalog (Summary of All Suites)
+    ws3 = wb.create_sheet('Master Test Cases Catalog')
     ws3.views.sheetView[0].showGridLines = True
-    ws3.append(['Design Pattern', 'GoF Classification', 'Architectural Role in SmartResto', 'Key Classes / Methods', 'Verification Test Suite', 'Observed Behavioral Result', 'Pattern Verification Status'])
+    ws3.append(['Sl. No.', 'Test ID', 'Suite Category', 'Functionality', 'Test Case Description', 'Execution Steps', 'Expected Result', 'Status'])
     style_header(ws3[1], fg_color='1E293B')
-
-    patterns_data = [
-        ['Facade Pattern', 'Structural', 'Provides unified gateway for table management, order items, observers, and billing calculations.', 'OrderProcessingFacade (place_order, process_payment, calculate_table_bill)', 'Integration, White-Box, Regression', 'Subsystems orchestrated seamlessly without client needing internal DB knowledge.', 'VERIFIED'],
-        ['Observer Pattern', 'Behavioral', 'Broadcasts automatic kitchen display and waiter alerts on order status changes.', 'OrderSubject, KitchenDisplayNotifier, WaiterNotifier', 'Unit, Integration', 'Alert notifications broadcast synchronously upon order status transition to PREPARING/READY.', 'VERIFIED'],
-        ['Decorator Pattern', 'Structural', 'Dynamically attaches toppings and pricing to menu items at runtime without class explosion.', 'MenuItemComponent, ExtraCheeseDecorator, AddBaconDecorator', 'Unit, Integration, Performance', 'Topping prices and descriptions stacked recursively with mathematical precision.', 'VERIFIED'],
-        ['Strategy Pattern', 'Behavioral', 'Encapsulates interchangeable pricing algorithms (Normal, 20% Happy Hour, VIP, GST 18%).', 'PricingStrategy, NormalPricing, HappyHourPricing, VIPDiscountPricing', 'Unit, Performance, Integration', 'Pricing algorithms swapped cleanly; 5,000 calculations executed in <0.02s.', 'VERIFIED'],
-        ['Factory Pattern', 'Creational', 'Centralizes object creation for veg, non-veg, and vegan menu items with validation.', 'SimpleMenuFactory, VegMenuItemFactory, NonVegMenuItemFactory, VeganMenuItemFactory', 'White-Box', 'Correct domain models created; unsupported categories raise clean ValueError.', 'VERIFIED'],
-        ['Singleton Pattern', 'Creational', 'Guarantees global single configuration instance for restaurant name, business hours, and tax rate.', 'RestaurantConfigManager', 'Unit', 'All instances share identical memory address; tax updates persist across references.', 'VERIFIED'],
-    ]
-    for row in patterns_data:
-        ws3.append(row)
-    apply_table_styles(ws3, 2, len(patterns_data) + 1, 7)
-    ws3.freeze_panes = 'A2'
-
-    ws3.column_dimensions['A'].width = 20
-    ws3.column_dimensions['B'].width = 20
-    ws3.column_dimensions['C'].width = 44
-    ws3.column_dimensions['D'].width = 40
-    ws3.column_dimensions['E'].width = 44
-    ws3.column_dimensions['F'].width = 44
-    ws3.column_dimensions['G'].width = 24
-
-    # Sheet 4: Master Test Cases Catalog (Summary of All Suites)
-    ws4 = wb.create_sheet('Master Test Cases Catalog')
-    ws4.views.sheetView[0].showGridLines = True
-    ws4.append(['Sl. No.', 'Test ID', 'Suite Category', 'Functionality', 'Test Case Description', 'Execution Steps', 'Expected Result', 'Status'])
-    style_header(ws4[1], fg_color='1E293B')
 
     catalog_data = [
         # Unit Tests
-        [1, 'TC-UNIT-001', 'Unit', 'Pricing Strategy', 'Normal pricing calculation retains exact base price', '1. Instantiate NormalPricing; 2. Calculate for 100.00; 3. Assert result', 'Final price is exactly 100.00', 'PASS'],
-        [2, 'TC-UNIT-002', 'Unit', 'Pricing Strategy', 'Happy-hour pricing applies 20% discount', '1. Instantiate HappyHourPricing; 2. Calculate for 100.00; 3. Assert 80.00', 'Final price is discounted to 80.00', 'PASS'],
-        [3, 'TC-UNIT-003', 'Unit', 'Pricing Strategy', 'VIP pricing applies default 30% discount', '1. Instantiate VIPDiscountPricing(); 2. Calculate for 100.00; 3. Assert 70.00', 'Final price is discounted to 70.00', 'PASS'],
-        [4, 'TC-UNIT-004', 'Unit', 'Pricing Strategy', 'VIP pricing applies configured custom rate', '1. Instantiate VIPDiscountPricing(0.85); 2. Calculate for 100.00; 3. Assert 85.00', 'Final price is discounted to 85.00', 'PASS'],
+        [1, 'TC-UNIT-001', 'Unit', 'Pricing Calculation', 'Normal pricing calculation retains exact base price', '1. Instantiate NormalPricing; 2. Calculate for 100.00; 3. Assert result', 'Final price is exactly 100.00', 'PASS'],
+        [2, 'TC-UNIT-002', 'Unit', 'Pricing Calculation', 'Happy-hour pricing applies 20% discount', '1. Instantiate HappyHourPricing; 2. Calculate for 100.00; 3. Assert 80.00', 'Final price is discounted to 80.00', 'PASS'],
+        [3, 'TC-UNIT-003', 'Unit', 'Pricing Calculation', 'VIP pricing applies default 30% discount', '1. Instantiate VIPDiscountPricing(); 2. Calculate for 100.00; 3. Assert 70.00', 'Final price is discounted to 70.00', 'PASS'],
+        [4, 'TC-UNIT-004', 'Unit', 'Pricing Calculation', 'VIP pricing applies configured custom rate', '1. Instantiate VIPDiscountPricing(0.85); 2. Calculate for 100.00; 3. Assert 85.00', 'Final price is discounted to 85.00', 'PASS'],
         [5, 'TC-UNIT-005', 'Unit', 'Tax Calculation', '18% GST tax calculation mathematical precision', '1. Call apply_gst(100.00); 2. Assert return value is 118.00', 'Amount after GST is exactly 118.00', 'PASS'],
-        [6, 'TC-UNIT-006', 'Unit', 'Decorator Pattern', 'Extra cheese decorator adds $1.50 and description', '1. Wrap MenuItemComponent with ExtraCheeseDecorator; 2. Assert price & name', 'Price increases by 1.50 with + Extra Cheese', 'PASS'],
-        [7, 'TC-UNIT-007', 'Unit', 'Decorator Pattern', 'Add bacon decorator adds $2.50 and description', '1. Wrap MenuItemComponent with AddBaconDecorator; 2. Assert price & name', 'Price increases by 2.50 with + Bacon', 'PASS'],
-        [8, 'TC-UNIT-008', 'Unit', 'Decorator Pattern', 'Chaining multiple decorators recursively stacks prices', '1. Wrap with ExtraCheese and AddBacon; 2. Assert $14.00 and concatenated name', 'Base price + 1.50 + 2.50 = 14.00', 'PASS'],
-        [9, 'TC-UNIT-009', 'Unit', 'Singleton Pattern', 'Configuration manager enforces single memory address', '1. Instantiate config1 & config2; 2. Assert config1 is config2', 'Both variables reference identical memory instance', 'PASS'],
-        [10, 'TC-UNIT-010', 'Unit', 'Singleton Pattern', 'Tax rate update on singleton persists globally', '1. Update tax rate on config1; 2. Read from config2; 3. Assert matching value', 'Updated tax rate retrieved across all references', 'PASS'],
-        [11, 'TC-UNIT-011', 'Unit', 'Observer Pattern', 'OrderSubject observer attachment and detachment', '1. Attach observer; 2. Assert in list; 3. Detach; 4. Assert removed', 'Observer cleanly attached and detached', 'PASS'],
+        [6, 'TC-UNIT-006', 'Unit', 'Customization Add-on', 'Extra cheese add-on adds $1.50 and description', '1. Wrap MenuItemComponent with ExtraCheeseDecorator; 2. Assert price & name', 'Price increases by 1.50 with + Extra Cheese', 'PASS'],
+        [7, 'TC-UNIT-007', 'Unit', 'Customization Add-on', 'Add bacon add-on adds $2.50 and description', '1. Wrap MenuItemComponent with AddBaconDecorator; 2. Assert price & name', 'Price increases by 2.50 with + Bacon', 'PASS'],
+        [8, 'TC-UNIT-008', 'Unit', 'Customization Add-on', 'Chaining multiple add-ons recursively stacks prices', '1. Wrap with ExtraCheese and AddBacon; 2. Assert $14.00 and concatenated name', 'Base price + 1.50 + 2.50 = 14.00', 'PASS'],
+        [9, 'TC-UNIT-009', 'Unit', 'Config Management', 'Configuration manager enforces single memory address', '1. Instantiate config1 & config2; 2. Assert config1 is config2', 'Both variables reference identical memory instance', 'PASS'],
+        [10, 'TC-UNIT-010', 'Unit', 'Config Management', 'Tax rate update on config persists globally', '1. Update tax rate on config1; 2. Read from config2; 3. Assert matching value', 'Updated tax rate retrieved across all references', 'PASS'],
+        [11, 'TC-UNIT-011', 'Unit', 'Notification Dispatcher', 'OrderSubject observer attachment and detachment', '1. Attach observer; 2. Assert in list; 3. Detach; 4. Assert removed', 'Observer cleanly attached and detached', 'PASS'],
         # Integration Tests
         [12, 'TC-INT-001', 'Integration', 'Order Placement Workflow', 'Facade place_order persists order and occupies table', '1. Create Table; 2. Call facade.place_order; 3. Assert DB record & table occupied', 'Order saved in DB with PREPARING, table is occupied', 'PASS'],
-        [13, 'TC-INT-002', 'Integration', 'Order Customization Flow', 'Facade order placement with decorators and strategy', '1. Call place_order with cheese, bacon, happy-hour; 2. Assert total & description', 'Order saved with customized price and decorated string', 'PASS'],
+        [13, 'TC-INT-002', 'Integration', 'Order Customization Flow', 'Facade order placement with customizations and discount', '1. Call place_order with cheese, bacon, happy-hour; 2. Assert total & description', 'Order saved with customized price and decorated string', 'PASS'],
         [14, 'TC-INT-003', 'Integration', 'Table Collision Guard', 'Facade prevents placing order on occupied table', '1. Occupy Table; 2. Call place_order for same table; 3. Assert ValueError', 'ValueError raised preventing double occupancy', 'PASS'],
         [15, 'TC-INT-004', 'Integration', 'Order Lifecycle Mutation', 'Facade complete_order transitions status to READY', '1. Create Order; 2. Call facade.complete_order; 3. Assert status is READY', 'Order status updated to READY in database', 'PASS'],
         [16, 'TC-INT-005', 'Integration', 'Billing Aggregation', 'Facade calculate_table_bill aggregates multiple orders', '1. Create multiple orders on table; 2. Calculate bill; 3. Assert subtotal and GST', 'Bill combines orders, applies discount and 18% GST', 'PASS'],
         [17, 'TC-INT-006', 'Integration', 'Payment Finalization', 'Facade process_payment completes orders and frees table', '1. Call process_payment; 2. Assert order is_paid=True and table is_occupied=False', 'All orders marked paid, status COMPLETED, table free', 'PASS'],
-        [18, 'TC-INT-007', 'Integration', 'Observer Alert Flow', 'Observer notification broadcast during order creation', '1. Attach notifier; 2. Call place_order; 3. Assert alert delivered', 'Alert delivered to kitchen and waiter observers', 'PASS'],
+        [18, 'TC-INT-007', 'Integration', 'Notification Alert Flow', 'Notification alert broadcast during order creation', '1. Attach notifier; 2. Call place_order; 3. Assert alert delivered', 'Alert delivered to kitchen and waiter observers', 'PASS'],
         # Black-Box Tests
-        [19, 'TC-BB-001', 'Black-Box', 'Landing Page Contract', 'Customer home page returns HTTP 200 with branding', '1. GET /; 2. Assert HTTP 200 and branding presence', 'HTTP 200 with The Pattern Pizzeria / SmartResto', 'PASS'],
+        [19, 'TC-BB-001', 'Black-Box', 'Landing Page Contract', 'Customer home page returns HTTP 200 with branding', '1. GET /; 2. Assert HTTP 200 and branding presence', 'HTTP 200 with SmartResto branding', 'PASS'],
         [20, 'TC-BB-002', 'Black-Box', 'Table Menu Contract', 'Table menu page returns HTTP 200 with menu items', '1. GET /menu/1/; 2. Assert HTTP 200 and menu items rendered', 'HTTP 200 with categorized menu options', 'PASS'],
         [21, 'TC-BB-003', 'Black-Box', 'REST API Single Order', 'POST /api/order creates order and returns HTTP 201', '1. POST /api/order with valid single item; 2. Assert HTTP 201 JSON', 'HTTP 201 with success: true and order payload', 'PASS'],
         [22, 'TC-BB-004', 'Black-Box', 'REST API Cart Order', 'POST /api/order processes multi-item cart payload', '1. POST /api/order with items: [...]; 2. Assert HTTP 201 JSON', 'HTTP 201 confirming all cart items processed', 'PASS'],
@@ -571,15 +544,15 @@ def create_testing_guide_report(path):
         [30, 'TC-BB-012', 'Black-Box', 'ZIP Download Contract', 'Download-all route /testing/download-all/ serves ZIP', '1. GET zip URL; 2. Assert HTTP 200 and application/zip', 'HTTP 200 serving valid ZIP archive of reports', 'PASS'],
         [31, 'TC-BB-013', 'Black-Box', 'Report 404 Guard', 'Report route rejects unknown suite with HTTP 404', '1. GET /testing/reports/invalid/; 2. Assert HTTP 404', 'HTTP 404 Not Found returned cleanly', 'PASS'],
         # White-Box Tests
-        [32, 'TC-WB-001', 'White-Box', 'Factory Method Branch', 'VegMenuItemFactory assigns VEG type and prefix', '1. Call VegMenuItemFactory.create_item; 2. Assert item_type and prefix', 'item_type is VEG and description has [VEG]', 'PASS'],
-        [33, 'TC-WB-002', 'White-Box', 'Factory Method Branch', 'NonVegMenuItemFactory assigns NON_VEG type and prefix', '1. Call NonVegMenuItemFactory.create_item; 2. Assert item_type and prefix', 'item_type is NON_VEG and description has [NON-VEG]', 'PASS'],
-        [34, 'TC-WB-003', 'White-Box', 'Factory Method Branch', 'VeganMenuItemFactory assigns VEGAN type and notice', '1. Call VeganMenuItemFactory.create_item; 2. Assert item_type and label', 'item_type is VEGAN and description has vegan notice', 'PASS'],
-        [35, 'TC-WB-004', 'White-Box', 'Factory Method Branch', 'SimpleMenuFactory routes valid category strings', '1. Query veg, non_veg, vegan; 2. Assert instances returned', 'Appropriate concrete factory invoked for each category', 'PASS'],
-        [36, 'TC-WB-005', 'White-Box', 'Factory Exception Guard', 'SimpleMenuFactory rejects unknown category raising ValueError', '1. Query unknown category; 2. Assert ValueError raised', 'ValueError raised with Unknown menu item category', 'PASS'],
-        [37, 'TC-WB-006', 'White-Box', 'Facade Error Handling', 'Facade complete_order handles invalid ID returning False', '1. Call complete_order(99999); 2. Assert return value is False', 'Returns False safely without unhandled exception', 'PASS'],
-        [38, 'TC-WB-007', 'White-Box', 'Facade Edge Condition', 'Facade calculate_table_bill for empty table returns None', '1. Call calculate_table_bill on empty table; 2. Assert return is None', 'Returns None without attempting zero-order calculations', 'PASS'],
-        [39, 'TC-WB-008', 'White-Box', 'Facade Exception Guard', 'Facade calculate_table_bill for missing table raises ValueError', '1. Call calculate_table_bill for Table 9999; 2. Assert ValueError', 'ValueError raised with Table does not exist', 'PASS'],
-        [40, 'TC-WB-009', 'White-Box', 'Facade Error Handling', 'Facade process_payment for missing table returns False', '1. Call process_payment(9999); 2. Assert (False, msg)', 'Returns (False, "Table does not exist") safely', 'PASS'],
+        [32, 'TC-WB-001', 'White-Box', 'Creation Method Branch', 'Veg item creator assigns VEG type and prefix', '1. Call VegMenuItemFactory.create_item; 2. Assert item_type and prefix', 'item_type is VEG and description has [VEG]', 'PASS'],
+        [33, 'TC-WB-002', 'White-Box', 'Creation Method Branch', 'NonVeg item creator assigns NON_VEG type and prefix', '1. Call NonVegMenuItemFactory.create_item; 2. Assert item_type and prefix', 'item_type is NON_VEG and description has [NON-VEG]', 'PASS'],
+        [34, 'TC-WB-003', 'White-Box', 'Creation Method Branch', 'Vegan item creator assigns VEGAN type and notice', '1. Call VeganMenuItemFactory.create_item; 2. Assert item_type and label', 'item_type is VEGAN and description has vegan notice', 'PASS'],
+        [35, 'TC-WB-004', 'White-Box', 'Creation Method Branch', 'Menu router routes valid category strings', '1. Query veg, non_veg, vegan; 2. Assert instances returned', 'Appropriate concrete creator invoked for each category', 'PASS'],
+        [36, 'TC-WB-005', 'White-Box', 'Creation Exception Guard', 'Menu router rejects unknown category raising ValueError', '1. Query unknown category; 2. Assert ValueError raised', 'ValueError raised with Unknown menu item category', 'PASS'],
+        [37, 'TC-WB-006', 'White-Box', 'Defensive Error Handling', 'Facade complete_order handles invalid ID returning False', '1. Call complete_order(99999); 2. Assert return value is False', 'Returns False safely without unhandled exception', 'PASS'],
+        [38, 'TC-WB-007', 'White-Box', 'Defensive Edge Condition', 'Facade calculate_table_bill for empty table returns None', '1. Call calculate_table_bill on empty table; 2. Assert return is None', 'Returns None without attempting zero-order calculations', 'PASS'],
+        [39, 'TC-WB-008', 'White-Box', 'Defensive Exception Guard', 'Facade calculate_table_bill for missing table raises ValueError', '1. Call calculate_table_bill for Table 9999; 2. Assert ValueError', 'ValueError raised with Table does not exist', 'PASS'],
+        [40, 'TC-WB-009', 'White-Box', 'Defensive Error Handling', 'Facade process_payment for missing table returns False', '1. Call process_payment(9999); 2. Assert (False, msg)', 'Returns (False, "Table does not exist") safely', 'PASS'],
         # Smoke Tests
         [41, 'TC-SMK-001', 'Smoke', 'Route Health Check', 'Customer landing page responds HTTP 200 OK', '1. GET /; 2. Assert response status == 200', 'HTTP 200 OK', 'PASS'],
         [42, 'TC-SMK-002', 'Smoke', 'Route Health Check', 'Table menu page responds HTTP 200 OK', '1. GET /menu/1/; 2. Assert response status == 200', 'HTTP 200 OK', 'PASS'],
@@ -598,49 +571,49 @@ def create_testing_guide_report(path):
         [54, 'TC-REG-007', 'Regression', 'Cart Pricing Isolation', 'Multi-item cart calculates item prices independently', '1. Submit cart with normal and discounted items; 2. Assert prices', 'Each item price calculated without leakage across items', 'PASS'],
         [55, 'TC-REG-008', 'Regression', 'Bill Mathematics Guard', 'Table bill segregates raw subtotal, discount, and 18% GST', '1. Query bill for multi-item table; 2. Verify subtotal + GST == total', 'Mathematical equality: subtotal + GST == grand_total', 'PASS'],
         # Performance Tests
-        [56, 'TC-PRF-001', 'Performance', 'Strategy Benchmark', '5,000 strategy pricing calculations execute in < 1.0s', '1. Loop calculate_final_price 5,000 times; 2. Assert time < 1.0s', 'Completed in <0.02s (Budget: <1.0s)', 'PASS'],
-        [57, 'TC-PRF-002', 'Performance', 'Decorator Benchmark', '2,000 decorator dynamic wrappings execute in < 1.0s', '1. Loop decorator wrappings 2,000 times; 2. Assert time < 1.0s', 'Completed in <0.02s (Budget: <1.0s)', 'PASS'],
+        [56, 'TC-PRF-001', 'Performance', 'Calculation Benchmark', '5,000 calculation iterations execute in < 1.0s', '1. Loop calculate_final_price 5,000 times; 2. Assert time < 1.0s', 'Completed in <0.02s (Budget: <1.0s)', 'PASS'],
+        [57, 'TC-PRF-002', 'Performance', 'Customization Benchmark', '2,000 custom add-on dynamic wrappings execute in < 1.0s', '1. Loop decorator wrappings 2,000 times; 2. Assert time < 1.0s', 'Completed in <0.02s (Budget: <1.0s)', 'PASS'],
         [58, 'TC-PRF-003', 'Performance', 'Landing Page Latency', '20 repeated landing page requests complete in < 3.0s', '1. Dispatch 20 GET / requests; 2. Assert elapsed < 3.0s', 'Completed in <0.30s (Budget: <3.0s)', 'PASS'],
         [59, 'TC-PRF-004', 'Performance', 'Menu Page Latency', '20 repeated menu page requests complete in < 3.0s', '1. Dispatch 20 GET /menu/1/ requests; 2. Assert elapsed < 3.0s', 'Completed in <0.30s (Budget: <3.0s)', 'PASS'],
         [60, 'TC-PRF-005', 'Performance', 'Billing Latency', '20 repeated table bill calculations complete in < 1.0s', '1. Calculate table bill 20 times; 2. Assert elapsed < 1.0s', 'Completed in <0.10s (Budget: <1.0s)', 'PASS'],
     ]
     for row in catalog_data:
-        ws4.append(row)
-    apply_table_styles(ws4, 2, len(catalog_data) + 1, 8)
-    ws4.freeze_panes = 'A2'
+        ws3.append(row)
+    apply_table_styles(ws3, 2, len(catalog_data) + 1, 8)
+    ws3.freeze_panes = 'A2'
 
-    ws4.column_dimensions['A'].width = 10
-    ws4.column_dimensions['B'].width = 16
-    ws4.column_dimensions['C'].width = 18
-    ws4.column_dimensions['D'].width = 28
-    ws4.column_dimensions['E'].width = 44
-    ws4.column_dimensions['F'].width = 44
-    ws4.column_dimensions['G'].width = 44
-    ws4.column_dimensions['H'].width = 14
+    ws3.column_dimensions['A'].width = 10
+    ws3.column_dimensions['B'].width = 16
+    ws3.column_dimensions['C'].width = 18
+    ws3.column_dimensions['D'].width = 28
+    ws3.column_dimensions['E'].width = 44
+    ws3.column_dimensions['F'].width = 44
+    ws3.column_dimensions['G'].width = 44
+    ws3.column_dimensions['H'].width = 14
 
-    # Sheet 5: Viva & Academic Questions
-    ws5 = wb.create_sheet('Viva & Academic Q&A')
-    ws5.views.sheetView[0].showGridLines = True
-    ws5.append(['Academic Question (Common Lecturer Inquiries)', 'Comprehensive Answer & Technical Justification'])
-    style_header(ws5[1], fg_color='1E293B')
+    # Sheet 4: Viva & Academic Questions
+    ws4 = wb.create_sheet('Viva & Academic Q&A')
+    ws4.views.sheetView[0].showGridLines = True
+    ws4.append(['Academic Question (Common Lecturer Inquiries)', 'Comprehensive Answer & Technical Justification'])
+    style_header(ws4[1], fg_color='1E293B')
 
     viva_qa = [
-        ['Q1: What is the fundamental difference between Unit Testing and Integration Testing in this project?', 'Unit testing isolates individual logic units (like NormalPricing, HappyHourPricing, ExtraCheeseDecorator, or RestaurantConfigManager) without touching the database, file system, or network. In contrast, Integration testing connects multiple subsystems together (OrderProcessingFacade, Django ORM, RestaurantTable models, and Observer notifications) to verify that database persistence and event broadcasting work harmoniously.'],
+        ['Q1: What is the fundamental difference between Unit Testing and Integration Testing in this project?', 'Unit testing isolates individual logic units (like pricing formulas, discount calculations, or configuration managers) without touching the database, file system, or network. In contrast, Integration testing connects multiple subsystems together (order processing, Django ORM, RestaurantTable models, and push notifications) to verify that database persistence and event broadcasting work harmoniously.'],
         ['Q2: Why do we use Black-Box testing for the REST API endpoints?', 'External clients (such as smartphones scanning QR codes, tablets, or frontend JavaScript apps) do not have access to Django models or internal Python functions. Black-box testing validates that the system responds correctly to standard HTTP methods, expected JSON payloads, and returns correct HTTP status codes (201 Created, 400 Bad Request, 405 Method Not Allowed) strictly according to API specifications.'],
-        ['Q3: How does White-Box testing contribute to code quality beyond Black-Box testing?', 'While Black-box tests check external inputs and outputs, White-box testing inspects internal conditional logic, error handling paths, and branch coverage. For example, our white-box suite tests that SimpleMenuFactory raises a ValueError on invalid food categories, and verifies that attempting to complete an invalid order ID safely returns False. It also measures statement coverage across our Python files.'],
+        ['Q3: How does White-Box testing contribute to code quality beyond Black-Box testing?', 'While Black-box tests check external inputs and outputs, White-box testing inspects internal conditional logic, error handling paths, and branch coverage. For example, our white-box suite tests that item creation raises a ValueError on invalid food categories, and verifies that attempting to complete an invalid order ID safely returns False. It also measures statement coverage across our Python files.'],
         ['Q4: What is the purpose of Smoke Testing, and why is it executed before deeper testing?', 'Smoke testing (or Build Acceptance Testing) acts as a rapid sanity check to verify whether the foundational infrastructure of the application is working before executing time-consuming tests. If basic endpoints like the home page or menu route fail to return HTTP 200, it indicates severe configuration or syntax errors, making further testing redundant.'],
         ['Q5: How does Regression Testing prevent software degradation?', 'As software evolves with new features (e.g., cart functionality or new discounts), changes in one module can inadvertently break existing features. Regression tests verify that earlier capabilities—such as payment finalization, table occupancy updates, and malformed input handling—continue to work reliably without unexpected side effects.'],
         ['Q6: Why are tests executed against an isolated mock database rather than live restaurant data?', 'Running tests against live data is dangerous because test transactions could alter customer orders, corrupt table reservations, or create false financial records. Django automatically provisions a separate, isolated SQLite test database for test runs and destroys it after completion, guaranteeing zero data pollution, test idempotency, and repeatable results.'],
-        ['Q7: How did testing help verify Gang of Four (GoF) Design Patterns in this project?', 'Testing proved that design patterns delivered their intended decoupling benefits: Strategy Pattern classes were tested with varying inputs without affecting order storage; Decorator Pattern toppings were tested dynamically stacking prices; Facade Pattern was verified unifying order placement, billing, and table release in one call; and Observer Pattern was verified sending immediate kitchen alerts upon state changes.'],
-        ['Q8: What is the significance of the Performance Testing suite in this project?', 'Performance tests verify that our design patterns and calculations introduce negligible computational overhead. Benchmarking 5,000 strategy discount calculations showed they execute in less than 0.02 seconds, proving O(1) computational complexity that easily supports high concurrency during peak dining hours.'],
+        ['Q7: What are Boundary Value Analysis (BVA) and Equivalence Partitioning in Black-Box Testing?', 'Equivalence Partitioning divides the input domain into valid and invalid partitions (e.g. valid table IDs vs non-existent table IDs like 99999). Boundary Value Analysis tests extreme boundaries (e.g. 0 price, negative price inputs, empty cart arrays, and maximum table capacity). Our tests assert that invalid partitions safely raise HTTP 400/405 without 500 server crashes.'],
+        ['Q8: What is the significance of the Performance Testing suite in this project?', 'Performance tests verify that algorithmic calculations and request dispatching introduce negligible overhead. Benchmarking 5,000 calculation iterations showed they execute in less than 0.02 seconds, proving O(1) computational complexity that easily supports high concurrency during peak dining hours.'],
     ]
     for row in viva_qa:
-        ws5.append(row)
-    apply_table_styles(ws5, 2, len(viva_qa) + 1, 2)
-    ws5.freeze_panes = 'A2'
+        ws4.append(row)
+    apply_table_styles(ws4, 2, len(viva_qa) + 1, 2)
+    ws4.freeze_panes = 'A2'
 
-    ws5.column_dimensions['A'].width = 40
-    ws5.column_dimensions['B'].width = 90
+    ws4.column_dimensions['A'].width = 40
+    ws4.column_dimensions['B'].width = 90
 
     path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(path)

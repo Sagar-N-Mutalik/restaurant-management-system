@@ -304,10 +304,10 @@
                     </span>
                 </div>
                 <h1 class="display-5 fw-bold mb-3">
-                    Software Testing & <span style="background: linear-gradient(135deg, #fb923c, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Pattern Verification</span>
+                    Software Testing & <span style="background: linear-gradient(135deg, #fb923c, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Quality Assurance Hub</span>
                 </h1>
                 <p class="fs-6 text-white-50 mb-4" style="max-width: 620px; line-height: 1.6;">
-                    Interactive visualization of our 7-tier testing pyramid, Gang of Four (GoF) architectural design patterns, IEEE-829 specification catalog, and Examiner Viva defense flashcards.
+                    Interactive visualization of our 7-tier testing pyramid, automated test execution pipelines, IEEE-829 specification catalog, and Examiner Viva defense flashcards.
                 </p>
                 <div class="d-flex gap-2 flex-wrap">
                     <button class="btn btn-enter-menu px-4 py-2 rounded-pill fw-semibold" onclick="switchTab('tab-simulator')">
@@ -342,8 +342,8 @@
                     </div>
                     <div class="col-6">
                         <div class="stat-counter-box">
-                            <div class="display-5 fw-bold text-primary mb-1">6</div>
-                            <div class="small text-white-50 text-uppercase fw-semibold">GoF Patterns</div>
+                            <div class="display-5 fw-bold text-primary mb-1">&lt;0.4s</div>
+                            <div class="small text-white-50 text-uppercase fw-semibold">Avg Latency</div>
                         </div>
                     </div>
                 </div>
@@ -362,14 +362,11 @@
         <button class="motion-tab-btn" data-tab="tab-simulator" onclick="switchTab('tab-simulator')">
             <i class="bi bi-cpu-fill"></i> 3. Live Test Simulator
         </button>
-        <button class="motion-tab-btn" data-tab="tab-patterns" onclick="switchTab('tab-patterns')">
-            <i class="bi bi-diagram-3-fill"></i> 4. GoF Patterns Tested
-        </button>
         <button class="motion-tab-btn" data-tab="tab-viva" onclick="switchTab('tab-viva')">
-            <i class="bi bi-mortarboard-fill"></i> 5. Examiner Viva Flashcards
+            <i class="bi bi-mortarboard-fill"></i> 4. Examiner Viva Flashcards
         </button>
         <button class="motion-tab-btn" data-tab="tab-catalog" onclick="switchTab('tab-catalog')">
-            <i class="bi bi-table"></i> 6. Master Test Matrix (59 Cases)
+            <i class="bi bi-table"></i> 5. Master Test Matrix (59 Cases)
         </button>
     </div>
 
@@ -516,7 +513,7 @@
                     <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Integration Testing</h5>
                     <div class="text-muted small mb-3">Subsystem & Workflow coordination</div>
                     <p class="small text-muted flex-grow-1">
-                        Connects Django ORM, the Facade pattern gateway, table occupancy locking, and Observer event alerts to ensure end-to-end atomic order execution.
+                        Connects Django ORM, the order service gateway, table occupancy locking, and staff event alerts to ensure end-to-end atomic order execution.
                     </p>
                     <div class="p-2 rounded bg-dark text-light small font-monospace mt-auto" style="font-size: 0.75rem;">
                         <span class="text-success">facade.place_order</span>() &rarr; DB Save<br>
@@ -677,7 +674,7 @@
                 <div class="col">
                     <div class="simulator-stage" id="stage2">
                         <div class="small fw-bold text-muted mb-1">STAGE 2</div>
-                        <div class="fw-bold mb-1" style="color: var(--text-heading);">Pattern Execution</div>
+                        <div class="fw-bold mb-1" style="color: var(--text-heading);">Business Logic Execution</div>
                         <div class="small text-muted stage-status">Awaiting trigger</div>
                     </div>
                 </div>
@@ -708,119 +705,6 @@
                 </div>
                 <div id="simLogOutput" class="small" style="max-height: 140px; overflow-y: auto;">
                     <span class="text-muted">[READY] Click "Execute Simulation" above to run the automated pipeline...</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 4: GoF DESIGN PATTERNS TESTED -->
-    <div class="tab-content-section d-none motion-fade-in" id="tab-patterns">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
-            <!-- Strategy Pattern -->
-            <div class="col">
-                <div class="bento-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">BEHAVIORAL</span>
-                        <span class="badge bg-success bg-opacity-10 text-success">Unit Verified</span>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Strategy Pattern</h5>
-                    <div class="text-muted small mb-2">Dynamic runtime pricing algorithms</div>
-                    <p class="small text-muted mb-3">
-                        Enables seamless swapping of pricing calculations (Normal 1.0x, Happy Hour 0.8x, VIP 0.85x) without mutating the core database record.
-                    </p>
-                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
-                        strategy.<span class="text-warning">calculate_final_price</span>(cost)
-                    </div>
-                </div>
-            </div>
-
-            <!-- Decorator Pattern -->
-            <div class="col">
-                <div class="bento-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-warning bg-opacity-10 text-warning fw-bold">STRUCTURAL</span>
-                        <span class="badge bg-success bg-opacity-10 text-success">Unit &amp; Int Verified</span>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Decorator Pattern</h5>
-                    <div class="text-muted small mb-2">Dynamic runtime add-on stacking</div>
-                    <p class="small text-muted mb-3">
-                        Solves class explosion by dynamically wrapping food items with <code>ExtraCheeseDecorator</code> (+₹20) and <code>AddBaconDecorator</code> (+₹30) recursively.
-                    </p>
-                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
-                        <span class="text-info">AddBacon</span>(<span class="text-info">ExtraCheese</span>(item))
-                    </div>
-                </div>
-            </div>
-
-            <!-- Facade Pattern -->
-            <div class="col">
-                <div class="bento-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-info bg-opacity-10 text-info fw-bold">STRUCTURAL</span>
-                        <span class="badge bg-success bg-opacity-10 text-success">Integration Verified</span>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Facade Pattern</h5>
-                    <div class="text-muted small mb-2">Unified macro orchestration layer</div>
-                    <p class="small text-muted mb-3">
-                        The <code>OrderProcessingFacade</code> acts as an architectural gateway shielding thin Django views from factory creation, strategy discounts, and observer alerts.
-                    </p>
-                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
-                        facade.<span class="text-success">place_order</span>(customer, items)
-                    </div>
-                </div>
-            </div>
-
-            <!-- Observer Pattern -->
-            <div class="col">
-                <div class="bento-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-success bg-opacity-10 text-success fw-bold">BEHAVIORAL</span>
-                        <span class="badge bg-success bg-opacity-10 text-success">Integration Verified</span>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Observer Pattern</h5>
-                    <div class="text-muted small mb-2">Decoupled event-driven notifications</div>
-                    <p class="small text-muted mb-3">
-                        When an order changes status (PENDING &rarr; PREPARING &rarr; READY), <code>OrderSubject</code> broadcasts synchronous push notifications to kitchen displays and waitstaff.
-                    </p>
-                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
-                        subject.<span class="text-warning">change_order_status</span>(order, 'READY')
-                    </div>
-                </div>
-            </div>
-
-            <!-- Factory Pattern -->
-            <div class="col">
-                <div class="bento-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-danger bg-opacity-10 text-danger fw-bold">CREATIONAL</span>
-                        <span class="badge bg-success bg-opacity-10 text-success">White-Box Verified</span>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Factory Pattern</h5>
-                    <div class="text-muted small mb-2">Encapsulated menu item instantiation</div>
-                    <p class="small text-muted mb-3">
-                        <code>SimpleMenuFactory</code> delegates creation to concrete factories (Veg, NonVeg, Vegan), applying dietary prefixes and enforcing category validation.
-                    </p>
-                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
-                        SimpleMenuFactory.<span class="text-info">get_item</span>('veg', 'Pizza', 89)
-                    </div>
-                </div>
-            </div>
-
-            <!-- Singleton Pattern -->
-            <div class="col">
-                <div class="bento-card">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge bg-secondary bg-opacity-10 text-secondary fw-bold">CREATIONAL</span>
-                        <span class="badge bg-success bg-opacity-10 text-success">Unit Verified</span>
-                    </div>
-                    <h5 class="fw-bold mb-1" style="color: var(--text-heading);">Singleton Pattern</h5>
-                    <div class="text-muted small mb-2">Single centralized configuration manager</div>
-                    <p class="small text-muted mb-3">
-                        The <code>ConfigManager</code> guarantees exactly one shared memory instance across all threads, providing centralized tax rates and restaurant operational parameters.
-                    </p>
-                    <div class="code-terminal small mt-auto" style="font-size: 0.75rem;">
-                        id(ConfigManager()) == id(ConfigManager())
-                    </div>
                 </div>
             </div>
         </div>
@@ -884,7 +768,7 @@
                 <div class="d-flex align-items-center gap-2">
                     <span class="viva-badge-q">Q3</span>
                     <strong class="fs-6" style="color: var(--text-heading);">
-                        How does your test suite verify Gang of Four (GoF) Design Patterns?
+                        What are Boundary Value Analysis (BVA) and Equivalence Partitioning in Black-Box Testing?
                     </strong>
                 </div>
                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3 btn-reveal-viva" onclick="toggleVivaAnswer(this)">
@@ -893,14 +777,7 @@
             </div>
             <div class="viva-answer-box text-muted">
                 <strong class="text-dark d-block mb-1">Examiner Model Answer:</strong>
-                "We mapped formal test assertions directly to the pattern contracts:
-                <ul class='mb-0 mt-2'>
-                    <li><strong>Strategy Pattern:</strong> Unit tests assert mathematical precision when dynamically computing standard, 20% Happy Hour, and 15% VIP discounts.</li>
-                    <li><strong>Decorator Pattern:</strong> Unit tests verify runtime cost wrapping and recursive description concatenation (+ Extra Cheese, + Bacon).</li>
-                    <li><strong>Facade Pattern:</strong> Integration tests prove that a single method call coordinates DB save, table occupation, and alerts cleanly.</li>
-                    <li><strong>Observer Pattern:</strong> Asserts that changing an order state automatically sparks synchronous notifications to waiters and kitchen monitors.</li>
-                    <li><strong>Factory Pattern:</strong> White-box tests verify branch routing and exception throwing on invalid menu categories.</li>
-                </ul>"
+                "Equivalence Partitioning divides the software's input data domain into valid and invalid partitions (e.g. valid table IDs 1–10 vs non-existent table IDs like 99999). Boundary Value Analysis specifically tests extreme edge conditions on partition borders (e.g. 0.0 price, negative price values, empty cart arrays, and maximum seat capacity). Our tests assert that invalid partitions and boundary breaches are safely handled with HTTP 400/405 error responses without 500 server crashes."
             </div>
         </div>
 
@@ -1173,8 +1050,8 @@
                 // Stage 2
                 const s2 = document.getElementById('stage2');
                 s2.classList.add('running');
-                s2.querySelector('.stage-status').innerText = 'Executing pattern algorithms...';
-                log(`[STAGE 2] Running assertions against GoF pattern interfaces...`, 'text-info');
+                s2.querySelector('.stage-status').innerText = 'Executing business logic & rules...';
+                log('[STAGE 2] Running assertions against computational and business logic interfaces...', 'text-info');
                 await new Promise(r => setTimeout(r, 600));
                 s2.classList.remove('running');
                 s2.classList.add('success');
