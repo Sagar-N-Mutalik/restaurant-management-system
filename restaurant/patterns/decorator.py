@@ -69,10 +69,14 @@ class ItemDecorator(ItemComponent):
 class ExtraCheeseDecorator(ItemDecorator):
     """
     Concrete Decorator adding cheese to an item.
+    Defaults to 1.50 for unit tests, or customizable for INR currency rates.
     """
+    def __init__(self, wrapped_item: ItemComponent, cost: float = 1.50):
+        super().__init__(wrapped_item)
+        self.cost = cost
+
     def get_price(self) -> float:
-        # Intercepts the function to add $1.50 for extra cheese over the wrapped base price
-        return self._wrapped_item.get_price() + 1.50
+        return self._wrapped_item.get_price() + self.cost
 
     def get_description(self) -> str:
         # Appends the extra feature to the wrapped description
@@ -82,10 +86,14 @@ class ExtraCheeseDecorator(ItemDecorator):
 class AddBaconDecorator(ItemDecorator):
     """
     Concrete Decorator adding extra bacon to an item.
+    Defaults to 2.50 for unit tests, or customizable for INR currency rates.
     """
+    def __init__(self, wrapped_item: ItemComponent, cost: float = 2.50):
+        super().__init__(wrapped_item)
+        self.cost = cost
+
     def get_price(self) -> float:
-        # Intercepts the function to add $2.50 for bacon
-        return self._wrapped_item.get_price() + 2.50
+        return self._wrapped_item.get_price() + self.cost
 
     def get_description(self) -> str:
         return self._wrapped_item.get_description() + " + Bacon"

@@ -1,570 +1,804 @@
 {% extends 'restaurant/base.html' %}
+{% load static %}
 
 {% block extra_css %}
 <style>
-    .menu-header {
-        background: #ffffff;
-        color: #0f172a;
-        padding: 2rem;
-        margin-bottom: 2.5rem;
-        border-radius: 1rem;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.05);
+    /* Sticky Top Menu Header */
+    .menu-top-header {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.25rem;
+        padding: 1.25rem 1.75rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--card-shadow);
         transition: all 0.3s ease;
     }
 
-    body.dark-mode .menu-header {
-        background: linear-gradient(135deg, #1e293b, #0f172a);
-        color: #f8fafc;
-        border-color: rgba(255, 255, 255, 0.05);
+    .table-indicator-badge {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: #ffffff;
+        font-weight: 700;
+        padding: 0.35rem 0.85rem;
+        border-radius: 9999px;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
     }
 
-    .menu-subtitle {
-        color: #475569;
-    }
-
-    body.dark-mode .menu-subtitle {
-        color: rgba(248, 250, 252, 0.75);
-    }
-
-    .menu-header-btn {
-        background: #f1f5f9;
-        color: #0f172a;
-        border: 1px solid #e2e8f0;
-        transition: all 0.3s;
-    }
-
-    .menu-header-btn:hover {
-        background: #e2e8f0;
-        color: #0f172a;
-    }
-
-    body.dark-mode .menu-header-btn {
-        background: #f8fafc;
-        color: #000;
-        border: none;
-    }
-
-    .item-card {
-        border: 1px solid rgba(0, 0, 0, 0.05);
+    /* Diet & Category Filter Bar */
+    .filter-wrapper {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
         border-radius: 1rem;
-        background: #ffffff;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        padding: 0.85rem 1rem;
+        margin-bottom: 1.5rem;
+        position: sticky;
+        top: 76px;
+        z-index: 1020;
+        box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .diet-filter-pill {
+        border: 1px solid var(--border-subtle);
+        background: transparent;
+        color: var(--text-body);
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.45rem 0.9rem;
+        border-radius: 9999px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .diet-filter-pill:hover {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: var(--border-hover);
+    }
+
+    body.dark-mode .diet-filter-pill:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .diet-filter-pill.active {
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+    }
+
+    .diet-filter-pill.active.pill-veg {
+        background: var(--veg-color);
+        border-color: var(--veg-color);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+    }
+
+    .diet-filter-pill.active.pill-nonveg {
+        background: var(--nonveg-color);
+        border-color: var(--nonveg-color);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+    }
+
+    .diet-filter-pill.active.pill-vegan {
+        background: var(--vegan-color);
+        border-color: var(--vegan-color);
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+    }
+
+    /* Category Navigation */
+    .category-nav-pill {
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.4rem 0.85rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+
+    .category-nav-pill:hover {
+        color: var(--brand-primary);
+        background: rgba(249, 115, 22, 0.08);
+    }
+
+    .category-nav-pill.active {
+        color: var(--brand-primary);
+        background: rgba(249, 115, 22, 0.12);
+    }
+
+    /* Food Cards */
+    .food-card {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.1rem;
+        padding: 1.25rem;
         display: flex;
         flex-direction: column;
+        height: 100%;
+        transition: all 0.22s ease;
+        position: relative;
     }
 
-    body.dark-mode .item-card {
-        background: #1e293b;
-        border-color: rgba(255, 255, 255, 0.05);
+    .food-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--card-hover-shadow);
+        border-color: var(--border-hover);
     }
 
-    .item-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    .food-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-heading);
+        margin-bottom: 0.35rem;
+        letter-spacing: -0.015em;
     }
 
-    .badge-custom {
-        padding: 0.35em 0.65em;
-        border-radius: 2rem;
+    .food-desc {
+        font-size: 0.825rem;
+        color: var(--text-muted);
+        line-height: 1.45;
+        margin-bottom: 0.85rem;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .addon-box {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px dashed var(--border-subtle);
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.85rem;
+    }
+
+    body.dark-mode .addon-box {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .addon-switch {
+        font-size: 0.8rem;
         font-weight: 500;
-        font-size: 0.75rem;
-        letter-spacing: 0.025em;
+        color: var(--text-body);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
-    .badge-veg {
-        background-color: rgba(16, 185, 129, 0.15);
-        color: #059669;
+    .addon-switch:last-child {
+        margin-bottom: 0;
     }
 
-    .badge-nonveg {
-        background-color: rgba(239, 68, 68, 0.15);
-        color: #dc2626;
+    .price-tag {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text-heading);
+        letter-spacing: -0.02em;
     }
 
-    .badge-vegan {
-        background-color: rgba(13, 148, 136, 0.15);
-        color: #0d9488;
+    /* Quantity Stepper */
+    .stepper-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid var(--border-subtle);
+        background: var(--surface-card);
+        color: var(--text-heading);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
     }
 
-    body.dark-mode .badge-veg {
-        color: #34d399;
+    .stepper-btn:hover {
+        background: var(--border-subtle);
     }
 
-    body.dark-mode .badge-nonveg {
-        color: #f87171;
-    }
-
-    body.dark-mode .badge-vegan {
-        color: #2dd4bf;
-    }
-
-    /* Category Nav Pills */
-    .nav-pills-custom .list-group-item {
+    .stepper-input {
+        width: 32px;
+        text-align: center;
         border: none;
-        border-radius: 0.75rem;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #64748b;
         background: transparent;
+        color: var(--text-heading);
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .btn-add-food {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: #ffffff;
+        border: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.45rem 1rem;
+        border-radius: 9999px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .btn-add-food:hover {
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+        transform: translateY(-1px);
+        color: #ffffff;
+    }
+
+    /* Sticky Cart Sidebar (Desktop) */
+    .sticky-cart-sidebar {
+        position: sticky;
+        top: 76px;
+        max-height: calc(100vh - 95px);
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.25rem;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    .cart-header {
+        padding: 1.1rem 1.25rem;
+        border-bottom: 1px solid var(--border-subtle);
+        background: var(--surface-card);
+    }
+
+    .cart-items-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    .cart-item-row {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-subtle);
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-bottom: 0.65rem;
         transition: all 0.2s ease;
     }
 
-    .nav-pills-custom .list-group-item:hover {
-        background-color: #f1f5f9;
-        color: #0f172a;
+    body.dark-mode .cart-item-row {
+        background: rgba(255, 255, 255, 0.02);
     }
 
-    body.dark-mode .nav-pills-custom .list-group-item {
-        color: #94a3b8;
+    .cart-footer {
+        padding: 1.1rem 1.25rem;
+        border-top: 1px solid var(--border-subtle);
+        background: var(--surface-elevated);
     }
 
-    body.dark-mode .nav-pills-custom .list-group-item:hover {
-        background-color: #334155;
-        color: #f8fafc;
-    }
-
-    /* Unified Input Group */
-    .input-group-seamless {
-        border: 1px solid #cbd5e1;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        background: #ffffff;
-    }
-
-    body.dark-mode .input-group-seamless {
-        border-color: #475569;
-        background: #1e293b;
-    }
-
-    .input-group-seamless .btn {
-        border: none;
-        background: transparent;
-        color: #64748b;
-    }
-
-    .input-group-seamless .btn:hover {
-        background: #f1f5f9;
-        color: #0f172a;
-    }
-
-    body.dark-mode .input-group-seamless .btn:hover {
-        background: #334155;
-        color: #f8fafc;
-    }
-
-    .input-group-seamless input {
-        border: none;
-        box-shadow: none;
+    .pricing-strategy-pill {
+        border: 1px solid var(--border-subtle);
+        background: var(--surface-card);
+        color: var(--text-body);
+        font-size: 0.8rem;
         font-weight: 600;
-        background: transparent !important;
-        color: inherit !important;
+        padding: 0.35rem 0.65rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s ease;
     }
 
-    /* Cart Receipt Style */
-    .cart-receipt {
-        background: #ffffff;
-        border-radius: 1rem;
-        border: none;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    body.dark-mode .cart-receipt {
-        background: #1e293b;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
-    }
-
-    .cart-receipt-header {
-        background: transparent;
-        border-bottom: 2px dashed #e2e8f0;
-        padding: 1.5rem;
-    }
-
-    body.dark-mode .cart-receipt-header {
-        border-bottom-color: #334155;
-    }
-
-    .cart-receipt-footer {
-        background: #f8fafc;
-        border-top: 2px dashed #e2e8f0;
-        padding: 1.5rem;
-    }
-
-    body.dark-mode .cart-receipt-footer {
-        background: #0f172a;
-        border-top-color: #334155;
-    }
-
-    /* Cart pulse animation */
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-
-        50% {
-            transform: scale(1.03);
-            color: #10b981;
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
-
-    .pulse-animation {
-        animation: pulse 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Custom Toast Styling with Glassmorphism */
-    .toast-custom {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 1rem;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        color: #0f172a;
-        animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    body.dark-mode .toast-custom {
-        background: rgba(30, 41, 59, 0.85);
-        border-color: rgba(255, 255, 255, 0.1);
-        color: #f8fafc;
-    }
-
-    @keyframes slideInRight {
-        from {
-            transform: translateX(120%);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    /* Hide scrollbar for smooth mobile category sliding */
-    .mobile-scroll-nav::-webkit-scrollbar {
-        display: none;
-    }
-
-    .mobile-scroll-nav {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    /* Modern Pill Button */
-    .btn-primary-pill {
-        background-color: #6366f1;
+    .pricing-strategy-pill.active {
+        background: #6366f1;
+        color: white;
         border-color: #6366f1;
-        color: #ffffff;
-        transition: all 0.2s;
     }
 
-    .btn-primary-pill:hover {
-        background-color: #4f46e5;
-        border-color: #4f46e5;
+    .btn-submit-order {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        color: white;
+        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.85rem;
+        border-radius: 10px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+        transition: all 0.2s ease;
+    }
+
+    .btn-submit-order:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
+    }
+
+    .btn-submit-order:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    /* Floating Cart Bar (Mobile) */
+    .mobile-cart-float-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid var(--border-subtle);
+        padding: 0.85rem 1.25rem;
+        z-index: 1040;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .mobile-cart-float-bar {
+        background: rgba(15, 23, 42, 0.95);
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Section Headers */
+    .menu-section-title {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--text-heading);
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--border-subtle);
+        margin-bottom: 1.25rem;
+    }
+
+    /* Toast Notification */
+    .toast-modern {
+        background: var(--surface-card);
+        color: var(--text-heading);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="toast-container position-fixed top-0 end-0 p-4 mt-5" style="z-index: 1060;">
+<div class="container-xl py-3">
 
-    <div id="orderToast" class="toast toast-custom align-items-center border-0" role="alert" aria-live="assertive"
-        aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body fs-6" id="toastMessage">
-                Order added to your table!
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
+        <div id="orderSuccessToast" class="toast toast-modern align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex p-3">
+                <div class="fs-4 text-success me-3">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1" id="toastTitle">Order Sent to Kitchen!</h6>
+                    <p class="small text-muted mb-0" id="toastMessage">Your items are being prepared.</p>
+                </div>
+                <button type="button" class="btn-close ms-auto my-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
-            <button type="button" class="btn-close ms-auto me-3 m-auto" data-bs-dismiss="toast"
-                aria-label="Close"></button>
         </div>
-    </div>
 
-    <div id="errorToast" class="toast toast-custom align-items-center border-0 mt-3" role="alert" aria-live="assertive"
-        aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body fs-6" id="errorToastMessage">
-                Error placing order!
-            </div>
-            <button type="button" class="btn-close ms-auto me-3 m-auto" data-bs-dismiss="toast"
-                aria-label="Close"></button>
-        </div>
-    </div>
-
-</div>
-
-<div class="menu-header d-flex flex-column flex-md-row justify-content-between align-items-md-center sticky-top"
-    style="top: 1rem; z-index: 1040;">
-    <div class="mb-3 mb-md-0">
-        <h2 class="fw-bolder mb-1" style="letter-spacing: -0.025em;">Menu</h2>
-        <p class="menu-subtitle mb-0 mt-1 fs-5">Ordering for <span
-                class="badge bg-white text-dark ms-2 rounded-pill px-3 py-2 shadow-sm border">Table {{table.table_number}}</span></p>
-    </div>
-    <div>
-        <a href="{% url 'payment_page' table.table_number %}"
-            class="btn menu-header-btn btn-lg rounded-pill shadow-sm fw-medium px-4"
-            onclick="showGlobalSpinner('Generating Bill...')">
-            <i class="bi bi-receipt me-2"></i> View Bill & Checkout
-        </a>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-lg-2 mb-4">
-        <div class="sticky-top bg-white rounded" style="top: 100px; z-index: 1030;">
-            <div
-                class="list-group list-group-horizontal-lg flex-lg-column nav-pills-custom overflow-auto mobile-scroll-nav pb-1">
-                <a href="#pizzas" class="list-group-item list-group-item-action d-flex align-items-center">
-                    <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 d-none d-lg-block"><i
-                            class="bi bi-pie-chart-fill text-danger fs-5"></i></div> Pizzeria
-                </a>
-                <a href="#burgers" class="list-group-item list-group-item-action d-flex align-items-center">
-                    <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3 d-none d-lg-block"><i
-                            class="bi bi-circle-fill text-warning fs-5"></i></div> Craft Burgers
-                </a>
-                <a href="#sides" class="list-group-item list-group-item-action d-flex align-items-center">
-                    <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3 d-none d-lg-block"><i
-                            class="bi bi-box-fill text-success fs-5"></i></div> Appetizers
-                </a>
-                <a href="#beverages" class="list-group-item list-group-item-action d-flex align-items-center">
-                    <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3 d-none d-lg-block"><i
-                            class="bi bi-cup-straw text-info fs-5"></i></div> Beverages
-                </a>
+        <div id="orderErrorToast" class="toast toast-modern align-items-center border-0 mt-2" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex p-3">
+                <div class="fs-4 text-danger me-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Order Submission Failed</h6>
+                    <p class="small text-muted mb-0" id="errorToastMessage">Please try again.</p>
+                </div>
+                <button type="button" class="btn-close ms-auto my-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     </div>
 
-    <div class="col-lg-7 mb-4">
-        {% if pizzas %}
-        <div id="pizzas" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-pie-chart-fill text-danger me-2"></i> Wood-Fired
-                Pizzas</h3>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-                {% for item in pizzas %}
-                <div class="col">
-                    <div class="card h-100 item-card">
-                        <div class="card-body d-flex flex-column">
+    <!-- Menu Top Header -->
+    <div class="menu-top-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="table-indicator-badge">
+                    <i class="bi bi-geo-alt-fill"></i> Table {{ table.table_number }}
+                </span>
+                <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 small">
+                    <i class="bi bi-wifi"></i> Live Connected
+                </span>
+            </div>
+            <h3 class="fw-bold mb-0" style="color: var(--text-heading); letter-spacing: -0.02em;">
+                Student Cafe & Pizzeria Menu
+            </h3>
+            <p class="text-muted small mb-0 mt-1">
+                Handcrafted Fast Food • Affordable Student Prices • Contactless Ordering
+            </p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="{% url 'payment_page' table.table_number %}" class="btn btn-outline-secondary rounded-pill fw-semibold px-3 py-2 small" onclick="showGlobalSpinner('Fetching Bill...')">
+                <i class="bi bi-receipt me-1"></i> View Bill & Checkout
+            </a>
+            <button class="btn btn-primary d-lg-none rounded-pill fw-semibold px-3 py-2 small" data-bs-toggle="offcanvas" data-bs-target="#mobileCartOffcanvas">
+                <i class="bi bi-cart3 me-1"></i> Cart (<span class="cart-count-badge">0</span>)
+            </button>
+        </div>
+    </div>
+
+    <!-- Sticky Filter & Search Control Bar -->
+    <div class="filter-wrapper">
+        <div class="row align-items-center gy-2">
+            <!-- Dietary Filter Tabs -->
+            <div class="col-12 col-md-auto">
+                <div class="d-flex align-items-center gap-2 flex-wrap" id="dietFilterGroup">
+                    <button class="diet-filter-pill active" data-diet="ALL">
+                        <i class="bi bi-grid-fill"></i> All Items
+                    </button>
+                    <button class="diet-filter-pill pill-veg" data-diet="VEG">
+                        <span class="diet-badge-box veg"><span class="diet-dot"></span></span> Pure Veg
+                    </button>
+                    <button class="diet-filter-pill pill-nonveg" data-diet="NON_VEG">
+                        <span class="diet-badge-box nonveg"><span class="diet-triangle"></span></span> Non-Veg
+                    </button>
+                    <button class="diet-filter-pill pill-vegan" data-diet="VEGAN">
+                        <span class="diet-badge-box vegan"><i class="bi bi-flower1"></i></span> Vegan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Quick-Links -->
+            <div class="col-12 col-md-auto ms-md-auto d-flex align-items-center gap-1 overflow-auto pb-1 pb-md-0" style="scrollbar-width: none;">
+                <a href="#section-pizzas" class="category-nav-pill">
+                    <span>🍕</span> Pizzas ({{ pizzas|length }})
+                </a>
+                <a href="#section-burgers" class="category-nav-pill">
+                    <span>🍔</span> Burgers ({{ burgers|length }})
+                </a>
+                <a href="#section-sides" class="category-nav-pill">
+                    <span>🍟</span> Sides ({{ sides|length }})
+                </a>
+                <a href="#section-beverages" class="category-nav-pill">
+                    <span>🥤</span> Drinks ({{ beverages|length }})
+                </a>
+            </div>
+
+            <!-- Live Search Input -->
+            <div class="col-12 col-lg-3">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent border-end-0" style="border-color: var(--border-subtle); color: var(--text-muted);">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" id="menuSearchInput" class="form-control border-start-0" placeholder="Search menu items..." style="border-color: var(--border-subtle); background: var(--surface-card); color: var(--text-heading);">
+                    <button class="btn btn-outline-secondary border-start-0 d-none" id="clearSearchBtn" type="button">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area: 2 Columns (Menu on Left, Sticky Cart on Right) -->
+    <div class="row g-4">
+        <!-- Left Column: Menu Items Grid (col-lg-8) -->
+        <div class="col-12 col-lg-8">
+
+            <!-- Pizzas Section -->
+            {% if pizzas %}
+            <div class="menu-section mb-5" id="section-pizzas">
+                <div class="menu-section-title">
+                    <span class="text-danger">🍕</span> Wood-Fired Pizzas
+                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-muted ms-auto fs-6 fw-normal">{{ pizzas|length }} items</span>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    {% for item in pizzas %}
+                    <div class="col menu-item-card-wrapper" data-name="{{ item.name|lower }}" data-desc="{{ item.description|lower }}" data-diet="{{ item.item_type }}">
+                        <div class="food-card">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                                 <div>
-                                    {% if item.item_type == 'VEG' %}<span
-                                        class="badge badge-custom badge-veg">Veg</span>
-                                    {% elif item.item_type == 'NON_VEG' %}<span
-                                        class="badge badge-custom badge-nonveg">Non-Veg</span>
-                                    {% else %}<span class="badge badge-custom badge-vegan">Vegan</span>{% endif %}
+                                    {% if item.item_type == 'VEG' %}
+                                    <span class="diet-badge-box veg me-1" title="Vegetarian"><span class="diet-dot"></span></span>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill small">Veg</span>
+                                    {% elif item.item_type == 'NON_VEG' %}
+                                    <span class="diet-badge-box nonveg me-1" title="Non-Vegetarian"><span class="diet-triangle"></span></span>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill small">Non-Veg</span>
+                                    {% else %}
+                                    <span class="diet-badge-box vegan me-1" title="100% Plant-Based Vegan"><i class="bi bi-flower1"></i></span>
+                                    <span class="badge bg-teal bg-opacity-10 text-teal rounded-pill small" style="color: #0d9488; background-color: rgba(13, 148, 136, 0.1);">Vegan</span>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-secondary bg-opacity-10 text-muted rounded-pill small">Pizzeria</span>
+                            </div>
+
+                            <div class="food-title">{{ item.name }}</div>
+                            <div class="food-desc">{{ item.description }}</div>
+
+                            <!-- Decorator Addon Switches -->
+                            <div class="addon-box">
+                                <div class="form-check form-switch addon-switch">
+                                    <input class="form-check-input cheese-switch" type="checkbox" id="cheese_{{ item.id }}">
+                                    <label class="form-check-label" for="cheese_{{ item.id }}">
+                                        Extra Cheese <span class="text-success fw-semibold">(+₹20)</span>
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch addon-switch">
+                                    <input class="form-check-input bacon-switch" type="checkbox" id="bacon_{{ item.id }}">
+                                    <label class="form-check-label" for="bacon_{{ item.id }}">
+                                        Crispy Bacon <span class="text-danger fw-semibold">(+₹30)</span>
+                                    </label>
                                 </div>
                             </div>
-                            <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
 
-                            <div class="form-check form-switch mb-1">
-                                <input class="form-check-input cheese-switch" type="checkbox" id="cheese_{{ item.id }}">
-                                <label class="form-check-label small text-muted" for="cheese_{{ item.id }}">Extra Cheese
-                                    (+₹50)</label>
-                            </div>
-                            <div class="form-check form-switch mb-3">
-                                <input class="form-check-input bacon-switch" type="checkbox" id="bacon_{{ item.id }}">
-                                <label class="form-check-label small text-muted" for="bacon_{{ item.id }}">Add Bacon
-                                    (+₹100)</label>
-                            </div>
-
-                            <div class="mt-auto d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <div
-                                    class="d-flex align-items-center flex-wrap gap-2 mt-2 mt-sm-0 w-100 justify-content-end">
-                                    <div class="input-group input-group-sm input-group-seamless" style="width: 85px;">
-                                        <button class="btn px-2" type="button"
-                                            onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
-                                        <input type="number" class="form-control text-center px-0"
-                                            id="qty_{{ item.id }}" value="1" min="1" readonly>
-                                        <button class="btn px-2" type="button"
-                                            onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                            <!-- Price and Add Button -->
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+                                <div class="price-tag">₹{{ item.price|floatformat:0 }}</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <button class="stepper-btn" type="button" onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="stepper-input" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="stepper-btn" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
                                     </div>
-                                    <button class="btn btn-primary-pill btn-sm rounded-pill px-3 order-btn shadow-sm"
-                                        data-id="{{ item.id }}" data-name="{{ item.name }}"
-                                        data-price="{{ item.price }}" data-type="{{ item.item_type }}">
-                                        Add
+                                    <button class="btn-add-food order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        <i class="bi bi-plus-lg"></i> Add
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if burgers %}
-        <div id="burgers" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-circle-fill text-warning me-2"></i> Craft
-                Burgers</h3>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-                {% for item in burgers %}
-                <div class="col">
-                    <div class="card h-100 item-card">
-                        <div class="card-body d-flex flex-column">
+            <!-- Burgers Section -->
+            {% if burgers %}
+            <div class="menu-section mb-5" id="section-burgers">
+                <div class="menu-section-title">
+                    <span class="text-warning">🍔</span> Gourmet Burgers
+                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-muted ms-auto fs-6 fw-normal">{{ burgers|length }} items</span>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    {% for item in burgers %}
+                    <div class="col menu-item-card-wrapper" data-name="{{ item.name|lower }}" data-desc="{{ item.description|lower }}" data-diet="{{ item.item_type }}">
+                        <div class="food-card">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                                 <div>
-                                    {% if item.item_type == 'VEG' %}<span
-                                        class="badge badge-custom badge-veg">Veg</span>
-                                    {% elif item.item_type == 'NON_VEG' %}<span
-                                        class="badge badge-custom badge-nonveg">Non-Veg</span>
-                                    {% else %}<span class="badge badge-custom badge-vegan">Vegan</span>{% endif %}
+                                    {% if item.item_type == 'VEG' %}
+                                    <span class="diet-badge-box veg me-1" title="Vegetarian"><span class="diet-dot"></span></span>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill small">Veg</span>
+                                    {% elif item.item_type == 'NON_VEG' %}
+                                    <span class="diet-badge-box nonveg me-1" title="Non-Vegetarian"><span class="diet-triangle"></span></span>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill small">Non-Veg</span>
+                                    {% else %}
+                                    <span class="diet-badge-box vegan me-1" title="Vegan"><i class="bi bi-flower1"></i></span>
+                                    <span class="badge bg-teal bg-opacity-10 text-teal rounded-pill small" style="color: #0d9488;">Vegan</span>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-secondary bg-opacity-10 text-muted rounded-pill small">Burgers</span>
+                            </div>
+
+                            <div class="food-title">{{ item.name }}</div>
+                            <div class="food-desc">{{ item.description }}</div>
+
+                            <!-- Decorator Addon Switches -->
+                            <div class="addon-box">
+                                <div class="form-check form-switch addon-switch">
+                                    <input class="form-check-input cheese-switch" type="checkbox" id="cheese_{{ item.id }}">
+                                    <label class="form-check-label" for="cheese_{{ item.id }}">
+                                        Extra Cheese Slice <span class="text-success fw-semibold">(+₹20)</span>
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch addon-switch">
+                                    <input class="form-check-input bacon-switch" type="checkbox" id="bacon_{{ item.id }}">
+                                    <label class="form-check-label" for="bacon_{{ item.id }}">
+                                        Crispy Bacon <span class="text-danger fw-semibold">(+₹30)</span>
+                                    </label>
                                 </div>
                             </div>
-                            <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
 
-                            <div class="mt-auto d-flex flex-wrap gap-2 justify-content-between align-items-center mt-3">
-                                <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <div class="d-flex align-items-center flex-wrap gap-2">
-                                    <div class="input-group input-group-sm input-group-seamless" style="width: 85px;">
-                                        <button class="btn px-2" type="button"
-                                            onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
-                                        <input type="number" class="form-control text-center px-0"
-                                            id="qty_{{ item.id }}" value="1" min="1" readonly>
-                                        <button class="btn px-2" type="button"
-                                            onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                            <!-- Price and Add Button -->
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+                                <div class="price-tag">₹{{ item.price|floatformat:0 }}</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <button class="stepper-btn" type="button" onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="stepper-input" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="stepper-btn" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
                                     </div>
-                                    <button
-                                        class="btn btn-primary-pill btn-sm rounded-pill px-3 flex-grow-1 flex-sm-grow-0 order-btn shadow-sm"
-                                        data-id="{{ item.id }}" data-name="{{ item.name }}"
-                                        data-price="{{ item.price }}" data-type="{{ item.item_type }}">
-                                        Add
+                                    <button class="btn-add-food order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        <i class="bi bi-plus-lg"></i> Add
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if sides %}
-        <div id="sides" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-box-fill text-success me-2"></i> Appetizers &
-                Sides</h3>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-                {% for item in sides %}
-                <div class="col">
-                    <div class="card h-100 item-card">
-                        <div class="card-body d-flex flex-column">
+            <!-- Sides & Appetizers Section -->
+            {% if sides %}
+            <div class="menu-section mb-5" id="section-sides">
+                <div class="menu-section-title">
+                    <span class="text-success">🍟</span> Appetizers & Sides
+                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-muted ms-auto fs-6 fw-normal">{{ sides|length }} items</span>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    {% for item in sides %}
+                    <div class="col menu-item-card-wrapper" data-name="{{ item.name|lower }}" data-desc="{{ item.description|lower }}" data-diet="{{ item.item_type }}">
+                        <div class="food-card">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
                                 <div>
-                                    {% if item.item_type == 'VEG' %}<span
-                                        class="badge badge-custom badge-veg">Veg</span>
-                                    {% elif item.item_type == 'NON_VEG' %}<span
-                                        class="badge badge-custom badge-nonveg">Non-Veg</span>
-                                    {% else %}<span class="badge badge-custom badge-vegan">Vegan</span>{% endif %}
+                                    {% if item.item_type == 'VEG' %}
+                                    <span class="diet-badge-box veg me-1" title="Vegetarian"><span class="diet-dot"></span></span>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill small">Veg</span>
+                                    {% elif item.item_type == 'NON_VEG' %}
+                                    <span class="diet-badge-box nonveg me-1" title="Non-Vegetarian"><span class="diet-triangle"></span></span>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill small">Non-Veg</span>
+                                    {% else %}
+                                    <span class="diet-badge-box vegan me-1" title="Vegan"><i class="bi bi-flower1"></i></span>
+                                    <span class="badge bg-teal bg-opacity-10 text-teal rounded-pill small" style="color: #0d9488;">Vegan</span>
+                                    {% endif %}
                                 </div>
+                                <span class="badge bg-secondary bg-opacity-10 text-muted rounded-pill small">Appetizers</span>
                             </div>
-                            <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
 
-                            <div class="mt-auto d-flex flex-wrap gap-2 justify-content-between align-items-center mt-3">
-                                <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <div class="d-flex align-items-center flex-wrap gap-2">
-                                    <div class="input-group input-group-sm input-group-seamless" style="width: 85px;">
-                                        <button class="btn px-2" type="button"
-                                            onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
-                                        <input type="number" class="form-control text-center px-0"
-                                            id="qty_{{ item.id }}" value="1" min="1" readonly>
-                                        <button class="btn px-2" type="button"
-                                            onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                            <div class="food-title">{{ item.name }}</div>
+                            <div class="food-desc">{{ item.description }}</div>
+
+                            <!-- Price and Add Button -->
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                                <div class="price-tag">₹{{ item.price|floatformat:0 }}</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <button class="stepper-btn" type="button" onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="stepper-input" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="stepper-btn" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
                                     </div>
-                                    <button
-                                        class="btn btn-primary-pill btn-sm flex-grow-1 flex-sm-grow-0 rounded-pill px-3 order-btn shadow-sm"
-                                        data-id="{{ item.id }}" data-name="{{ item.name }}"
-                                        data-price="{{ item.price }}" data-type="{{ item.item_type }}">
-                                        Add
+                                    <button class="btn-add-food order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        <i class="bi bi-plus-lg"></i> Add
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if beverages %}
-        <div id="beverages" class="mb-5">
-            <h3 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-cup-straw text-info me-2"></i> Refreshing
-                Beverages</h3>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-                {% for item in beverages %}
-                <div class="col">
-                    <div class="card h-100 item-card border-0 bg-light">
-                        <div class="card-body d-flex flex-column">
+            <!-- Beverages Section -->
+            {% if beverages %}
+            <div class="menu-section mb-5" id="section-beverages">
+                <div class="menu-section-title">
+                    <span class="text-info">🥤</span> Refreshing Beverages
+                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-muted ms-auto fs-6 fw-normal">{{ beverages|length }} items</span>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    {% for item in beverages %}
+                    <div class="col menu-item-card-wrapper" data-name="{{ item.name|lower }}" data-desc="{{ item.description|lower }}" data-diet="{{ item.item_type }}">
+                        <div class="food-card">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold text-dark mb-0">{{ item.name }}</h5>
+                                <div>
+                                    {% if item.item_type == 'VEG' %}
+                                    <span class="diet-badge-box veg me-1" title="Vegetarian"><span class="diet-dot"></span></span>
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill small">Veg</span>
+                                    {% else %}
+                                    <span class="diet-badge-box vegan me-1" title="Vegan"><i class="bi bi-flower1"></i></span>
+                                    <span class="badge bg-teal bg-opacity-10 text-teal rounded-pill small" style="color: #0d9488;">Vegan</span>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-secondary bg-opacity-10 text-muted rounded-pill small">Beverages</span>
                             </div>
-                            <p class="card-text text-muted small flex-grow-1">{{ item.description }}</p>
 
-                            <div class="mt-auto d-flex flex-wrap gap-2 justify-content-between align-items-center mt-3">
-                                <span class="fs-5 fw-bold text-dark">₹{{ item.price }}</span>
-                                <div class="d-flex align-items-center flex-wrap gap-2">
-                                    <div class="input-group input-group-sm input-group-seamless" style="width: 85px;">
-                                        <button class="btn px-2" type="button"
-                                            onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
-                                        <input type="number" class="form-control text-center px-0"
-                                            id="qty_{{ item.id }}" value="1" min="1" readonly>
-                                        <button class="btn px-2" type="button"
-                                            onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
+                            <div class="food-title">{{ item.name }}</div>
+                            <div class="food-desc">{{ item.description }}</div>
+
+                            <!-- Price and Add Button -->
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                                <div class="price-tag">₹{{ item.price|floatformat:0 }}</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <button class="stepper-btn" type="button" onclick="var inp = document.getElementById('qty_{{ item.id }}'); if(inp.value > 1) inp.value--;">-</button>
+                                        <input type="number" class="stepper-input" id="qty_{{ item.id }}" value="1" min="1" readonly>
+                                        <button class="stepper-btn" type="button" onclick="document.getElementById('qty_{{ item.id }}').value++;">+</button>
                                     </div>
-                                    <button
-                                        class="btn btn-primary-pill btn-sm flex-grow-1 flex-sm-grow-0 rounded-pill px-3 order-btn shadow-sm"
-                                        data-id="{{ item.id }}" data-name="{{ item.name }}"
-                                        data-price="{{ item.price }}" data-type="{{ item.item_type }}">
-                                        Add
+                                    <button class="btn-add-food order-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-type="{{ item.item_type }}">
+                                        <i class="bi bi-plus-lg"></i> Add
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Empty Search State -->
+            <div id="noResultsState" class="text-center py-5 d-none">
+                <i class="bi bi-search fs-1 text-muted opacity-50 mb-3 d-block"></i>
+                <h5 class="fw-bold" style="color: var(--text-heading);">No matching dishes found</h5>
+                <p class="text-muted small">Try adjusting your search query or switching dietary filters.</p>
+                <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="resetAllFilters()">
+                    Reset Filters
+                </button>
             </div>
         </div>
-        {% endif %}
 
-    </div>
-
-    <div class="col-lg-3">
-        <div class="sticky-top" style="top: 100px; z-index: 1020;">
-            <div class="cart-receipt">
-                <div class="cart-receipt-header text-center">
-                    <h5 class="fw-bolder mb-0"><i class="bi bi-receipt me-2"></i>Your Order</h5>
-                </div>
-                <div class="card-body p-0">
-                    <ul id="cartItemsList" class="list-group list-group-flush"
-                        style="max-height: 400px; overflow-y: auto;">
-                        <li class="list-group-item text-center text-muted py-5" id="emptyCartMsg"
-                            style="background: transparent;">
-                            <i class="bi bi-cart3 fs-1 opacity-25 mb-3 d-block"></i>
-                            <span class="fw-medium">Your cart is empty</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="cart-receipt-footer">
-                    <div class="d-flex justify-content-between align-items-center fw-bolder mb-3 fs-5">
-                        <span class="text-muted">Total</span>
-                        <span id="cartTotalDisplay" class="text-dark">₹0.00</span>
+        <!-- Right Column: STICKY CART SIDEBAR (col-lg-4, Pinned on Desktop) -->
+        <div class="col-lg-4 d-none d-lg-block">
+            <div class="sticky-cart-sidebar">
+                <!-- Cart Header -->
+                <div class="cart-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-basket3-fill text-warning fs-5"></i>
+                        <h5 class="fw-bold mb-0" style="color: var(--text-heading);">Your Order</h5>
+                        <span class="badge rounded-pill bg-primary px-2 py-1 small cart-count-badge">0</span>
                     </div>
-                    <button class="btn btn-primary-pill w-100 fw-bold py-3 shadow-sm rounded-pill" id="submitOrderBtn"
-                        disabled>
-                        <i class="bi bi-send-check me-1"></i> Submit Order
+                    <button class="btn btn-link text-muted small p-0 text-decoration-none" id="clearCartBtn" style="display: none;">
+                        Clear All
+                    </button>
+                </div>
+
+                <!-- Cart Items List -->
+                <div class="cart-items-container" id="cartItemsList">
+                    <div class="text-center py-5 text-muted" id="emptyCartMsg">
+                        <i class="bi bi-cart3 fs-1 opacity-25 mb-3 d-block"></i>
+                        <div class="fw-semibold mb-1">Your cart is empty</div>
+                        <p class="small text-muted mb-0">Select dishes from the menu to build your table order.</p>
+                    </div>
+                </div>
+
+                <!-- Cart Footer & Billing -->
+                <div class="cart-footer">
+                    <!-- GoF Strategy Pattern Selector -->
+                    <div class="mb-3">
+                        <label class="small text-muted fw-semibold mb-1 d-flex justify-content-between">
+                            <span>Pricing Strategy (Strategy Pattern)</span>
+                            <span class="badge bg-indigo text-primary small" id="strategyDiscountLabel">Normal</span>
+                        </label>
+                        <div class="d-flex gap-1" id="pricingStrategySelector">
+                            <button class="pricing-strategy-pill flex-grow-1 active" data-strategy="normal">Standard</button>
+                            <button class="pricing-strategy-pill flex-grow-1" data-strategy="happy_hour" title="20% Discount">Happy Hr (-20%)</button>
+                            <button class="pricing-strategy-pill flex-grow-1" data-strategy="vip" title="15% VIP Discount">VIP (-15%)</button>
+                        </div>
+                    </div>
+
+                    <!-- Price Calculations -->
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Items Subtotal</span>
+                        <span id="cartSubtotalDisplay">₹0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between small text-success mb-1" id="discountRow" style="display: none !important;">
+                        <span>Strategy Discount</span>
+                        <span id="cartDiscountDisplay">-₹0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted mb-2">
+                        <span>GST (5%)</span>
+                        <span id="cartTaxDisplay">₹0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center fw-bold fs-5 pt-2 border-top border-secondary border-opacity-25 mb-3">
+                        <span style="color: var(--text-heading);">Grand Total</span>
+                        <span class="text-success" id="cartTotalDisplay">₹0.00</span>
+                    </div>
+
+                    <!-- Order Submission Button -->
+                    <button class="btn-submit-order" id="submitOrderBtn" disabled>
+                        <i class="bi bi-send-fill"></i> Send Order to Kitchen
                     </button>
                 </div>
             </div>
@@ -572,113 +806,382 @@
     </div>
 </div>
 
-<div class="d-lg-none position-fixed bottom-0 start-0 w-100 p-3 bg-light shadow-lg border-top"
-    style="z-index: 1040; padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;">
-    <a href="#cartTotalDisplay" class="btn btn-warning w-100 fw-bold shadow py-2"
-        style="border-radius: 12px; border: none; background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
-        <i class="bi bi-cart3"></i> View Cart (<span id="mobileCartTotal">₹0.00</span>)
-    </a>
+<!-- Mobile Sticky Bottom Floating Action Bar -->
+<div class="mobile-cart-float-bar d-lg-none">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div class="small text-muted">Table {{ table.table_number }} Total</div>
+            <div class="fw-bold fs-5 text-success" id="mobileCartTotalDisplay">₹0.00</div>
+        </div>
+        <button class="btn btn-enter-menu px-4 py-2" data-bs-toggle="offcanvas" data-bs-target="#mobileCartOffcanvas">
+            <i class="bi bi-basket3-fill me-1"></i> View Cart (<span class="cart-count-badge">0</span>)
+        </button>
+    </div>
 </div>
 
+<!-- Mobile Offcanvas Cart Drawer -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileCartOffcanvas" aria-labelledby="mobileCartOffcanvasLabel" style="width: 100%; max-width: 420px; background: var(--surface-card); color: var(--text-body);">
+    <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+        <h5 class="offcanvas-title fw-bold" id="mobileCartOffcanvasLabel" style="color: var(--text-heading);">
+            <i class="bi bi-basket3-fill text-warning me-2"></i>Table {{ table.table_number }} Order
+        </h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-0">
+        <div class="cart-items-container flex-grow-1" id="mobileCartItemsList">
+            <!-- Mirrored via JS -->
+        </div>
+        <div class="cart-footer border-top border-secondary border-opacity-25">
+            <!-- Mobile Strategy Selector -->
+            <div class="mb-3">
+                <label class="small text-muted fw-semibold mb-1">Pricing Strategy</label>
+                <div class="d-flex gap-1" id="mobilePricingStrategySelector">
+                    <button class="pricing-strategy-pill flex-grow-1 active" data-strategy="normal">Standard</button>
+                    <button class="pricing-strategy-pill flex-grow-1" data-strategy="happy_hour">Happy Hr (-20%)</button>
+                    <button class="pricing-strategy-pill flex-grow-1" data-strategy="vip">VIP (-15%)</button>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between small text-muted mb-1">
+                <span>Items Subtotal</span>
+                <span id="mobileCartSubtotal">₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between small text-muted mb-2">
+                <span>GST (5%)</span>
+                <span id="mobileCartTax">₹0.00</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center fw-bold fs-5 pt-2 border-top border-secondary border-opacity-25 mb-3">
+                <span style="color: var(--text-heading);">Grand Total</span>
+                <span class="text-success" id="mobileDrawerTotalDisplay">₹0.00</span>
+            </div>
+            <button class="btn-submit-order" id="mobileSubmitOrderBtn" disabled>
+                <i class="bi bi-send-fill"></i> Send Order to Kitchen
+            </button>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // State
+        let cart = [];
+        let currentDietFilter = 'ALL';
+        let currentSearchQuery = '';
+        let activeStrategy = 'normal'; // 'normal' | 'happy_hour' | 'vip'
+
+        // Elements
         const orderBtns = document.querySelectorAll('.order-btn');
         const submitOrderBtn = document.getElementById('submitOrderBtn');
+        const mobileSubmitOrderBtn = document.getElementById('mobileSubmitOrderBtn');
         const cartItemsList = document.getElementById('cartItemsList');
+        const mobileCartItemsList = document.getElementById('mobileCartItemsList');
+        const cartSubtotalDisplay = document.getElementById('cartSubtotalDisplay');
+        const cartDiscountDisplay = document.getElementById('cartDiscountDisplay');
+        const discountRow = document.getElementById('discountRow');
+        const cartTaxDisplay = document.getElementById('cartTaxDisplay');
         const cartTotalDisplay = document.getElementById('cartTotalDisplay');
+        const mobileCartTotalDisplay = document.getElementById('mobileCartTotalDisplay');
+        const mobileDrawerTotalDisplay = document.getElementById('mobileDrawerTotalDisplay');
+        const mobileCartSubtotal = document.getElementById('mobileCartSubtotal');
+        const mobileCartTax = document.getElementById('mobileCartTax');
         const emptyCartMsg = document.getElementById('emptyCartMsg');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        const searchInput = document.getElementById('menuSearchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const dietButtons = document.querySelectorAll('#dietFilterGroup .diet-filter-pill');
+        const strategyButtons = document.querySelectorAll('#pricingStrategySelector .pricing-strategy-pill');
+        const mobileStrategyButtons = document.querySelectorAll('#mobilePricingStrategySelector .pricing-strategy-pill');
+        const countBadges = document.querySelectorAll('.cart-count-badge');
 
-        let cart = [];
-        let runningTotal = 0;
+        // Strategy Discounter
+        function getStrategyMultiplier() {
+            if (activeStrategy === 'happy_hour') return 0.80; // 20% discount
+            if (activeStrategy === 'vip') return 0.85;        // 15% discount
+            return 1.0;
+        }
 
-        // Render Cart UI dynamically
+        // 1. Dietary & Search Filter Logic
+        function filterMenuItems() {
+            const cards = document.querySelectorAll('.menu-item-card-wrapper');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const diet = card.getAttribute('data-diet');
+                const name = card.getAttribute('data-name');
+                const desc = card.getAttribute('data-desc');
+
+                let matchesDiet = true;
+                if (currentDietFilter === 'VEG') {
+                    matchesDiet = (diet === 'VEG' || diet === 'VEGAN');
+                } else if (currentDietFilter === 'NON_VEG') {
+                    matchesDiet = (diet === 'NON_VEG');
+                } else if (currentDietFilter === 'VEGAN') {
+                    matchesDiet = (diet === 'VEGAN');
+                }
+
+                let matchesSearch = true;
+                if (currentSearchQuery) {
+                    matchesSearch = name.includes(currentSearchQuery) || desc.includes(currentSearchQuery);
+                }
+
+                if (matchesDiet && matchesSearch) {
+                    card.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            // Handle Section headers visibility if all section items are hidden
+            document.querySelectorAll('.menu-section').forEach(section => {
+                const visibleInSection = section.querySelectorAll('.menu-item-card-wrapper:not(.d-none)').length;
+                if (visibleInSection === 0) {
+                    section.classList.add('d-none');
+                } else {
+                    section.classList.remove('d-none');
+                }
+            });
+
+            // Handle global empty state
+            const noResults = document.getElementById('noResultsState');
+            if (visibleCount === 0) {
+                noResults.classList.remove('d-none');
+            } else {
+                noResults.classList.add('d-none');
+            }
+        }
+
+        dietButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                dietButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentDietFilter = this.getAttribute('data-diet');
+                filterMenuItems();
+            });
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                currentSearchQuery = this.value.trim().toLowerCase();
+                if (currentSearchQuery.length > 0) {
+                    clearSearchBtn.classList.remove('d-none');
+                } else {
+                    clearSearchBtn.classList.add('d-none');
+                }
+                filterMenuItems();
+            });
+        }
+
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                currentSearchQuery = '';
+                this.classList.add('d-none');
+                filterMenuItems();
+            });
+        }
+
+        window.resetAllFilters = function () {
+            currentDietFilter = 'ALL';
+            currentSearchQuery = '';
+            if (searchInput) searchInput.value = '';
+            if (clearSearchBtn) clearSearchBtn.classList.add('d-none');
+            dietButtons.forEach(b => {
+                if (b.getAttribute('data-diet') === 'ALL') b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            filterMenuItems();
+        };
+
+        // 2. Strategy Selector Switcher
+        function setStrategy(strategyKey) {
+            activeStrategy = strategyKey;
+            strategyButtons.forEach(b => {
+                if (b.getAttribute('data-strategy') === strategyKey) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            mobileStrategyButtons.forEach(b => {
+                if (b.getAttribute('data-strategy') === strategyKey) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+
+            const lbl = document.getElementById('strategyDiscountLabel');
+            if (lbl) {
+                if (strategyKey === 'happy_hour') lbl.textContent = '20% Off Applied';
+                else if (strategyKey === 'vip') lbl.textContent = '15% Off Applied';
+                else lbl.textContent = 'Normal';
+            }
+            updateCartUI();
+        }
+
+        strategyButtons.forEach(b => {
+            b.addEventListener('click', () => setStrategy(b.getAttribute('data-strategy')));
+        });
+        mobileStrategyButtons.forEach(b => {
+            b.addEventListener('click', () => setStrategy(b.getAttribute('data-strategy')));
+        });
+
+        // 3. Cart Management & UI Rendering
         function updateCartUI() {
             cartItemsList.innerHTML = '';
-            runningTotal = 0;
+            if (mobileCartItemsList) mobileCartItemsList.innerHTML = '';
+
+            let totalItemsCount = 0;
+            let rawSubtotal = 0;
 
             if (cart.length === 0) {
-                cartItemsList.appendChild(emptyCartMsg);
-                submitOrderBtn.disabled = true;
-                cartTotalDisplay.innerText = '₹0.00';
+                cartItemsList.appendChild(emptyCartMsg.cloneNode(true));
+                if (mobileCartItemsList) mobileCartItemsList.appendChild(emptyCartMsg.cloneNode(true));
 
-                // Update mobile button when empty
-                const mobileCartTotal = document.getElementById('mobileCartTotal');
-                if (mobileCartTotal) mobileCartTotal.innerText = '₹0.00';
+                submitOrderBtn.disabled = true;
+                if (mobileSubmitOrderBtn) mobileSubmitOrderBtn.disabled = true;
+                if (clearCartBtn) clearCartBtn.style.display = 'none';
+
+                cartSubtotalDisplay.innerText = '₹0.00';
+                cartTaxDisplay.innerText = '₹0.00';
+                cartTotalDisplay.innerText = '₹0.00';
+                if (discountRow) discountRow.style.setProperty('display', 'none', 'important');
+
+                if (mobileCartTotalDisplay) mobileCartTotalDisplay.innerText = '₹0.00';
+                if (mobileDrawerTotalDisplay) mobileDrawerTotalDisplay.innerText = '₹0.00';
+                if (mobileCartSubtotal) mobileCartSubtotal.innerText = '₹0.00';
+                if (mobileCartTax) mobileCartTax.innerText = '₹0.00';
+
+                countBadges.forEach(b => b.innerText = '0');
                 return;
             }
 
             submitOrderBtn.disabled = false;
+            if (mobileSubmitOrderBtn) mobileSubmitOrderBtn.disabled = false;
+            if (clearCartBtn) clearCartBtn.style.display = 'inline-block';
 
             cart.forEach((item, index) => {
-                let basePrice = parseFloat(item.price);
-                let decoratorsDesc = '';
+                totalItemsCount += item.quantity;
+                let unitPrice = parseFloat(item.price);
+                let addonHtml = '';
 
+                // Realistic student-friendly add-on pricing (+₹20 cheese, +₹30 bacon)
                 if (item.add_cheese) {
-                    basePrice += 50.0;
-                    decoratorsDesc += '<div class="text-warning small">+ Extra Cheese (+₹50)</div>';
+                    unitPrice += 20.00;
+                    addonHtml += '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 small me-1">+ Cheese (+₹20)</span>';
                 }
                 if (item.add_bacon) {
-                    basePrice += 100.0;
-                    decoratorsDesc += '<div class="text-danger small">+ Add Bacon (+₹100)</div>';
+                    unitPrice += 30.00;
+                    addonHtml += '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 small">+ Bacon (+₹30)</span>';
                 }
 
-                let lineTotal = basePrice * item.quantity;
-                runningTotal += lineTotal;
+                let lineTotal = unitPrice * item.quantity;
+                rawSubtotal += lineTotal;
 
-                const li = document.createElement('li');
-                li.className = 'list-group-item py-3 px-3';
-                li.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div style="max-width: 65%;">
-                            <strong class="d-block text-dark">${item.item_name}</strong>
-                            ${decoratorsDesc}
+                // Diet indicator
+                let dietDot = '<span class="diet-badge-box veg me-1"><span class="diet-dot"></span></span>';
+                if (item.category === 'NON_VEG') {
+                    dietDot = '<span class="diet-badge-box nonveg me-1"><span class="diet-triangle"></span></span>';
+                } else if (item.category === 'VEGAN') {
+                    dietDot = '<span class="diet-badge-box vegan me-1"><i class="bi bi-flower1"></i></span>';
+                }
+
+                const itemRowHtml = `
+                    <div class="cart-item-row">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div class="pe-2">
+                                <div class="d-flex align-items-center fw-bold small text-truncate" style="color: var(--text-heading); max-width: 170px;">
+                                    ${dietDot} ${item.item_name}
+                                </div>
+                                <div class="mt-1">${addonHtml}</div>
+                            </div>
+                            <div class="fw-bold small text-end" style="color: var(--text-heading);">
+                                ₹${lineTotal.toFixed(0)}
+                            </div>
                         </div>
-                        <div class="text-end fw-bold text-dark">
-                            ₹${lineTotal.toFixed(2)}
+                        <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top border-secondary border-opacity-10">
+                            <div class="d-flex align-items-center gap-1">
+                                <button class="stepper-btn btn-cart-dec" data-index="${index}">-</button>
+                                <span class="px-2 small fw-bold" style="color: var(--text-heading);">${item.quantity}</span>
+                                <button class="stepper-btn btn-cart-inc" data-index="${index}">+</button>
+                            </div>
+                            <button class="btn btn-link text-danger p-0 small text-decoration-none btn-cart-remove" data-index="${index}" title="Remove item">
+                                <i class="bi bi-trash3"></i>
+                            </button>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <div class="text-muted small">
-                            Qty: <strong class="text-dark">${item.quantity}</strong>
-                        </div>
-                        <a href="javascript:void(0)" class="text-danger small text-decoration-none remove-item fw-medium" data-index="${index}">
-                            <i class="bi bi-x-circle me-1"></i> Remove
-                        </a>
                     </div>
                 `;
-                cartItemsList.appendChild(li);
+
+                cartItemsList.insertAdjacentHTML('beforeend', itemRowHtml);
+                if (mobileCartItemsList) {
+                    mobileCartItemsList.insertAdjacentHTML('beforeend', itemRowHtml);
+                }
             });
 
-            // Re-bind trigger for Remove inside cart
-            document.querySelectorAll('.remove-item').forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const i = parseInt(this.getAttribute('data-index'));
-                    cart.splice(i, 1);
+            // Calculate Strategy Multiplier
+            const multiplier = getStrategyMultiplier();
+            const discountedSubtotal = rawSubtotal * multiplier;
+            const discountAmount = rawSubtotal - discountedSubtotal;
+            const taxAmount = discountedSubtotal * 0.05; // 5% GST
+            const grandTotal = discountedSubtotal + taxAmount;
+
+            // Update Desktop UI
+            cartSubtotalDisplay.innerText = '₹' + rawSubtotal.toFixed(2);
+            cartTaxDisplay.innerText = '₹' + taxAmount.toFixed(2);
+            cartTotalDisplay.innerText = '₹' + grandTotal.toFixed(2);
+
+            if (discountAmount > 0.01) {
+                discountRow.style.display = 'flex';
+                cartDiscountDisplay.innerText = '-₹' + discountAmount.toFixed(2);
+            } else {
+                discountRow.style.display = 'none';
+            }
+
+            // Update Mobile UI
+            if (mobileCartTotalDisplay) mobileCartTotalDisplay.innerText = '₹' + grandTotal.toFixed(0);
+            if (mobileDrawerTotalDisplay) mobileDrawerTotalDisplay.innerText = '₹' + grandTotal.toFixed(2);
+            if (mobileCartSubtotal) mobileCartSubtotal.innerText = '₹' + rawSubtotal.toFixed(2);
+            if (mobileCartTax) mobileCartTax.innerText = '₹' + taxAmount.toFixed(2);
+
+            countBadges.forEach(b => b.innerText = totalItemsCount.toString());
+
+            // Bind Steppers and Remove buttons inside cart
+            document.querySelectorAll('.btn-cart-inc').forEach(b => {
+                b.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    cart[idx].quantity++;
                     updateCartUI();
                 });
             });
-
-            cartTotalDisplay.innerText = '₹' + runningTotal.toFixed(2);
-
-            // Update mobile floating button total
-            const mobileCartTotal = document.getElementById('mobileCartTotal');
-            if (mobileCartTotal) mobileCartTotal.innerText = '₹' + runningTotal.toFixed(2);
-
-            // Trigger Pulse Animation to show something was added
-            cartTotalDisplay.classList.remove('pulse-animation');
-            void cartTotalDisplay.offsetWidth; // Force browser reflow to restart animation
-            cartTotalDisplay.classList.add('pulse-animation');
+            document.querySelectorAll('.btn-cart-dec').forEach(b => {
+                b.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    if (cart[idx].quantity > 1) {
+                        cart[idx].quantity--;
+                    } else {
+                        cart.splice(idx, 1);
+                    }
+                    updateCartUI();
+                });
+            });
+            document.querySelectorAll('.btn-cart-remove').forEach(b => {
+                b.addEventListener('click', function () {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    cart.splice(idx, 1);
+                    updateCartUI();
+                });
+            });
         }
 
-        // Add to Cart Logic
+        if (clearCartBtn) {
+            clearCartBtn.addEventListener('click', () => {
+                cart = [];
+                updateCartUI();
+            });
+        }
+
+        // 4. Add to Cart Handler
         orderBtns.forEach(btn => {
             btn.addEventListener('click', function () {
                 const id = this.dataset.id;
                 const name = this.dataset.name;
-                const price = this.dataset.price;
+                const price = parseFloat(this.dataset.price);
                 const category = this.dataset.type;
 
                 const cheeseSwitch = document.getElementById(`cheese_${id}`);
@@ -689,7 +1192,7 @@
                 const qtyInput = document.getElementById(`qty_${id}`);
                 const addedQty = qtyInput ? parseInt(qtyInput.value) : 1;
 
-                // Group identical items in the cart
+                // Match existing in-cart item
                 const existingIndex = cart.findIndex(i =>
                     i.item_id === id &&
                     i.add_cheese === addCheese &&
@@ -706,37 +1209,37 @@
                         price: price,
                         add_cheese: addCheese,
                         add_bacon: addBacon,
-                        strategy: 'normal',
                         quantity: addedQty
                     });
                 }
 
-                // Reset UI Inputs naturally
+                // Reset Card Input values
                 if (cheeseSwitch) cheeseSwitch.checked = false;
                 if (baconSwitch) baconSwitch.checked = false;
                 if (qtyInput) qtyInput.value = 1;
 
-                // Temporary immediate UI feedback cleanly decoupled
-                const originalText = this.innerHTML;
+                // Micro animation feedback
+                const origHtml = this.innerHTML;
                 this.innerHTML = '<i class="bi bi-check2"></i> Added';
-                this.classList.replace('btn-primary', 'btn-success');
+                this.classList.replace('btn-add-food', 'btn-success');
                 setTimeout(() => {
-                    this.innerHTML = originalText;
-                    this.classList.replace('btn-success', 'btn-primary');
-                }, 1000);
+                    this.innerHTML = origHtml;
+                    this.classList.replace('btn-success', 'btn-add-food');
+                }, 900);
 
                 updateCartUI();
             });
         });
 
-        // Batch Submit Payload securely formatted
-        submitOrderBtn.addEventListener('click', async function () {
+        // 5. Submit Order Function
+        async function submitOrder(buttonElement) {
             if (cart.length === 0) return;
 
-            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
-            this.disabled = true;
+            const originalBtnContent = buttonElement.innerHTML;
+            buttonElement.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Sending...';
+            buttonElement.disabled = true;
 
-            // Expand cart based on quantity because backend facade handles 1 item per dictionary 
+            // Expand cart by item quantity for the backend Facade
             let expandedCart = [];
             cart.forEach(item => {
                 for (let i = 0; i < item.quantity; i++) {
@@ -746,18 +1249,17 @@
                         price: item.price,
                         add_cheese: item.add_cheese,
                         add_bacon: item.add_bacon,
-                        strategy: item.strategy
+                        strategy: activeStrategy
                     });
                 }
             });
 
-            // table_number is heavily protected to remain a clean raw integer
             const tableNumStr = "{{ table.table_number }}";
             const tableNum = tableNumStr ? parseInt(tableNumStr) : null;
 
             const payload = {
                 table_number: tableNum,
-                customer_name: "Table " + (tableNum || "Guest") + " Guest",
+                customer_name: `Table ${tableNum || 'Guest'} Guest`,
                 items: expandedCart
             };
 
@@ -771,39 +1273,59 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    const toastEl = document.getElementById('orderToast');
+                    const successToastEl = document.getElementById('orderSuccessToast');
                     const toastMsg = document.getElementById('toastMessage');
-                    if (toastEl && toastMsg) {
-                        toastMsg.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2 fs-5"></i> <strong>Kitchen queued ${expandedCart.length} item(s)!</strong>`;
-                        const toast = new bootstrap.Toast(toastEl);
+                    if (toastMsg) {
+                        toastMsg.innerText = `Submitted ${expandedCart.length} item(s) to Kitchen. Status: PREPARING.`;
+                    }
+                    if (successToastEl) {
+                        const toast = new bootstrap.Toast(successToastEl);
                         toast.show();
-                    } else {
-                        alert(`Successfully submitted ${expandedCart.length} item(s) to the kitchen!`);
                     }
 
-                    // Empty and re-initialize gracefully
+                    // Reset cart
                     cart = [];
                     updateCartUI();
+
+                    // Close mobile offcanvas if open
+                    const offcanvasEl = document.getElementById('mobileCartOffcanvas');
+                    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                    if (offcanvasInstance) offcanvasInstance.hide();
+
                 } else {
-                    // Trigger custom error toast instead of alert
-                    const errToastEl = document.getElementById('errorToast');
-                    document.getElementById('errorToastMessage').innerHTML = `<i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i> <strong>Error:</strong> ${data.error}`;
-                    const errToast = new bootstrap.Toast(errToastEl);
-                    errToast.show();
+                    const errorToastEl = document.getElementById('orderErrorToast');
+                    const errorMsg = document.getElementById('errorToastMessage');
+                    if (errorMsg) errorMsg.innerText = data.error || 'Failed to submit order.';
+                    if (errorToastEl) {
+                        const toast = new bootstrap.Toast(errorToastEl);
+                        toast.show();
+                    }
                 }
             } catch (err) {
-                console.error('Error delegating order to facade:', err);
-
-                // Trigger custom error toast for Network Failure
-                const errToastEl = document.getElementById('errorToast');
-                document.getElementById('errorToastMessage').innerHTML = `<i class="bi bi-wifi-off text-danger me-2 fs-5"></i> <strong>Network error</strong> placing order.`;
-                const errToast = new bootstrap.Toast(errToastEl);
-                errToast.show();
+                console.error('Order Submission Error:', err);
+                const errorToastEl = document.getElementById('orderErrorToast');
+                const errorMsg = document.getElementById('errorToastMessage');
+                if (errorMsg) errorMsg.innerText = 'Network connection failed. Please try again.';
+                if (errorToastEl) {
+                    const toast = new bootstrap.Toast(errorToastEl);
+                    toast.show();
+                }
             } finally {
-                this.innerHTML = '<i class="bi bi-send-check"></i> Submit Order';
-                this.disabled = false;
+                buttonElement.innerHTML = originalBtnContent;
+                buttonElement.disabled = false;
             }
-        });
+        }
+
+        if (submitOrderBtn) {
+            submitOrderBtn.addEventListener('click', function () {
+                submitOrder(this);
+            });
+        }
+        if (mobileSubmitOrderBtn) {
+            mobileSubmitOrderBtn.addEventListener('click', function () {
+                submitOrder(this);
+            });
+        }
     });
 </script>
 {% endblock %}

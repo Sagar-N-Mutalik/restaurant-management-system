@@ -76,7 +76,7 @@
                     </div>
                     <div class="col">
                         <div class="p-3 rounded-4 bg-success-subtle text-success border border-success-subtle text-center">
-                            <div class="display-6 fw-bold">21</div>
+                            <div class="display-6 fw-bold">59</div>
                             <div class="small fw-semibold text-uppercase">Automated Test Cases</div>
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                     </div>
                     <div class="col">
                         <div class="p-3 rounded-4 bg-warning-subtle text-warning-emphasis border border-warning-subtle text-center">
-                            <div class="display-6 fw-bold">5</div>
+                            <div class="display-6 fw-bold">6</div>
                             <div class="small fw-semibold text-uppercase">GoF Patterns Verified</div>
                         </div>
                     </div>
@@ -112,8 +112,8 @@
                                 <td class="fw-bold"><span class="badge bg-primary me-1">Unit</span> Unit Testing</td>
                                 <td>White-Box / Component</td>
                                 <td>Pricing algorithms, discount calculations, GST 18%, and dynamic decorator stacking</td>
-                                <td>Strategy, Decorator</td>
-                                <td>5</td>
+                                <td>Strategy, Decorator, Singleton, Observer</td>
+                                <td>11</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                             <tr>
@@ -121,47 +121,47 @@
                                 <td>Gray-Box / Subsystem</td>
                                 <td>Order creation, table occupancy tracking, Observer kitchen alerts, and payment settlement</td>
                                 <td>Facade, Observer</td>
-                                <td>2</td>
+                                <td>7</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                             <tr>
                                 <td class="fw-bold"><span class="badge bg-primary me-1">Black-Box</span> Black-Box Testing</td>
                                 <td>Specification / Functional</td>
-                                <td>Public HTTP endpoints, REST API JSON contracts, status codes (200, 201, 404, 405)</td>
+                                <td>Public HTTP endpoints, customer menus, REST API JSON contracts, status codes (200, 201, 404, 405), and Excel/ZIP downloads</td>
                                 <td>Client-Server Contract</td>
-                                <td>5</td>
+                                <td>12</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                             <tr>
                                 <td class="fw-bold"><span class="badge bg-primary me-1">White-Box</span> White-Box Testing</td>
                                 <td>Structural / Glass-Box</td>
-                                <td>Internal factory branch validation, missing order error guards, statement coverage profiler</td>
+                                <td>Internal factory creation branches, category routing, missing order error guards, and statement coverage profiler</td>
                                 <td>Factory, Facade</td>
-                                <td>3</td>
+                                <td>9</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                             <tr>
                                 <td class="fw-bold"><span class="badge bg-primary me-1">Smoke</span> Smoke Testing</td>
                                 <td>Build Verification</td>
-                                <td>Rapid sanity check verifying all 5 primary application routes respond HTTP 200 OK</td>
+                                <td>Rapid sanity check verifying all 7 primary application routes (Landing, Menu, Staff, Bill, Thank You, Hub, Guide) respond HTTP 200 OK</td>
                                 <td>Core Web Subsystem</td>
-                                <td>1</td>
+                                <td>7</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                             <tr>
                                 <td class="fw-bold"><span class="badge bg-primary me-1">Regression</span> Regression Testing</td>
                                 <td>Defect Prevention</td>
-                                <td>Guards against regressions: malformed JSON rejection, ready state mutation, table locks</td>
+                                <td>Guards against regressions: corrupted JSON rejection, empty payloads, ready state mutations, non-existent order/table guards</td>
                                 <td>Facade & Controllers</td>
-                                <td>3</td>
+                                <td>8</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                             <tr>
                                 <td class="fw-bold"><span class="badge bg-primary me-1">Performance</span> Performance Testing</td>
                                 <td>Non-Functional / Benchmark</td>
-                                <td>Computational latency: 5,000 strategy iterations and 20 rapid web page dispatches</td>
+                                <td>Computational latency: 5,000 strategy iterations, 2,000 decorator dynamic wrappings, and repeated web page dispatches</td>
                                 <td>Computational Scalability</td>
-                                <td>2</td>
+                                <td>5</td>
                                 <td><span class="badge bg-success">100% PASS</span></td>
                             </tr>
                         </tbody>
@@ -568,52 +568,98 @@
                         </span>
                         <h2 class="h3 fw-bold mb-0">4. Master Automated Test Cases Catalog</h2>
                     </div>
-                    <span class="badge bg-primary rounded-pill px-3 py-2">21 Automated Tests</span>
+                    <span class="badge bg-primary rounded-pill px-3 py-2">59 Automated Tests</span>
                 </div>
                 <p class="text-muted mb-4">
-                    Complete inventory of all 21 test cases executed by the test runner with preconditions, expected results, and verified observations.
+                    Complete inventory of all 59 test cases executed by the test harness with preconditions, IEEE-829 specification details, expected results, and verified observations.
                 </p>
 
-                <div class="table-responsive rounded-3 border" style="max-height: 520px; overflow-y: auto;">
+                <div class="table-responsive rounded-3 border" style="max-height: 580px; overflow-y: auto;">
                     <table class="table table-hover table-striped align-middle mb-0 small">
                         <thead class="table-dark sticky-top">
                             <tr>
+                                <th>#</th>
                                 <th>Test ID</th>
                                 <th>Suite</th>
-                                <th>Method Name</th>
-                                <th>Test Objective</th>
+                                <th>Functionality / Module</th>
+                                <th>Execution Steps</th>
                                 <th>Expected Result</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td><code>TC-UNIT-01</code></td><td><span class="badge bg-primary">Unit</span></td><td>test_normal_price_is_unchanged</td><td>Base price calculation retains original amount</td><td>Price 10 remains 10</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-UNIT-02</code></td><td><span class="badge bg-primary">Unit</span></td><td>test_happy_hour_applies_twenty_percent_discount</td><td>Happy-hour strategy applies 20% discount</td><td>Base price 10 becomes 8.0</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-UNIT-03</code></td><td><span class="badge bg-primary">Unit</span></td><td>test_vip_uses_configured_discount_rate</td><td>VIP strategy applies configured rate</td><td>Base price 10 at 90% rate becomes 9.0</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-UNIT-04</code></td><td><span class="badge bg-primary">Unit</span></td><td>test_gst_is_applied_to_the_provided_amount</td><td>Mathematical precision of 18% GST</td><td>Base price 10 with GST becomes 11.80</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-UNIT-05</code></td><td><span class="badge bg-primary">Unit</span></td><td>test_decorators_add_prices_and_descriptions</td><td>Decorator chaining adds prices and strings</td><td>Burger $10 + cheese $1.50 + bacon $2.50 = $14.00</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            
-                            <tr><td><code>TC-INT-01</code></td><td><span class="badge bg-success">Integration</span></td><td>test_facade_persists_order_and_occupies_table</td><td>Facade creates order, alerts kitchen, occupies table</td><td>Order status PREPARING, table occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-INT-02</code></td><td><span class="badge bg-success">Integration</span></td><td>test_payment_completes_order_and_releases_table</td><td>Payment marks order paid and frees table</td><td>Order paid, status COMPLETED, table free</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <!-- UNIT TESTS -->
+                            <tr><td>1</td><td><code>TC-UNIT-001</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - Normal</td><td>1. NormalPricing(); 2. calculate_final_price(100.0); 3. Assert 100.0</td><td>Base price 100.00 remains unchanged</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>2</td><td><code>TC-UNIT-002</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - Happy Hour</td><td>1. HappyHourPricing(); 2. calculate_final_price(100.0); 3. Assert 80.0</td><td>20% discount applied: 100.00 becomes 80.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>3</td><td><code>TC-UNIT-003</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - VIP Default</td><td>1. VIPDiscountPricing(); 2. calculate_final_price(100.0); 3. Assert 70.0</td><td>30% default discount applied: 100.00 becomes 70.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>4</td><td><code>TC-UNIT-004</code></td><td><span class="badge bg-primary">Unit</span></td><td>Pricing Strategy - VIP Custom</td><td>1. VIPDiscountPricing(0.85); 2. calculate_final_price(100.0); 3. Assert 85.0</td><td>15% configured discount applied: 100.00 becomes 85.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>5</td><td><code>TC-UNIT-005</code></td><td><span class="badge bg-primary">Unit</span></td><td>Tax Calculation - 18% GST</td><td>1. NormalPricing().apply_gst(100.0); 2. Assert 118.00</td><td>Exact mathematical 18% tax added: 100 becomes 118.00</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>6</td><td><code>TC-UNIT-006</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator Pattern - Extra Cheese</td><td>1. Wrap with ExtraCheeseDecorator; 2. Assert price +1.50 and description</td><td>Price increases by 1.50 with "+ Extra Cheese"</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>7</td><td><code>TC-UNIT-007</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator Pattern - Add Bacon</td><td>1. Wrap with AddBaconDecorator; 2. Assert price +2.50 and description</td><td>Price increases by 2.50 with "+ Bacon"</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>8</td><td><code>TC-UNIT-008</code></td><td><span class="badge bg-primary">Unit</span></td><td>Decorator - Chained Toppings</td><td>1. Wrap with ExtraCheese + AddBacon; 2. Assert price 14.0 and description</td><td>Combined price 14.00 (10 + 1.5 + 2.5) with stacked description</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>9</td><td><code>TC-UNIT-009</code></td><td><span class="badge bg-primary">Unit</span></td><td>Singleton - Instance Identity</td><td>1. config1 = ConfigManager(); 2. config2 = ConfigManager(); 3. Assert identity</td><td>Both variables reference identical memory instance</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>10</td><td><code>TC-UNIT-010</code></td><td><span class="badge bg-primary">Unit</span></td><td>Singleton - State Mutation</td><td>1. config1.update_tax_rate(0.12); 2. Read from config2; 3. Assert 0.12</td><td>Mutated state persists globally across all references</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>11</td><td><code>TC-UNIT-011</code></td><td><span class="badge bg-primary">Unit</span></td><td>Observer - Registration</td><td>1. subject.attach(obs); 2. Assert in list; 3. subject.detach(obs); 4. Assert removed</td><td>Observer cleanly registered and unsubscribed</td><td><span class="badge bg-success">PASS</span></td></tr>
 
-                            <tr><td><code>TC-BB-01</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>test_landing_page_returns_customer_homepage</td><td>Public home page responds HTTP 200 with branding</td><td>HTTP 200 with 'The Pattern Pizzeria'</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-BB-02</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>test_order_api_creates_order_and_returns_documented_payload</td><td>REST API creates order and returns JSON schema</td><td>HTTP 201 Created, success: true</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-BB-03</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>test_order_api_rejects_get_requests</td><td>REST API rejects GET requests</td><td>HTTP 405 Method Not Allowed</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-BB-04</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>test_test_report_is_downloadable_as_an_excel_file</td><td>Excel report endpoint serves valid XLSX file</td><td>HTTP 200 with openxml sheet headers</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-BB-05</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>test_missing_or_unknown_reports_are_not_served</td><td>Nonexistent reports return HTTP 404</td><td>HTTP 404 Not Found</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <!-- INTEGRATION TESTS -->
+                            <tr><td>12</td><td><code>TC-INT-001</code></td><td><span class="badge bg-success">Integration</span></td><td>Order Placement Flow</td><td>1. Create table; 2. facade.place_order; 3. Assert DB record & table occupied</td><td>Order saved with PREPARING, table marked occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>13</td><td><code>TC-INT-002</code></td><td><span class="badge bg-success">Integration</span></td><td>Customized Order Flow</td><td>1. place_order with cheese, bacon, happy-hour; 2. Assert price & name</td><td>Order total $11.20 and decorated description persisted</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>14</td><td><code>TC-INT-003</code></td><td><span class="badge bg-success">Integration</span></td><td>Table Collision Guard</td><td>1. Occupy table; 2. Attempt second order on table; 3. Assert ValueError</td><td>ValueError raised preventing double occupancy</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>15</td><td><code>TC-INT-004</code></td><td><span class="badge bg-success">Integration</span></td><td>Order Lifecycle Mutation</td><td>1. Create Order; 2. facade.complete_order(id); 3. Assert status READY</td><td>Order status updated to READY in database</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>16</td><td><code>TC-INT-005</code></td><td><span class="badge bg-success">Integration</span></td><td>Billing Aggregation & GST</td><td>1. Create orders on table; 2. calculate_table_bill; 3. Assert subtotal and tax</td><td>Bill combines items, applies discount, adds 18% GST</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>17</td><td><code>TC-INT-006</code></td><td><span class="badge bg-success">Integration</span></td><td>Payment Settlement</td><td>1. facade.process_payment(table); 2. Assert order paid & table freed</td><td>Order marked COMPLETED and is_paid=True; table free</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>18</td><td><code>TC-INT-007</code></td><td><span class="badge bg-success">Integration</span></td><td>Observer Alert Flow</td><td>1. Attach audit observer; 2. place_order; 3. Assert PREPARING event</td><td>Observer receives synchronous order update alert</td><td><span class="badge bg-success">PASS</span></td></tr>
 
-                            <tr><td><code>TC-WB-01</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>test_factory_rejects_unknown_item_category</td><td>Factory branch raises ValueError on invalid category</td><td>ValueError: Unknown menu item category</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-WB-02</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>test_completing_unknown_order_returns_false</td><td>Facade handles invalid order ID safely</td><td>Returns False without unhandled exception</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-WB-03</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>test_bill_for_table_without_active_orders_is_empty</td><td>Empty table billing returns None</td><td>Returns None safely</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <!-- BLACK-BOX TESTS -->
+                            <tr><td>19</td><td><code>TC-BB-001</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Landing Page Contract</td><td>1. GET /; 2. Assert HTTP 200 and restaurant branding text</td><td>HTTP 200 with 'The Pattern Pizzeria' / 'SmartResto'</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>20</td><td><code>TC-BB-002</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Table Menu Contract</td><td>1. GET /menu/41/; 2. Assert HTTP 200 and menu catalog</td><td>HTTP 200 rendering categorized items for Table 41</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>21</td><td><code>TC-BB-003</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Single Order</td><td>1. POST /api/order with single item; 2. Assert HTTP 201 JSON</td><td>HTTP 201 with success: true and order payload</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>22</td><td><code>TC-BB-004</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Cart Order</td><td>1. POST /api/order with items: [...]; 2. Assert HTTP 201 JSON</td><td>HTTP 201 confirming all cart items processed</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>23</td><td><code>TC-BB-005</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Method Guard</td><td>1. GET /api/order; 2. Assert HTTP 405 Method Not Allowed</td><td>HTTP 405 Method Not Allowed returned</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>24</td><td><code>TC-BB-006</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>REST API - Table Guard</td><td>1. POST /api/order for Table 99999; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 with error: "Table does not exist"</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>25</td><td><code>TC-BB-007</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Staff Dashboard Contract</td><td>1. GET /staff-dashboard/; 2. Assert HTTP 200 and table lists</td><td>HTTP 200 rendering active tables and order lists</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>26</td><td><code>TC-BB-008</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Table Bill Contract</td><td>1. GET /bill/44/; 2. Assert HTTP 200 and itemized bill</td><td>HTTP 200 rendering subtotal, GST, and grand total</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>27</td><td><code>TC-BB-009</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Thank You Page Contract</td><td>1. GET /thank-you/; 2. Assert HTTP 200 confirmation message</td><td>HTTP 200 rendering order confirmation message</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>28</td><td><code>TC-BB-010</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Report Download Contract</td><td>1. GET /testing/reports/unit/; 2. Assert HTTP 200 and XLSX headers</td><td>HTTP 200 serving valid Excel report with IEEE columns</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>29</td><td><code>TC-BB-011</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>ZIP Download Contract</td><td>1. GET /testing/download-all/; 2. Assert HTTP 200 and application/zip</td><td>HTTP 200 serving valid ZIP archive of reports</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>30</td><td><code>TC-BB-012</code></td><td><span class="badge bg-info text-dark">Black-Box</span></td><td>Report 404 Guard</td><td>1. GET /testing/reports/invalid/; 2. Assert HTTP 404 Not Found</td><td>HTTP 404 Not Found returned cleanly</td><td><span class="badge bg-success">PASS</span></td></tr>
 
-                            <tr><td><code>TC-SMK-01</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>test_main_pages_load</td><td>5 core routes (home, staff, reports, menu, bill) respond 200</td><td>All 5 endpoints return HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <!-- WHITE-BOX TESTS -->
+                            <tr><td>31</td><td><code>TC-WB-001</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Veg Creator</td><td>1. VegMenuItemFactory.create_item; 2. Assert item_type VEG</td><td>item_type is VEG and description has [VEG] prefix</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>32</td><td><code>TC-WB-002</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - NonVeg Creator</td><td>1. NonVegMenuItemFactory.create_item; 2. Assert item_type NON_VEG</td><td>item_type is NON_VEG and description has [NON-VEG] prefix</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>33</td><td><code>TC-WB-003</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Vegan Creator</td><td>1. VeganMenuItemFactory.create_item; 2. Assert item_type VEGAN</td><td>item_type is VEGAN and description has allergy notice</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>34</td><td><code>TC-WB-004</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Router Routing</td><td>1. Query SimpleMenuFactory with veg, non_veg, vegan; 2. Assert routing</td><td>Appropriate concrete factory invoked for each category</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>35</td><td><code>TC-WB-005</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Factory - Exception Guard</td><td>1. SimpleMenuFactory.get_item('invalid'); 2. Assert ValueError</td><td>ValueError raised with Unknown menu item category</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>36</td><td><code>TC-WB-006</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Missing Order Guard</td><td>1. complete_order(99999); 2. Assert return value is False</td><td>Returns False safely without unhandled exception</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>37</td><td><code>TC-WB-007</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Empty Table Bill</td><td>1. calculate_table_bill on empty table; 2. Assert return is None</td><td>Returns None without attempting zero-order calculations</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>38</td><td><code>TC-WB-008</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Missing Table Bill</td><td>1. calculate_table_bill for Table 99999; 2. Assert ValueError</td><td>ValueError raised with Table does not exist</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>39</td><td><code>TC-WB-009</code></td><td><span class="badge bg-secondary">White-Box</span></td><td>Facade - Missing Table Payment</td><td>1. process_payment(99999); 2. Assert (False, msg)</td><td>Returns (False, "Table does not exist") safely</td><td><span class="badge bg-success">PASS</span></td></tr>
 
-                            <tr><td><code>TC-REG-01</code></td><td><span class="badge bg-dark">Regression</span></td><td>test_invalid_json_order_request_returns_bad_request</td><td>Malformed JSON in order API handled safely</td><td>HTTP 400 Bad Request, success: false</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-REG-02</code></td><td><span class="badge bg-dark">Regression</span></td><td>test_ready_endpoint_updates_order_state</td><td>Order transition to READY persists in database</td><td>HTTP 200, DB order status = READY</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-REG-03</code></td><td><span class="badge bg-dark">Regression</span></td><td>test_failed_payment_keeps_table_occupied</td><td>Payment failure on empty table leaves table lock intact</td><td>Payment fails, table remains occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <!-- SMOKE TESTS -->
+                            <tr><td>40</td><td><code>TC-SMK-001</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Landing Page Sanity</td><td>1. GET /; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>41</td><td><code>TC-SMK-002</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Menu Page Sanity</td><td>1. GET /menu/61/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>42</td><td><code>TC-SMK-003</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Staff Dashboard Sanity</td><td>1. GET /staff-dashboard/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>43</td><td><code>TC-SMK-004</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Bill Page Sanity</td><td>1. GET /bill/61/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>44</td><td><code>TC-SMK-005</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Thank You Page Sanity</td><td>1. GET /thank-you/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>45</td><td><code>TC-SMK-006</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Test Reports Hub Sanity</td><td>1. GET /testing/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>46</td><td><code>TC-SMK-007</code></td><td><span class="badge bg-warning text-dark">Smoke</span></td><td>Testing Guide Sanity</td><td>1. GET /testing/guide/; 2. Assert response status == 200</td><td>HTTP 200 OK</td><td><span class="badge bg-success">PASS</span></td></tr>
 
-                            <tr><td><code>TC-PRF-01</code></td><td><span class="badge bg-danger">Performance</span></td><td>test_pricing_calculations_complete_within_budget</td><td>5,000 strategy iterations complete in budget</td><td>Elapsed < 2.0s (Actual: ~0.015s)</td><td><span class="badge bg-success">PASS</span></td></tr>
-                            <tr><td><code>TC-PRF-02</code></td><td><span class="badge bg-danger">Performance</span></td><td>test_landing_page_repeated_requests_complete_within_budget</td><td>20 rapid web page dispatches complete in budget</td><td>Elapsed < 5.0s (Actual: ~0.25s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <!-- REGRESSION TESTS -->
+                            <tr><td>47</td><td><code>TC-REG-001</code></td><td><span class="badge bg-dark">Regression</span></td><td>Malformed JSON Guard</td><td>1. POST malformed string; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 returned without 500 server crash</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>48</td><td><code>TC-REG-002</code></td><td><span class="badge bg-dark">Regression</span></td><td>Empty Payload Guard</td><td>1. POST empty dict; 2. Assert HTTP 400 Bad Request</td><td>HTTP 400 returned with error message</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>49</td><td><code>TC-REG-003</code></td><td><span class="badge bg-dark">Regression</span></td><td>State Transition Guard</td><td>1. POST ready endpoint; 2. Assert DB status is READY</td><td>Database record status updated to READY</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>50</td><td><code>TC-REG-004</code></td><td><span class="badge bg-dark">Regression</span></td><td>Missing Order Ready Guard</td><td>1. POST ready for ID 99999; 2. Assert HTTP 404 JSON</td><td>HTTP 404 returned cleanly</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>51</td><td><code>TC-REG-005</code></td><td><span class="badge bg-dark">Regression</span></td><td>Payment Idempotence Guard</td><td>1. process_payment on occupied empty table; 2. Assert False</td><td>Payment fails (False), table remains occupied</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>52</td><td><code>TC-REG-006</code></td><td><span class="badge bg-dark">Regression</span></td><td>Missing Table Payment Guard</td><td>1. process_payment(99999); 2. Assert False returned</td><td>Returns False safely without 500 error</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>53</td><td><code>TC-REG-007</code></td><td><span class="badge bg-dark">Regression</span></td><td>Cart Pricing Isolation</td><td>1. Submit cart with normal and discounted items; 2. Assert prices</td><td>Each item price calculated without leakage across items</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>54</td><td><code>TC-REG-008</code></td><td><span class="badge bg-dark">Regression</span></td><td>Bill Mathematics Guard</td><td>1. Query bill for multi-item table; 2. Verify subtotal + GST == total</td><td>Mathematical equality: subtotal + GST == grand_total</td><td><span class="badge bg-success">PASS</span></td></tr>
+
+                            <!-- PERFORMANCE TESTS -->
+                            <tr><td>55</td><td><code>TC-PRF-001</code></td><td><span class="badge bg-danger">Performance</span></td><td>Pricing Strategy Benchmark</td><td>1. Loop calculate_final_price 5,000 times; 2. Assert time < 1.0s</td><td>Completed in <0.02s (Budget: <1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>56</td><td><code>TC-PRF-002</code></td><td><span class="badge bg-danger">Performance</span></td><td>Decorator Benchmark</td><td>1. Loop decorator wrappings 2,000 times; 2. Assert time < 1.0s</td><td>Completed in <0.02s (Budget: <1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>57</td><td><code>TC-PRF-003</code></td><td><span class="badge bg-danger">Performance</span></td><td>Landing Page Latency</td><td>1. Dispatch 20 GET / requests; 2. Assert elapsed < 3.0s</td><td>Completed in <0.30s (Budget: <3.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>58</td><td><code>TC-PRF-004</code></td><td><span class="badge bg-danger">Performance</span></td><td>Menu Page Latency</td><td>1. Dispatch 20 GET /menu/81/ requests; 2. Assert elapsed < 3.0s</td><td>Completed in <0.30s (Budget: <3.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
+                            <tr><td>59</td><td><code>TC-PRF-005</code></td><td><span class="badge bg-danger">Performance</span></td><td>Billing Latency</td><td>1. Calculate table bill 20 times; 2. Assert elapsed < 1.0s</td><td>Completed in <0.10s (Budget: <1.0s)</td><td><span class="badge bg-success">PASS</span></td></tr>
                         </tbody>
                     </table>
                 </div>

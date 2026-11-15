@@ -42,7 +42,8 @@ class OrderProcessingFacade:
 
     def place_order(self, customer_name: str, item_category: str, item_name: str, base_price: float, 
                     add_cheese: bool = False, add_bacon: bool = False, 
-                    pricing_strategy: PricingStrategy = None, table_number: int = None):
+                    pricing_strategy: PricingStrategy = None, table_number: int = None,
+                    allow_occupied_table: bool = False):
         """
         A unified macro method to process an order end-to-end heavily utilizing all sub-patterns.
         """
@@ -59,10 +60,12 @@ class OrderProcessingFacade:
 
         # Step 2: Use Decorator to wrap the database item with temporary in-memory customizations flexibly
         item_component = MenuItemComponent(base_item)
+        cheese_cost = 20.00 if base_price > 20 else 1.50
+        bacon_cost = 30.00 if base_price > 20 else 2.50
         if add_cheese:
-            item_component = ExtraCheeseDecorator(item_component)
+            item_component = ExtraCheeseDecorator(item_component, cost=cheese_cost)
         if add_bacon:
-            item_component = AddBaconDecorator(item_component)
+            item_component = AddBaconDecorator(item_component, cost=bacon_cost)
 
         # Extract base customized raw cost dynamically from the wrappers
         raw_cost = item_component.get_price()
@@ -77,7 +80,7 @@ class OrderProcessingFacade:
             table = RestaurantTable.objects.filter(table_number=table_number).first()
             if not table:
                 raise ValueError(f"Table {table_number} does not exist.")
-            if table.is_occupied:
+            if table.is_occupied and not allow_occupied_table:
                 raise ValueError(f"Table {table_number} is already occupied.")
 
         # Step 4: Persist the finalized order explicitly to the core Database

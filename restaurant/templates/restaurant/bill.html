@@ -2,187 +2,180 @@
 
 {% block extra_css %}
 <style>
-    .receipt {
-        background: #fff;
-        max-width: 500px;
-        margin: 0 auto;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        position: relative;
+    .receipt-container {
+        max-width: 540px;
+        margin: 2rem auto;
     }
 
-    .receipt::before {
+    .digital-receipt {
+        background: var(--surface-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 1.25rem;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        padding: 2.25rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .digital-receipt::before {
         content: "";
         position: absolute;
-        top: -10px;
+        top: 0;
         left: 0;
         right: 0;
-        height: 10px;
-        background-size: 20px 20px;
-        background-image: radial-gradient(circle at 10px 0, transparent 10px, #fff 11px);
+        height: 6px;
+        background: linear-gradient(90deg, #f97316, #ea580c, #6366f1);
     }
 
     .receipt-header {
-        border-bottom: 2px dashed #ddd;
-        padding-bottom: 1rem;
-        margin-bottom: 1rem;
+        border-bottom: 2px dashed var(--border-subtle);
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
     }
 
-    .receipt-item {
+    .receipt-item-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.5rem;
+        align-items: center;
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
     }
 
-    .receipt-totals {
-        border-top: 2px dashed #ddd;
-        padding-top: 1rem;
-        margin-top: 1rem;
+    .receipt-summary-box {
+        border-top: 2px dashed var(--border-subtle);
+        padding-top: 1.25rem;
+        margin-top: 1.25rem;
     }
 
-    .receipt {
-        background: #fff;
-        max-width: 500px;
-        margin: 0 auto;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        position: relative;
-    }
-
-    .receipt::before {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: 0;
-        right: 0;
-        height: 10px;
-        background-size: 20px 20px;
-        background-image: radial-gradient(circle at 10px 0, transparent 10px, #fff 11px);
-    }
-
-    .receipt-header {
-        border-bottom: 2px dashed #ddd;
-        padding-bottom: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .receipt-item {
+    .btn-pay-now {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        color: white;
+        border: none;
+        font-weight: 700;
+        font-size: 1.05rem;
+        padding: 0.95rem;
+        border-radius: 12px;
+        width: 100%;
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.5rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 16px rgba(22, 163, 74, 0.35);
+        transition: all 0.2s ease;
     }
 
-    .receipt-totals {
-        border-top: 2px dashed #ddd;
-        padding-top: 1rem;
-        margin-top: 1rem;
+    .btn-pay-now:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(22, 163, 74, 0.45);
+        color: white;
     }
-
-    /* --- ADD THESE NEW LINES FOR DARK MODE RECEIPT FIX --- */
-    body.dark-mode .receipt {
-        color: #212529 !important; /* Force standard text to be dark */
-    }
-    body.dark-mode .receipt .text-dark {
-        color: #212529 !important; /* Force text-dark to remain dark */
-    }
-    body.dark-mode .receipt .text-muted {
-        color: #6c757d !important; /* Force text-muted to remain standard grey */
-    }
-    body.dark-mode .receipt .text-success {
-        color: #198754 !important; /* Keep the green text clear */
-    }
-    /* ----------------------------------------------------- */
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row pt-5">
-    <div class="col-12">
+<div class="container-xl py-3">
+    <div class="receipt-container">
         {% if bill %}
-        <div class="receipt">
-            <div class="receipt-header text-center">
-                <i class="bi bi-shop fs-1 text-warning mb-2"></i>
-                <h3 class="fw-bold mb-0">The Pattern Pizzeria</h3>
-                <p class="text-muted small">TAX INVOICE</p>
+        <div class="digital-receipt">
+            <!-- Receipt Header -->
+            <div class="receipt-header">
+                <div class="brand-logo-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f97316, #ea580c); color: white; width: 44px; height: 44px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-shop fs-4"></i>
+                </div>
+                <h4 class="fw-bold mb-1" style="color: var(--text-heading);">SmartResto Pizzeria & Cafe</h4>
+                <div class="badge rounded-pill bg-secondary bg-opacity-10 text-muted px-3 py-1 small mb-3">
+                    OFFICIAL TAX INVOICE
+                </div>
 
-                <div class="d-flex justify-content-between mt-3 px-2 small text-start">
+                <div class="d-flex justify-content-between text-start small mt-3 p-2 rounded" style="background: rgba(0,0,0,0.02); border: 1px solid var(--border-subtle);">
                     <div>
-                        <strong>Table:</strong> {{ bill.table_number }}<br>
-                        <strong>Date:</strong> {% now "d M Y" %}
+                        <div class="text-muted">Table Station:</div>
+                        <strong class="fs-6" style="color: var(--text-heading);">Table {{ bill.table_number }}</strong>
+                    </div>
+                    <div>
+                        <div class="text-muted">Invoice Date:</div>
+                        <strong style="color: var(--text-heading);">{% now "d M Y" %}</strong>
                     </div>
                     <div class="text-end">
-                        <strong>Time:</strong> {% now "H:i" %}<br>
-                        <strong>Tickets:</strong> {{ bill.order_ids|length }}
+                        <div class="text-muted">Tickets:</div>
+                        <strong style="color: var(--text-heading);">{{ bill.order_ids|length }} Orders</strong>
                     </div>
                 </div>
             </div>
 
-            <div class="receipt-body">
-                <div class="receipt-item fw-bold border-bottom pb-2 mb-3">
-                    <span style="width: 70%">Item</span>
-                    <span style="width: 30%" class="text-end">Price (₹)</span>
+            <!-- Receipt Body Items -->
+            <div class="mb-4">
+                <div class="receipt-item-row fw-bold text-muted small border-bottom border-secondary border-opacity-10 pb-2 mb-2">
+                    <span>ITEM DESCRIPTION</span>
+                    <span>AMOUNT (₹)</span>
                 </div>
 
                 {% for item in bill.itemized_list %}
-                <div class="receipt-item text-muted">
-                    <span style="width: 70%">{{ item.name }}</span>
-                    <span style="width: 30%" class="text-end">{{ item.price|floatformat:2 }}</span>
+                <div class="receipt-item-row">
+                    <span style="color: var(--text-body); max-width: 75%;">{{ item.name }}</span>
+                    <strong style="color: var(--text-heading);">₹{{ item.price|floatformat:2 }}</strong>
                 </div>
                 {% endfor %}
             </div>
 
-            <div class="receipt-totals">
-                <div class="receipt-item text-muted">
+            <!-- Receipt Summary -->
+            <div class="receipt-summary-box">
+                <div class="receipt-item-row text-muted small">
                     <span>Subtotal</span>
                     <span>₹{{ bill.raw_subtotal|floatformat:2 }}</span>
                 </div>
+
                 {% if bill.discount_applied > 0 %}
-                <div class="receipt-item text-success">
-                    <span>Discount Applied</span>
+                <div class="receipt-item-row text-success small fw-semibold">
+                    <span><i class="bi bi-tag-fill me-1"></i> Discount Applied</span>
                     <span>- ₹{{ bill.discount_applied|floatformat:2 }}</span>
                 </div>
-                <div class="receipt-item text-muted">
-                    <span>Total After Discount</span>
+                <div class="receipt-item-row text-muted small">
+                    <span>Subtotal After Discount</span>
                     <span>₹{{ bill.subtotal_after_discount|floatformat:2 }}</span>
                 </div>
                 {% endif %}
-                <div class="receipt-item text-muted">
-                    <span>CGST (9%) + SGST (9%)</span>
+
+                <div class="receipt-item-row text-muted small">
+                    <span>GST (CGST 2.5% + SGST 2.5%)</span>
                     <span>₹{{ bill.gst_amount|floatformat:2 }}</span>
                 </div>
 
-                <div class="receipt-item mt-3 pt-2 border-top border-dark">
-                    <span class="fs-4 fw-bold">Grand Total</span>
+                <div class="receipt-item-row pt-3 mt-2 border-top border-secondary border-opacity-25">
+                    <span class="fs-5 fw-bold" style="color: var(--text-heading);">Grand Total</span>
                     <span class="fs-4 fw-bold text-success">₹{{ bill.grand_total|floatformat:2 }}</span>
                 </div>
             </div>
 
-            <div class="mt-4 pt-4 border-top text-center">
-                <p class="small text-muted mb-4">Thank you for dining with us! Implementing GoF patterns gracefully.</p>
+            <!-- Payment Action -->
+            <div class="mt-4 pt-3 border-top border-secondary border-opacity-10 text-center">
+                <p class="small text-muted mb-3">
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    Thank you for dining with us! GoF Architectural Facade payment flow.
+                </p>
 
                 <form action="{% url 'process_payment' bill.table_number %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow">
-                        <i class="bi bi-wallet2"></i> Pay & Leave (₹{{ bill.grand_total|floatformat:2 }})
+                    <button type="submit" class="btn-pay-now shadow">
+                        <i class="bi bi-wallet2"></i> Complete Payment & Clear Table (₹{{ bill.grand_total|floatformat:2 }})
                     </button>
                 </form>
+
+                <div class="mt-3">
+                    <a href="{% url 'menu_page' bill.table_number %}" class="btn btn-outline-secondary rounded-pill btn-sm px-4">
+                        <i class="bi bi-arrow-left me-1"></i> Order More Food
+                    </a>
+                </div>
             </div>
         </div>
-
-        <div class="text-center mt-3">
-            <a href="{% url 'menu_page' bill.table_number %}" class="btn btn-outline-secondary rounded-pill">
-                <i class="bi bi-arrow-left"></i> Wait, I want to order more
-            </a>
-        </div>
         {% else %}
-        <div class="text-center py-5">
-            <h1 class="display-3 text-muted"><i class="bi bi-receipt-cutoff"></i></h1>
-            <h2 class="fw-bold text-dark mt-3">Your bill is empty!</h2>
-            <p class="text-muted">You haven't ordered anything yet on Table {{ table_number }}.</p>
-            <a href="{% url 'menu_page' table_number %}" class="btn btn-warning btn-lg mt-3 rounded-pill">
-                Browse Menu
+        <div class="digital-receipt text-center py-5">
+            <i class="bi bi-receipt-cutoff fs-1 text-muted opacity-50 mb-3 d-block"></i>
+            <h3 class="fw-bold" style="color: var(--text-heading);">Your bill is empty!</h3>
+            <p class="text-muted">No active orders found for Table {{ table_number }}.</p>
+            <a href="{% url 'menu_page' table_number %}" class="btn btn-enter-menu px-4 py-2 mt-2">
+                <i class="bi bi-book-half me-1"></i> Open Menu
             </a>
         </div>
         {% endif %}

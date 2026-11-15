@@ -51,16 +51,16 @@ def menu_view(request, table_id):
     from restaurant.models import MenuItem # Local import to avoid cyclic issues at top if any
     
     # Categorize items neatly for the template
-    items = MenuItem.objects.all()
+    items = list(MenuItem.objects.all().order_by('price'))
     pizzas = [item for item in items if 'Pizza' in item.name or 'Extravaganza' in item.name or 'Dominator' in item.name or 'Sweet Corn' in item.name]
     burgers = [item for item in items if 'Burger' in item.name or 'Mac' in item.name]
     sides = [item for item in items if 'Fries' in item.name or 'Wings' in item.name or 'Bread' in item.name or 'Kebab' in item.name or 'Rings' in item.name or 'Poppers' in item.name or 'Nuggets' in item.name or 'Samosa' in item.name or 'Wedges' in item.name or 'Skewers' in item.name]
     beverages = [item for item in items if item not in pizzas and item not in burgers and item not in sides]
 
     # Fallback categorizing purely by item_type if string matching isn't perfect
-    veg_items = items.filter(item_type='VEG')
-    non_veg_items = items.filter(item_type='NON_VEG')
-    vegan_items = items.filter(item_type='VEGAN')
+    veg_items = [i for i in items if i.item_type == 'VEG']
+    non_veg_items = [i for i in items if i.item_type == 'NON_VEG']
+    vegan_items = [i for i in items if i.item_type == 'VEGAN']
 
     return render(request, 'restaurant/menu.html', {
         'table': table,
@@ -70,7 +70,9 @@ def menu_view(request, table_id):
         'beverages': beverages,
         'veg_items': veg_items,
         'non_veg_items': non_veg_items,
-        'vegan_items': vegan_items
+        'vegan_items': vegan_items,
+        'all_items': items,
+        'total_items_count': len(items)
     })
 
 def staff_dashboard_view(request):
@@ -308,9 +310,12 @@ def create_order_view(request):
             # Legacy fallback if they send a single item without 'items' array
             if not items and data.get('item_name'):
                 items = [data]
-                
+
+            if not items:
+                return JsonResponse({'success': False, 'error': 'No order items specified.'}, status=400)
+
             responses = []
-            for item in items:
+            for idx, item in enumerate(items):
                 # Determine Pricing Strategy from incoming API request conditionally based off string literals
                 strategy_str = item.get('strategy', 'normal')
                 if strategy_str == 'happy_hour':
@@ -329,7 +334,8 @@ def create_order_view(request):
                     add_cheese=item.get('add_cheese', False),
                     add_bacon=item.get('add_bacon', False),
                     pricing_strategy=strategy,
-                    table_number=table_number
+                    table_number=table_number,
+                    allow_occupied_table=(idx > 0)
                 )
                 responses.append(response_data)
 
